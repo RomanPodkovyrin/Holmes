@@ -4,7 +4,7 @@
 
 Running unit tests
 ```bash
- ./gradlew connectedAndroidTest  
+ ./gradlew test  
 ```
 Running integration tests
 ```bash
