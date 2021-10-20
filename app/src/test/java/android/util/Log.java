@@ -6,6 +6,7 @@ they don't have access to android API
 TODO: convert to kotlin. Attempted but keeps giving IncompatibleClassChangeError, so leaving it for now
  */
 
+@SuppressWarnings({"SameReturnValue", "unused"})
 public class Log {
     public static int d(String tag, String msg) {
         System.out.printf("DEBUG: %s: %s%n",tag, msg);
