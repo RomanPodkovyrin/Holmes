@@ -27,7 +27,7 @@ class ExampleUnitTest {
     @Test
     @Throws(java.lang.Exception::class)
     fun givenEnglishModel_whenTokenize_thenTokensAreDetected() {
-        val inputStream: InputStream = File("res/models/exampleModels/en-token.bin").inputStream()
+        val inputStream: InputStream = File("res/nlpModels/exampleModels/en-token.bin").inputStream()
         val model = TokenizerModel(inputStream)
         val tokenizer = TokenizerME(model)
         val tokens = tokenizer.tokenize("Roman is working on his final year project")
@@ -48,7 +48,7 @@ class ExampleUnitTest {
         val tokens: Array<String> = tokenizer.tokenize(text)
 
         // Initialisation
-        val inputStreamNameFinder: InputStream = File("res/models/exampleModels/en-ner-person.bin").inputStream()
+        val inputStreamNameFinder: InputStream = File("res/nlpModels/exampleModels/en-ner-person.bin").inputStream()
         // Loading the pretrained model
         val model = TokenNameFinderModel(inputStreamNameFinder)
         // Loading the model into ME stands for Maximum Entropy
@@ -71,7 +71,7 @@ class ExampleUnitTest {
                 "And now of course," +
                 "we have another sentence. Good bye."
 
-        val inputS: InputStream = File("res/models/exampleModels/en-sent.bin").inputStream()
+        val inputS: InputStream = File("res/nlpModels/exampleModels/en-sent.bin").inputStream()
 
         val model = SentenceModel(inputS)
         val sentenceDetector = SentenceDetectorME(model)

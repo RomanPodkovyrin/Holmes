@@ -28,13 +28,13 @@ class MainActivityTest {
     @Before
     fun initValidString() {
         // Specify a valid string.
-        stringToBetyped = "Hello World!"
+        stringToBetyped = "No book loaded"
     }
 
     @Test
     fun changeText_sameActivity() {
         // Check that the text was changed.
-        onView(withId(R.id.hello_world))
+        onView(withId(R.id.book_title))
             .check(matches(withText(stringToBetyped)))
     }
 }
