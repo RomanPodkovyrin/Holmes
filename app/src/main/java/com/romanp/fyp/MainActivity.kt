@@ -1,5 +1,6 @@
 package com.romanp.fyp
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.webkit.WebView
@@ -19,15 +20,13 @@ class MainActivity : AppCompatActivity() {
     companion object {
         private const val TAG = "MainActivity"
     }
-//    val editText;
-//    val textOutPut;
-//    val buttonExtract;
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
 
 
-//        println
          setContentView(R.layout.activity_main)
 
 
@@ -36,24 +35,29 @@ class MainActivity : AppCompatActivity() {
         val textOutPut = findViewById<TextView>(R.id.textViewExtractedNames)
         val buttonExtract = findViewById<Button>(R.id.buttonExtractNames)
         val buttonLoadBook = findViewById<Button>(R.id.loadBookButton)
-        val textBookTitle = findViewById<TextView>(R.id.book_title)
 
         buttonLoadBook.setOnClickListener {
-            Log.i(TAG, "Loading book")
-            val inputStreamNameFinder: InputStream = applicationContext.assets.open("ShortStory.epub")
-            val epubReader: EpubReader = EpubReader()
-            val book: Book = epubReader.readEpub(inputStreamNameFinder)
-            Log.i(TAG, " book title ${book.title} ")
-            textBookTitle.text = book.title
-            findViewById<WebView>(R.id.web1).loadData(String(book.contents.get(6).data), "text/html", "UTF-8")
+            val intent = Intent()
+                .setType("*/*")
+                .setAction(Intent.ACTION_GET_CONTENT)
+
+            startActivityForResult(Intent.createChooser(intent, "Select a file"), 111)
+
+
+//            Log.i(TAG, "Loading book")
+//            val inputStreamNameFinder: InputStream = applicationContext.assets.open("ShortStory.epub")
+//            val epubReader: EpubReader = EpubReader()
+//            val book: Book = epubReader.readEpub(inputStreamNameFinder)
+//            Log.i(TAG, " book title ${book.title} ")
+//            textBookTitle.text = book.title
+//            findViewById<WebView>(R.id.web1).loadData(String(book.contents.get(6).data), "text/html", "UTF-8")
 
 //                book.t
 
         }
 
         buttonExtract.setOnClickListener {
-//            Thread {
-//            }.start()
+//
             Log.i(TAG,"Extract Button clicked")
             Log.i(TAG, editText.text.toString())
 
@@ -70,6 +74,26 @@ class MainActivity : AppCompatActivity() {
 
         }
 
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == 111 && resultCode == RESULT_OK) {
+            val textBookTitle = findViewById<TextView>(R.id.book_title)
+            val selectedFile = data?.data
+            Log.i(TAG, "File selected $selectedFile")//The uri with the location of the file
+            Log.i(TAG, "Loading book")
+            val inputStreamNameFinder: InputStream? = selectedFile?.let {
+                contentResolver.openInputStream(it)
+            }
+            val epubReader: EpubReader = EpubReader()
+            val book: Book = epubReader.readEpub(inputStreamNameFinder)
+            Log.i(TAG, " book title ${book.title} ")
+            textBookTitle.text = book.title
+            findViewById<WebView>(R.id.web1).loadData(String(book.contents.get(6).data), "text/html", "UTF-8")
+
+        }
     }
 
 }
