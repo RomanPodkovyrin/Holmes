@@ -1,14 +1,17 @@
 package com.romanp.fyp
 
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.webkit.WebView
 import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
 import com.romanp.fyp.MainActivity.Companion.EXTRA_MESSAGE
 import nl.siegmann.epublib.domain.Book
-
+import nl.siegmann.epublib.epub.EpubReader
+import java.io.InputStream
 
 
 class BookReaderActivity : AppCompatActivity() {
@@ -26,7 +29,23 @@ class BookReaderActivity : AppCompatActivity() {
 
 
         // Get the Intent
-        val book :Book = intent.getSerializableExtra(EXTRA_MESSAGE) as Book
+//        val book :Book = intent.getSerializableExtra(EXTRA_MESSAGE) as Book
+        val selectedFile: Uri? = Uri.parse(intent.getStringExtra(EXTRA_MESSAGE))
+//        Log.i(MainActivity.TAG, "File selected $selectedFile")//The uri with the location of the file
+//        Log.i(MainActivity.TAG, "Loading book")
+
+        val inputStreamNameFinder: InputStream? = selectedFile?.let {
+            contentResolver.openInputStream(it)
+        }
+
+        if (inputStreamNameFinder == null) {
+            Toast.makeText(getApplicationContext(),"There was an error loading your book", Toast.LENGTH_SHORT).show()
+            finish()
+            return
+        }
+        val epubReader: EpubReader = EpubReader()
+        val book: Book = epubReader.readEpub(inputStreamNameFinder)
+        book.guide.coverPage.data
 
         val textView = findViewById<TextView>(R.id.textViewBookTitle).apply {
             text = book.title

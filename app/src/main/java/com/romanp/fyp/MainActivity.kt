@@ -78,7 +78,8 @@ class MainActivity : AppCompatActivity() {
             val epubReader: EpubReader = EpubReader()
             val book: Book = epubReader.readEpub(inputStreamNameFinder)
             val intent = Intent(this, BookReaderActivity::class.java).apply {
-                putExtra("com.example.MainActivity.book", book)
+//                putExtra(EXTRA_MESSAGE, book)
+                putExtra(EXTRA_MESSAGE, selectedFile.toString())
             }
             startActivity(intent)
         }
