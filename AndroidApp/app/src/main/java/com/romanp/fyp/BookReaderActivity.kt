@@ -12,13 +12,9 @@ import com.romanp.fyp.Book.Book
 import com.romanp.fyp.Book.BookUtil
 import com.romanp.fyp.Book.Chapter
 import com.romanp.fyp.MainActivity.Companion.EXTRA_MESSAGE
-import com.romanp.fyp.nlp.nlpUtil
 import nl.siegmann.epublib.domain.Book as EpubBook
 import nl.siegmann.epublib.epub.EpubReader
 import opennlp.tools.tokenize.SimpleTokenizer
-import org.jsoup.Jsoup
-import org.jsoup.nodes.Document
-import org.jsoup.nodes.Entities
 import java.io.InputStream
 
 
