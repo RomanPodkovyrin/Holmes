@@ -52,15 +52,20 @@ dependencies {
     // https://question-it.com/questions/1641754/opennlp-documentbuilderfactorysetfeature-http-javaxxmlxmlconstantsfeaturesecure-processing-true-parserconfigurationexception
 //    implementation 'org.apache.opennlp:opennlp-tools:1.9.3'
     implementation 'org.apache.opennlp:opennlp-tools:1.6.0'
-//    implementation "edu.stanford.nlp:stanford-corenlp:3.9.1"
-//    implementation "edu.stanford.nlp:stanford-corenlp:3.9.1:models"
+//    implementation ("edu.stanford.nlp:stanford-corenlp:4.3.1") {
+//        exclude(group: 'com.sun.xml.bind', module: 'jaxb-core')
+//    }
+//    implementation "edu.stanford.nlp:stanford-corenlp:4.3.1:models"
 //    implementation group: 'org.slf4j', name: 'slf4j-log4j12', version: '1.7.30'
     implementation 'org.slf4j:slf4j-api:1.7.25'
+    implementation 'org.jsoup:jsoup:1.14.3'
 
 //    implementation "com.folioreader:folioreader:0.5.4"
 
 }
-
+//configurations {
+//    all*.exclude group: 'com.sun.xml.bind', module: 'jaxb-core'
+//}
 //test {
 //    useJUnitPlatform()
 //}
