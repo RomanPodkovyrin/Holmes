@@ -2,7 +2,6 @@ package com.server
 
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
-import com.server.plugins.*
 import com.server.plugins.configureRouting
 
 fun main() {

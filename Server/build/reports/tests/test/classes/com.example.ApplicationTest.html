@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta http-equiv="x-ua-compatible" content="IE=edge"/>
+<title>Test results - Class com.example.ApplicationTest</title>
+<link href="../css/base-style.css" rel="stylesheet" type="text/css"/>
+<link href="../css/style.css" rel="stylesheet" type="text/css"/>
+<script src="../js/report.js" type="text/javascript"></script>
+</head>
+<body>
+<div id="content">
+<h1>Class com.example.ApplicationTest</h1>
+<div class="breadcrumbs">
+<a href="../index.html">all</a> &gt; 
+<a href="../packages/com.example.html">com.example</a> &gt; ApplicationTest</div>
+<div id="summary">
+<table>
+<tr>
+<td>
+<div class="summaryGroup">
+<table>
+<tr>
+<td>
+<div class="infoBox" id="tests">
+<div class="counter">3</div>
+<p>tests</p>
+</div>
+</td>
+<td>
+<div class="infoBox" id="failures">
+<div class="counter">0</div>
+<p>failures</p>
+</div>
+</td>
+<td>
+<div class="infoBox" id="ignored">
+<div class="counter">0</div>
+<p>ignored</p>
+</div>
+</td>
+<td>
+<div class="infoBox" id="duration">
+<div class="counter">0.719s</div>
+<p>duration</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</td>
+<td>
+<div class="infoBox success" id="successRate">
+<div class="percent">100%</div>
+<p>successful</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div id="tabs">
+<ul class="tabLinks">
+<li>
+<a href="#tab0">Tests</a>
+</li>
+<li>
+<a href="#tab1">Standard output</a>
+</li>
+</ul>
+<div id="tab0" class="tab">
+<h2>Tests</h2>
+<table>
+<thead>
+<tr>
+<th>Test</th>
+<th>Duration</th>
+<th>Result</th>
+</tr>
+</thead>
+<tr>
+<td class="success">testBookCheck</td>
+<td class="success">0.492s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">testBookCheckNoParams</td>
+<td class="success">0.219s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">testRoot</td>
+<td class="success">0.008s</td>
+<td class="success">passed</td>
+</tr>
+</table>
+</div>
+<div id="tab1" class="tab">
+<h2>Standard output</h2>
+<span class="code">
+<pre>17:00:18,584 |-INFO in ch.qos.logback.classic.LoggerContext[default] - Could NOT find resource [logback-test.xml]
+17:00:18,585 |-INFO in ch.qos.logback.classic.LoggerContext[default] - Could NOT find resource [logback.groovy]
+17:00:18,586 |-INFO in ch.qos.logback.classic.LoggerContext[default] - Found resource [logback.xml] at [file:/home/roman/Documents/repos/rxp777/Server/build/resources/main/logback.xml]
+17:00:18,667 |-INFO in ch.qos.logback.classic.joran.action.ConfigurationAction - debug attribute not set
+17:00:18,667 |-INFO in ch.qos.logback.core.joran.action.AppenderAction - About to instantiate appender of type [ch.qos.logback.core.ConsoleAppender]
+17:00:18,672 |-INFO in ch.qos.logback.core.joran.action.AppenderAction - Naming appender as [STDOUT]
+17:00:18,677 |-ERROR in ch.qos.logback.core.joran.spi.Interpreter@3:15 - no applicable action for [file], current ElementPath  is [[configuration][appender][file]]
+17:00:18,677 |-ERROR in ch.qos.logback.core.joran.spi.Interpreter@4:17 - no applicable action for [append], current ElementPath  is [[configuration][appender][append]]
+17:00:18,678 |-INFO in ch.qos.logback.core.joran.action.NestedComplexPropertyIA - Assuming default type [ch.qos.logback.classic.encoder.PatternLayoutEncoder] for [encoder] property
+17:00:18,695 |-INFO in ch.qos.logback.classic.joran.action.RootLoggerAction - Setting level of ROOT logger to TRACE
+17:00:18,695 |-INFO in ch.qos.logback.core.joran.action.AppenderRefAction - Attaching appender named [STDOUT] to Logger[ROOT]
+17:00:18,696 |-INFO in ch.qos.logback.classic.joran.action.LoggerAction - Setting level of logger [org.eclipse.jetty] to INFO
+17:00:18,696 |-INFO in ch.qos.logback.classic.joran.action.LoggerAction - Setting level of logger [io.netty] to INFO
+17:00:18,696 |-INFO in ch.qos.logback.classic.joran.action.ConfigurationAction - End of configuration.
+17:00:18,697 |-INFO in ch.qos.logback.classic.joran.JoranConfigurator@429f3e4f - Registering current configuration as safe fallback point
+
+2021-11-18 17:00:18.796 [Test worker] INFO  ktor.test - Autoreload is disabled because the development mode is off.
+2021-11-18 17:00:18.803 [Test worker] INFO  ktor.test - Application started in 0.048 seconds.
+2021-11-18 17:00:18.961 [DefaultDispatcher-worker-1 @request#3] INFO  ktor.test - Check book called for book 1984 - George Orwell&quot;
+2021-11-18 17:00:19.035 [Test worker] INFO  ktor.test - Autoreload is disabled because the development mode is off.
+2021-11-18 17:00:19.035 [Test worker] INFO  ktor.test - Application started in 0.001 seconds.
+2021-11-18 17:00:19.037 [DefaultDispatcher-worker-1 @request#7] INFO  ktor.test - ping from localhost
+2021-11-18 17:00:19.043 [Test worker] INFO  ktor.test - Autoreload is disabled because the development mode is off.
+2021-11-18 17:00:19.044 [Test worker] INFO  ktor.test - Application started in 0.001 seconds.
+</pre>
+</span>
+</div>
+</div>
+<div id="footer">
+<p>
+<div>
+<label class="hidden" id="label-for-line-wrapping-toggle" for="line-wrapping-toggle">Wrap lines
+<input id="line-wrapping-toggle" type="checkbox" autocomplete="off"/>
+</label>
+</div>Generated by 
+<a href="http://www.gradle.org">Gradle 6.8</a> at 18 Nov 2021, 17:00:19</p>
+</div>
+</div>
+</body>
+</html>

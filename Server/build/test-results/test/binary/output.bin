@@ -1,0 +1,24 @@
+r17:00:18,584 |-INFO in ch.qos.logback.classic.LoggerContext[default] - Could NOT find resource [logback-test.xml]
+p17:00:18,585 |-INFO in ch.qos.logback.classic.LoggerContext[default] - Could NOT find resource [logback.groovy]
+¹17:00:18,586 |-INFO in ch.qos.logback.classic.LoggerContext[default] - Found resource [logback.xml] at [file:/home/roman/Documents/repos/rxp777/Server/build/resources/main/logback.xml]
+i17:00:18,667 |-INFO in ch.qos.logback.classic.joran.action.ConfigurationAction - debug attribute not set
+•17:00:18,667 |-INFO in ch.qos.logback.core.joran.action.AppenderAction - About to instantiate appender of type [ch.qos.logback.core.ConsoleAppender]
+e17:00:18,672 |-INFO in ch.qos.logback.core.joran.action.AppenderAction - Naming appender as [STDOUT]
+¤17:00:18,677 |-ERROR in ch.qos.logback.core.joran.spi.Interpreter@3:15 - no applicable action for [file], current ElementPath  is [[configuration][appender][file]]
+¨17:00:18,677 |-ERROR in ch.qos.logback.core.joran.spi.Interpreter@4:17 - no applicable action for [append], current ElementPath  is [[configuration][appender][append]]
+µ17:00:18,678 |-INFO in ch.qos.logback.core.joran.action.NestedComplexPropertyIA - Assuming default type [ch.qos.logback.classic.encoder.PatternLayoutEncoder] for [encoder] property
+t17:00:18,695 |-INFO in ch.qos.logback.classic.joran.action.RootLoggerAction - Setting level of ROOT logger to TRACE
+~17:00:18,695 |-INFO in ch.qos.logback.core.joran.action.AppenderRefAction - Attaching appender named [STDOUT] to Logger[ROOT]
+~17:00:18,696 |-INFO in ch.qos.logback.classic.joran.action.LoggerAction - Setting level of logger [org.eclipse.jetty] to INFO
+u17:00:18,696 |-INFO in ch.qos.logback.classic.joran.action.LoggerAction - Setting level of logger [io.netty] to INFO
+g17:00:18,696 |-INFO in ch.qos.logback.classic.joran.action.ConfigurationAction - End of configuration.
+Š17:00:18,697 |-INFO in ch.qos.logback.classic.joran.JoranConfigurator@429f3e4f - Registering current configuration as safe fallback point
+
+t2021-11-18 17:00:18.796 [Test worker] INFO  ktor.test - Autoreload is disabled because the development mode is off.
+^2021-11-18 17:00:18.803 [Test worker] INFO  ktor.test - Application started in 0.048 seconds.
+ƒ2021-11-18 17:00:18.961 [DefaultDispatcher-worker-1 @request#3] INFO  ktor.test - Check book called for book 1984 - George Orwell"
+t2021-11-18 17:00:19.035 [Test worker] INFO  ktor.test - Autoreload is disabled because the development mode is off.
+^2021-11-18 17:00:19.035 [Test worker] INFO  ktor.test - Application started in 0.001 seconds.
+f2021-11-18 17:00:19.037 [DefaultDispatcher-worker-1 @request#7] INFO  ktor.test - ping from localhost
+t2021-11-18 17:00:19.043 [Test worker] INFO  ktor.test - Autoreload is disabled because the development mode is off.
+^2021-11-18 17:00:19.044 [Test worker] INFO  ktor.test - Application started in 0.001 seconds.
