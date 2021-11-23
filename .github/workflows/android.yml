@@ -1,0 +1,31 @@
+# Workflow name
+name: Android CI
+
+on: 
+  push: 
+    branches: [master]
+  pull_request:
+    branches: [master]
+    
+    
+# Where it will run
+jobs:
+  build:
+    runs-on: ubuntu-lates
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2.4.0
+#       with:
+      - name: Setup Java JDK
+        uses: actions/setup-java@v2.3.1
+        with:
+          java-version: 1.9
+      - name: Build with Gradle
+        working-directory: ./AndroidApp
+        run: ./gradlew build
+      - name: Upload a Build Artifact
+        uses: actions/upload-artifact@v2.2.4
+        with:
+          name: app
+          path: AndroidApp/app/build/outputs/apk/debug/app-degub.apk
+        
