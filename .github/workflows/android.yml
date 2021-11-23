@@ -31,7 +31,7 @@ jobs:
           api-level: 29
           target: default
           arch: x86
-          profile: Pixel 4
+          profile: Nexus 6
           working-directory: ./AndroidApp
           script: ./gradlew connectedCheck --stacktrace
       - name: Upload a Build Artifact
