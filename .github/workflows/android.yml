@@ -26,13 +26,13 @@ jobs:
         working-directory: ./AndroidApp
         run: ./gradlew test
       - name: Run connected test
-        working-directory: ./AndroidApp
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 29
           target: default
           arch: x86
           profile: Pixel 4
+          working-directory: ./AndroidApp
           script: ./gradlew connectedCheck --stacktrace
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v2.2.4
