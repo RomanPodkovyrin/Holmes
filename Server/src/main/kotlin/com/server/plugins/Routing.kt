@@ -8,16 +8,16 @@ import io.ktor.http.*
 import io.ktor.request.*
 import io.ktor.response.*
 import io.ktor.routing.*
-import java.io.FileInputStream
 import java.util.*
 import kotlin.system.exitProcess
+
 
 fun Application.configureRouting() {
     var coreNlpUrl = "localhost"
     var coreNlpPort = "9000"
     // Load properties
     try {
-        val fis = FileInputStream("src/main/resources/server.properties")
+        val fis = javaClass.getResourceAsStream("/server.properties")
         val prop = Properties()
         prop.load(fis)
         coreNlpUrl = prop.getProperty("coreNLP_url")

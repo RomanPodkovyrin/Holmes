@@ -62,3 +62,14 @@ java -mx4g -cp "*" edu.stanford.nlp.pipeline.StanfordCoreNLPServer -port 9000 -m
 ```
 docker run --network "fyp-api-network" --name CoreNLP -p 9000:9000 nlp
 ```
+
+## To run on the Server
+Download images
+```
+docker pull romanpod/ktor-fyp-server && docker pull romanpod/corenlp
+```
+
+Start services 
+```
+docker run --network "fyp-api-network" --name CoreNLP -p 9000:9000 romanpod/corenlp & docker run --network "fyp-api-network" --name AppServer -p 8080:8080 romanpod/ktor-fyp-server
+```
