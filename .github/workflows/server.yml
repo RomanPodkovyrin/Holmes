@@ -14,8 +14,8 @@ on:
 
 
 jobs:
-  test:
-    name: Test ktor server
+  server:
+    name: Test ktor server, Build Docker image and push to repositories
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -27,14 +27,13 @@ jobs:
       - name: Run Unit Tests
         working-directory: ./Server
         run: ./gradlew test
-    
-  docker:
-    name: Build Docker image and push to repositories
-    # run only when code is compiling and tests are passing
-    runs-on: ubuntu-latest
+#   docker:
+#     name: Build Docker image and push to repositories
+#     # run only when code is compiling and tests are passing
+#     runs-on: ubuntu-latest
 
     # steps to perform in job
-    steps:
+#     steps:
       - name: Checkout code
         uses: actions/checkout@v2
       - name: Set up QEMU
