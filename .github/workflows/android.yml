@@ -4,9 +4,14 @@ name: Android CI
 on: 
   push: 
     branches: [master]
+    paths:
+    - 'AndroidApp/**'
   pull_request:
     branches: [master]
     types: [ labeled ]
+    paths:
+    - 'AndroidApp/**'
+    
     
     
 # Where it will run
@@ -58,7 +63,7 @@ jobs:
         id: set-result-artifact
         working-directory: ./AndroidApp
         run: |
-          ARTIFACT_PATHNAME_APK=$(ls app/build/outputs/apk/ourbuildtype/release/*.apk | head -n 1)
+          ARTIFACT_PATHNAME_APK=$(ls app/build/outputs/apk/release/*.apk | head -n 1)
           ARTIFACT_NAME_APK=$(basename $ARTIFACT_PATHNAME_APK)
           echo "ARTIFACT_NAME_APK is " ${ARTIFACT_NAME_APK}
           echo "ARTIFACT_PATHNAME_APK=${ARTIFACT_PATHNAME_APK}" >> $GITHUB_ENV
