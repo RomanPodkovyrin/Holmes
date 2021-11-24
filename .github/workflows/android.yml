@@ -25,15 +25,15 @@ jobs:
       - name: Run Unit Tests
         working-directory: ./AndroidApp
         run: ./gradlew test
-      - name: Run connected test
-        uses: ReactiveCircus/android-emulator-runner@v2.21.0
-        with:
-          api-level: 29
-          target: default
-          arch: x86
-          profile: Nexus 6
-          working-directory: ./AndroidApp
-          script: ./gradlew connectedCheck --stacktrace
+#       - name: Run connected test
+#         uses: ReactiveCircus/android-emulator-runner@v2.21.0
+#         with:
+#           api-level: 29
+#           target: default
+#           arch: x86
+#           profile: Nexus 6
+#           working-directory: ./AndroidApp
+#           script: ./gradlew connectedCheck --stacktrace
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v2.2.4
         with:
@@ -50,4 +50,24 @@ jobs:
           release_name: Release ${{ github.ref }}
           draft: false
           prerelease: false
-        
+      - name: Save name of our Artifact
+        id: set-result-artifact
+        working-directory: ./AndroidApp
+        run: |
+          ARTIFACT_PATHNAME_APK=$(ls app/build/outputs/apk/ourbuildtype/release/*.apk | head -n 1)
+          ARTIFACT_NAME_APK=$(basename $ARTIFACT_PATHNAME_APK)
+          echo "ARTIFACT_NAME_APK is " ${ARTIFACT_NAME_APK}
+          echo "ARTIFACT_PATHNAME_APK=${ARTIFACT_PATHNAME_APK}" >> $GITHUB_ENV
+          echo "ARTIFACT_NAME_APK=${ARTIFACT_NAME_APK}" >> $GITHUB_ENV
+          
+      - name: Upload our Artifact Assets
+        id: upload-release-asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ${{ env.ARTIFACT_PATHNAME_APK }}
+          asset_name: ${{ env.ARTIFACT_NAME_APK }}
+          asset_content_type: application/zip
+
