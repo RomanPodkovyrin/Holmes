@@ -11,6 +11,7 @@ on:
     types: [ labeled ]
     paths:
     - 'AndroidApp/**'
+  workflow_dispatch:
     
     
     
