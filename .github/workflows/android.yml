@@ -4,9 +4,15 @@ name: Android CI
 on: 
   push: 
     branches: [master]
+    paths:
+    - 'AndroidApp/**'
   pull_request:
     branches: [master]
     types: [ labeled ]
+    paths:
+    - 'AndroidApp/**'
+  workflow_dispatch:
+    
     
     
 # Where it will run
@@ -56,9 +62,9 @@ jobs:
             - 
       - name: Save name of our Artifact
         id: set-result-artifact
-        working-directory: ./AndroidApp
+#         working-directory: ./AndroidApp
         run: |
-          ARTIFACT_PATHNAME_APK=$(ls app/build/outputs/apk/ourbuildtype/release/*.apk | head -n 1)
+          ARTIFACT_PATHNAME_APK=$(ls AndroidApp/app/build/outputs/apk/release/*.apk | head -n 1)
           ARTIFACT_NAME_APK=$(basename $ARTIFACT_PATHNAME_APK)
           echo "ARTIFACT_NAME_APK is " ${ARTIFACT_NAME_APK}
           echo "ARTIFACT_PATHNAME_APK=${ARTIFACT_PATHNAME_APK}" >> $GITHUB_ENV
@@ -70,8 +76,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
+#           working-directory: ./AndroidApp
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ${{ env.ARTIFACT_PATHNAME_APK }}
+          asset_path:  ${{ env.ARTIFACT_PATHNAME_APK }}
           asset_name: ${{ env.ARTIFACT_NAME_APK }}
           asset_content_type: application/zip
 
