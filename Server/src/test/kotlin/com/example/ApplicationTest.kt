@@ -39,42 +39,42 @@ class ApplicationTest {
     }
 
     //TODO: test book processing.
-    @Test
-    fun testBookProcessingPersonAndLocation() {
-        val bookTitle = "Sherlock Holmes: The Complete Novels and Stories Volume I"
-        val bookAuthor = "Sir Arthur Conan Doyle"
-        withTestApplication({ configureRouting() }) {
-            handleRequest(HttpMethod.Post, "/process-book/$bookTitle/$bookAuthor"){
-                setBody("\"Whatever have you been doing with yourself, Watson?\" " +
-                        "he asked in undisguised wonder, as we walked through London" +
-                        " \"You are as thin as a lath and as brown as a nut.\"")
-            }.apply {
-                assertEquals(HttpStatusCode.OK, response.status())
-                assertEquals(
-                    "PERSON [{" +
-                            "\"index\":10," +
-                            "\"word\":\"Watson\"," +
-                            "\"originalText\":\"Watson\"," +
-                            "\"lemma\":\"Watson\"," +
-                            "\"characterOffsetBegin\":45," +
-                            "\"characterOffsetEnd\":51," +
-                            "\"pos\":\"NNP\"," +
-                            "\"ner\":\"PERSON\"," +
-                            "\"before\":\" \"," +
-                            "\"after\":\"\"}], " +
-                        "LOCATION [{" +
-                            "\"index\":11," +
-                            "\"word\":\"London\"," +
-                            "\"originalText\":\"London\"," +
-                            "\"lemma\":\"London\"," +
-                            "\"characterOffsetBegin\":107," +
-                            "\"characterOffsetEnd\":113," +
-                            "\"pos\":\"NNP\"," +
-                            "\"ner\":\"CITY\"," +
-                            "\"before\":\" \"," +
-                            "\"after\":\" \"}]",
-                    response.content)
-            }
-        }
-    }
+//    @Test
+//    fun testBookProcessingPersonAndLocation() {
+//        val bookTitle = "Sherlock Holmes: The Complete Novels and Stories Volume I"
+//        val bookAuthor = "Sir Arthur Conan Doyle"
+//        withTestApplication({ configureRouting() }) {
+//            handleRequest(HttpMethod.Post, "/process-book/$bookTitle/$bookAuthor"){
+//                setBody("\"Whatever have you been doing with yourself, Watson?\" " +
+//                        "he asked in undisguised wonder, as we walked through London" +
+//                        " \"You are as thin as a lath and as brown as a nut.\"")
+//            }.apply {
+//                assertEquals(HttpStatusCode.OK, response.status())
+//                assertEquals(
+//                    "PERSON [{" +
+//                            "\"index\":10," +
+//                            "\"word\":\"Watson\"," +
+//                            "\"originalText\":\"Watson\"," +
+//                            "\"lemma\":\"Watson\"," +
+//                            "\"characterOffsetBegin\":45," +
+//                            "\"characterOffsetEnd\":51," +
+//                            "\"pos\":\"NNP\"," +
+//                            "\"ner\":\"PERSON\"," +
+//                            "\"before\":\" \"," +
+//                            "\"after\":\"\"}], " +
+//                        "LOCATION [{" +
+//                            "\"index\":11," +
+//                            "\"word\":\"London\"," +
+//                            "\"originalText\":\"London\"," +
+//                            "\"lemma\":\"London\"," +
+//                            "\"characterOffsetBegin\":107," +
+//                            "\"characterOffsetEnd\":113," +
+//                            "\"pos\":\"NNP\"," +
+//                            "\"ner\":\"CITY\"," +
+//                            "\"before\":\" \"," +
+//                            "\"after\":\" \"}]",
+//                    response.content)
+//            }
+//        }
+//    }
 }
