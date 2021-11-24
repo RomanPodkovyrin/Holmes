@@ -41,16 +41,16 @@ jobs:
           profile: Nexus 6
           working-directory: ./AndroidApp
           script: ./gradlew connectedCheck --stacktrace
-  release:
-      runs-on: ubuntu-latest
-      if: startsWith(github.ref, 'refs/tags/v')
-      steps:
+          
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v2.2.4
         with:
           name: app
           path: AndroidApp/app/build/outputs/apk/debug/app-debug.apk
-          
+  release:
+      runs-on: ubuntu-latest
+      if: startsWith(github.ref, 'refs/tags/v')
+      steps:          
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1.1.4
