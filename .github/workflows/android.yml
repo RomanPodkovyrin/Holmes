@@ -51,6 +51,9 @@ jobs:
           release_name: Release ${{ github.ref }}
           draft: false
           prerelease: false
+          body: |
+            Changes in this Release
+            - 
       - name: Save name of our Artifact
         id: set-result-artifact
         working-directory: ./AndroidApp
