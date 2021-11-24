@@ -32,15 +32,15 @@ jobs:
       - name: Run Unit Tests
         working-directory: ./AndroidApp
         run: ./gradlew test
-#       - name: Run connected test
-#         uses: ReactiveCircus/android-emulator-runner@v2.21.0
-#         with:
-#           api-level: 29
-#           target: default
-#           arch: x86
-#           profile: Nexus 6
-#           working-directory: ./AndroidApp
-#           script: ./gradlew connectedCheck --stacktrace
+      - name: Run connected test
+        uses: ReactiveCircus/android-emulator-runner@v2.21.0
+        with:
+          api-level: 29
+          target: default
+          arch: x86
+          profile: Nexus 6
+          working-directory: ./AndroidApp
+          script: ./gradlew connectedCheck --stacktrace
   release:
       runs-on: ubuntu-latest
       if: startsWith(github.ref, 'refs/tags/v')
