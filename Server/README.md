@@ -69,6 +69,11 @@ Download images
 docker pull romanpod/ktor-fyp-server && docker pull romanpod/corenlp
 ```
 
+Create the network
+```
+docker network create fyp-api-network
+```
+
 Start services 
 ```
 docker run --network "fyp-api-network" --name CoreNLP -p 9000:9000 romanpod/corenlp & docker run --network "fyp-api-network" --name AppServer -p 8080:8080 romanpod/ktor-fyp-server
