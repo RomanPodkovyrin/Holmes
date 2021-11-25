@@ -7,8 +7,8 @@ on:
     paths:
     - 'AndroidApp/**'
   pull_request:
-    branches: [master]
-    types: [ labeled ]
+#     branches: [master]
+#     types: [ labeled ]
     paths:
     - 'AndroidApp/**'
   workflow_dispatch:
