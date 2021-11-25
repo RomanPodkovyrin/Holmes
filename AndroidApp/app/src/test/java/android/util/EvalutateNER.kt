@@ -1,29 +1,6 @@
-package com.romanp.fyp
-
-import opennlp.tools.namefind.NameFinderME
-import opennlp.tools.namefind.NameSample
-import opennlp.tools.namefind.TokenNameFinderEvaluator
-import opennlp.tools.namefind.TokenNameFinderModel
-import opennlp.tools.util.ObjectStream
-import opennlp.tools.util.PlainTextByLineStream
-import java.io.File
-import java.io.InputStream
-import java.nio.charset.StandardCharsets
-
+package android.util
 
 fun main(args: Array<String>) {
-//    print("hello")
-//    val inputStreamNameFinder: InputStream = File("res/nlpModels/exampleModels/en-ner-person.bin").inputStream()
-//    // Loading the pretrained model
-//    val model = TokenNameFinderModel(inputStreamNameFinder)
-//    val evaluator : TokenNameFinderEvaluator = TokenNameFinderEvaluator(NameFinderME(model))
-//    val sampleDataIn = FileInputStream("en-ner-person.train")
-//    val sampleStream: ObjectStream<NameSample> = PlainTextByLineStream(sampleDataIn.getChannel(), StandardCharsets.UTF_8)
-//    evaluator.evaluate(sampleStream)
-//
-//    val result = evaluator.fMeasure
-//
-//    println(result.toString())
 
 }
 

@@ -30,18 +30,17 @@
         android:inputType="textMultiLine|textPersonName"
         android:scrollHorizontally="false"
         android:singleLine="false"
-        app:layout_constraintBottom_toTopOf="@+id/buttonExtractNames"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.533"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/book_title"
-        app:layout_constraintVertical_bias="0.418" />
+        app:layout_constraintTop_toBottomOf="@+id/book_title" />
 
     <TextView
         android:id="@+id/textViewExtractedNames"
         android:layout_width="347dp"
         android:layout_height="277dp"
         android:layout_marginStart="16dp"
+        android:layout_marginTop="96dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="64dp"
         android:text="Enter your text above and press extract"
@@ -49,31 +48,37 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.75"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/buttonExtractNames" />
+        app:layout_constraintTop_toBottomOf="@+id/loadBookButton" />
 
     <Button
         android:id="@+id/buttonExtractNames"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="25dp"
-        android:layout_marginEnd="80dp"
-        android:layout_marginBottom="22dp"
+        android:layout_marginStart="8dp"
         android:text="Extract"
-        app:layout_constraintBottom_toTopOf="@+id/textViewExtractedNames"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextForNER" />
+        app:layout_constraintStart_toEndOf="@+id/loadBookButton"
+        app:layout_constraintTop_toTopOf="@+id/loadBookButton" />
 
     <Button
         android:id="@+id/loadBookButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="25dp"
+        android:layout_marginTop="16dp"
         android:text="Load Book"
-        app:layout_constraintBottom_toTopOf="@+id/textViewExtractedNames"
-        app:layout_constraintEnd_toStartOf="@+id/buttonExtractNames"
-        app:layout_constraintHorizontal_bias="0.49"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextForNER"
-        app:layout_constraintVertical_bias="0.137" />
+        app:layout_constraintTop_toBottomOf="@+id/editTextForNER" />
+
+    <Button
+        android:id="@+id/getGraph"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="40dp"
+        android:layout_marginEnd="8dp"
+        android:text="Graph"
+        app:layout_constraintEnd_toStartOf="@+id/loadBookButton"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/loadBookButton" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
