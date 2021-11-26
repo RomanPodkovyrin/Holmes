@@ -62,7 +62,7 @@ class MainActivity : AppCompatActivity() {
                 Log.e(TAG, "Error extracting names: $e")
                 Toast.makeText(
                     applicationContext,
-                    "There was an error extracting names",
+                    getString(R.string.error_extracting_names),
                     Toast.LENGTH_SHORT
                 ).show()
             }

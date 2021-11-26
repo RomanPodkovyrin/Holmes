@@ -1,3 +1,13 @@
 <resources>
-    <string name="app_name">FYP</string>
+    <!--    Labels-->
+    <string name="app_name">Holmes</string>
+    <string name="no_book_loaded">No book loaded</string>
+
+    <!--    Buttons-->
+    <string name="next_page_button">Next</string>
+    <string name="previous_page_button">Back</string>
+    <string name="load_book_button">Load Book</string>
+
+    <!--    Error Messages-->
+    <string name="error_extracting_names">There was an error extracting names</string>
 </resources>
