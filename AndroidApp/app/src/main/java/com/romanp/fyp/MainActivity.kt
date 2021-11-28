@@ -7,11 +7,9 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import com.romanp.fyp.nlp.nlpUtil
-import java.io.InputStream
-import nl.siegmann.epublib.domain.Book
-import nl.siegmann.epublib.epub.EpubReader
+import com.romanp.fyp.nlp.CoreNlpAPI
 
 
 class MainActivity : AppCompatActivity() {
@@ -26,7 +24,7 @@ class MainActivity : AppCompatActivity() {
 
 
 
-         setContentView(R.layout.activity_main)
+        setContentView(R.layout.activity_main)
 
 
         // Finding layout views by id
@@ -34,6 +32,12 @@ class MainActivity : AppCompatActivity() {
         val textOutPut = findViewById<TextView>(R.id.textViewExtractedNames)
         val buttonExtract = findViewById<Button>(R.id.buttonExtractNames)
         val buttonLoadBook = findViewById<Button>(R.id.loadBookButton)
+        val buttonGraph = findViewById<Button>(R.id.getGraph)
+
+        buttonGraph.setOnClickListener {
+            val intent = Intent(this, BookGraph::class.java)
+            startActivity(intent)
+        }
 
 
         buttonLoadBook.setOnClickListener {
@@ -41,48 +45,47 @@ class MainActivity : AppCompatActivity() {
                 .setType("*/*")
                 .setAction(Intent.ACTION_GET_CONTENT)
 
-            startActivityForResult(Intent.createChooser(intent, "Select a file"), 111)
+            resultLauncher.launch(Intent.createChooser(intent, "Select a file"))
         }
 
         buttonExtract.setOnClickListener {
-            Log.i(TAG,"Extract Button clicked")
+            Log.i(TAG, "Extract Button clicked")
             Log.i(TAG, editText.text.toString())
 
             try {
                 Thread {
-                    textOutPut.text = nlpUtil.nerTagger(applicationContext,editText.text.toString()).toString()
+//                    CoreNLP_API.pingServer(applicationContext, textOutPut)
+                    CoreNlpAPI.nerTagger(applicationContext, editText.text.toString(), textOutPut)
                 }.start()
 
-            } catch (e: Exception){
+            } catch (e: Exception) {
                 Log.e(TAG, "Error extracting names: $e")
-                Toast.makeText(getApplicationContext(),"There was an error extracting names",Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    applicationContext,
+                    getString(R.string.error_extracting_names),
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode != 111 || resultCode != RESULT_OK || data == null) {
-            Log.w(TAG, "Did not get data back from lauched activity, user likely cancelled")
-            Toast.makeText(getApplicationContext(),"Loading cancelled",Toast.LENGTH_SHORT).show();
-            return
-        }
-        if (requestCode == 111 && resultCode == RESULT_OK) {
-            val textBookTitle = findViewById<TextView>(R.id.book_title)
-            val selectedFile = data?.data
-            Log.i(TAG, "File selected $selectedFile")//The uri with the location of the file
-            Log.i(TAG, "Loading book")
-            val inputStreamNameFinder: InputStream? = selectedFile?.let {
-                contentResolver.openInputStream(it)
+    private var resultLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode != RESULT_OK || result.data == null) {
+                Log.w(TAG, "Did not get data back from launched activity, user likely cancelled")
+                Toast.makeText(applicationContext, "Loading cancelled", Toast.LENGTH_SHORT).show()
+                return@registerForActivityResult
             }
-            val epubReader: EpubReader = EpubReader()
-            val book: Book = epubReader.readEpub(inputStreamNameFinder)
-            val intent = Intent(this, BookReaderActivity::class.java).apply {
-//                putExtra(EXTRA_MESSAGE, book)
-                putExtra(EXTRA_MESSAGE, selectedFile.toString())
+            if (result.resultCode == RESULT_OK) {
+                val selectedFile = result.data!!.data
+                Log.i(TAG, "File selected $selectedFile")//The uri with the location of the file
+                Log.i(TAG, "Loading book")
+
+                val intent = Intent(this, BookReaderActivity::class.java).apply {
+                    putExtra(EXTRA_MESSAGE, selectedFile.toString())
+                }
+                startActivity(intent)
             }
-            startActivity(intent)
         }
-    }
 
 }

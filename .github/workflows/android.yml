@@ -18,6 +18,7 @@ on:
 # Where it will run
 jobs:
   build:
+    name: Build, and test Android app
     runs-on: macos-latest
     steps:
       - name: Checkout
@@ -48,8 +49,10 @@ jobs:
           name: app
           path: AndroidApp/app/build/outputs/apk/debug/app-debug.apk
   release:
+      name: Create a release
       runs-on: ubuntu-latest
-      if: startsWith(github.ref, 'refs/tags/v')
+      # if: startsWith(github.ref, 'refs/tags/v')
+      if: github.ref == 'ref/heads/master'
       steps:          
       - name: Create Release
         id: create_release
