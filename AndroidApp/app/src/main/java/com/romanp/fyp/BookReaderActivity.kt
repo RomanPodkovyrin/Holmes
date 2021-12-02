@@ -8,10 +8,8 @@ import android.webkit.WebView
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
-import com.romanp.fyp.book.Book
-import com.romanp.fyp.book.BookUtil
-import com.romanp.fyp.book.Chapter
-import com.romanp.fyp.MainActivity.Companion.EXTRA_MESSAGE
+import com.romanp.fyp.models.book.BookInfo
+import com.romanp.fyp.models.book.Chapter
 import nl.siegmann.epublib.domain.Book as EpubBook
 import nl.siegmann.epublib.epub.EpubReader
 import opennlp.tools.tokenize.SimpleTokenizer
@@ -33,33 +31,43 @@ class BookReaderActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Log.i(TAG, "Opened Book Reader Activity")
         setContentView(R.layout.activity_book_reader)
+//        val myBook: Book = intent.extras?.get(EXTRA_MESSAGE) as Book
+//        Log.i(TAG, "Output: ${intent.getStringExtra(EXTRA_MESSAGE)}")
+//        intent.extras?.getSerializable(EXTRA_MESSAGE)
 
-
-        // Get the Intent
-        val selectedFile: Uri? = Uri.parse(intent.getStringExtra(EXTRA_MESSAGE))
-
-        Log.i(TAG, "Loading book")
-        val inputStreamNameFinder: InputStream? = selectedFile?.let {
-            contentResolver.openInputStream(it)
-        }
-
-        if (inputStreamNameFinder == null) {
+        Log.i(TAG, "check : ${intent.hasExtra("Book")}")
+        val myBookInfo: BookInfo? = intent.getSerializableExtra("Book") as? BookInfo
+        if (myBookInfo == null) {
             Toast.makeText(
                 applicationContext,
                 "There was an error loading your book",
                 Toast.LENGTH_SHORT
             ).show()
-            Log.e(TAG, "There was an error while loading book $selectedFile")
             finish()
             return
         }
-        val epubReader: EpubReader = EpubReader()
-        val book: EpubBook = epubReader.readEpub(inputStreamNameFinder)
+        // Get the Intent
+//        val selectedFile: Uri? = Uri.parse(intent.getStringExtra(EXTRA_MESSAGE))
+//        var book: EpubBook
+//        try {
+//           book = loadBook(selectedFile)
+//        } catch (e: Exception){
+//            Toast.makeText(
+//                applicationContext,
+//                "There was an error loading your book",
+//                Toast.LENGTH_SHORT
+//            ).show()
+//            finish()
+//            return
+//        }
 
-        val myBook: Book = BookUtil.processEpub(book)
-        val chapters: ArrayList<Chapter> = myBook.chapters
-        bookTitle = book.title
+
+//        val myBook: Book = BookUtil.processEpub(book)
+
+        val chapters: ArrayList<Chapter> = myBookInfo.chapters
+        bookTitle = myBookInfo.title
         textView = findViewById<TextView>(R.id.textViewBookTitle).apply {
             text = bookTitle
         }
@@ -70,7 +78,7 @@ class BookReaderActivity : AppCompatActivity() {
         findViewById<Button>(R.id.buttonNext).apply {
             setOnClickListener {
                 Log.i(TAG, "Next Button pressed")
-                if (currentPage >= book.contents.size - 1) {
+                if (currentPage >= myBookInfo.chapters.size - 1) {
                     Log.i(TAG, "Max page reached")
                     return@setOnClickListener
                 }
@@ -93,7 +101,27 @@ class BookReaderActivity : AppCompatActivity() {
         }
     }
 
-    private fun updatePage(chapters: ArrayList<Chapter>, page: Int) {
+    @Throws(Exception::class)
+    fun loadBook(selectedFile: Uri?): nl.siegmann.epublib.domain.Book {
+        Log.i(TAG, "Loading book")
+//        selectedFile.e
+        val inputStreamNameFinder: InputStream? = selectedFile?.let {
+            contentResolver.openInputStream(it)
+        }
+
+        if (inputStreamNameFinder == null) {
+            Log.e(TAG, "There was an error while loading book $selectedFile")
+            finish()
+            throw Error()
+        }
+        val epubReader: EpubReader = EpubReader()
+        val book: EpubBook = epubReader.readEpub(inputStreamNameFinder)
+
+//        val myBook: Book = BookUtil.processEpub(book)
+        return book
+    }
+
+    fun updatePage(chapters: ArrayList<Chapter>, page: Int) {
         webViewBookContent?.loadData(chapters[page].text, "text/html", "UTF-8")
         textView = findViewById<TextView>(R.id.textViewBookTitle).apply {
             text = "$bookTitle | ${chapters[page].chapterTitle}"
