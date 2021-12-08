@@ -1,20 +1,21 @@
 package com.romanp.fyp.models.book
 
+import com.google.gson.annotations.SerializedName
 import com.romanp.fyp.R
 import java.io.Serializable
 
 data class Chapter (
-    val chapterTitle: String,
-    val text: String
+    @SerializedName("chapterTitle")val chapterTitle: String,
+    @SerializedName("text")val text: String
         ) : Serializable
 
 
 data class BookInfo (
-    val image: Int,
-    val title: String,
-    val author: String,
+    @SerializedName("image")val image: Int,
+    @SerializedName("title")val title: String,
+    @SerializedName("author")val author: String,
 //    val chapters: ArrayList<String>,
-    val chapters: ArrayList<Chapter>,
+    @SerializedName("chapters")val chapters: ArrayList<Chapter>,
 //    val chapters: another object consisting of chapter titles and text. What if it book doesn't have chapters
 ): Serializable {
 

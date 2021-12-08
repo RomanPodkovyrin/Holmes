@@ -8,6 +8,7 @@ import android.webkit.WebView
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
+import com.romanp.fyp.database.BookDatabaseHelper
 import com.romanp.fyp.models.book.BookInfo
 import com.romanp.fyp.models.book.Chapter
 import nl.siegmann.epublib.domain.Book as EpubBook
@@ -38,8 +39,9 @@ class BookReaderActivity : AppCompatActivity() {
 //        intent.extras?.getSerializable(EXTRA_MESSAGE)
 
         Log.i(TAG, "check : ${intent.hasExtra("Book")}")
-        val myBookInfo: BookInfo? = intent.getSerializableExtra("Book") as? BookInfo
-        if (myBookInfo == null) {
+        val bookId = intent.getLongExtra("Book",-1) //TODO: do i need this default?
+        val myBookInfo: BookInfo? = BookDatabaseHelper(applicationContext).getBook(bookId)//intent.getSerializableExtra("Book") as? BookInfo
+        if (myBookInfo == null || myBookInfo.image==-1) {
             Toast.makeText(
                 applicationContext,
                 "There was an error loading your book",

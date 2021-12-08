@@ -1,6 +1,7 @@
 package com.romanp.fyp
 
 import android.content.Intent
+import android.database.Cursor
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -11,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.romanp.fyp.adapters.CustomAdapter
+import com.romanp.fyp.database.BookDatabaseHelper
 import com.romanp.fyp.models.book.BookInfo
 import com.romanp.fyp.models.book.BookUtil
 import nl.siegmann.epublib.domain.Book as EpubBook
@@ -21,7 +23,7 @@ import java.io.InputStream
 class MainActivity : AppCompatActivity() {
     private lateinit var adapter: CustomAdapter
     // ArrayList of class ItemsViewModel
-    private val data = ArrayList<BookInfo>()
+    private val data = ArrayList<CustomAdapter.RecyclerBookInfo>()
 
     companion object {
         private const val TAG = "MainActivity"
@@ -42,12 +44,16 @@ class MainActivity : AppCompatActivity() {
 
 
 
-        // This loop will create 20 Views containing
-        // the image with the count of view
-//        for (i in 1..6) {
-//            data.add(Book(R.drawable.ic_book_24, " $i", "author", ArrayList()))
-//        }
-
+        val myDB = BookDatabaseHelper(applicationContext)
+        val cursor: Cursor? = myDB.getAllBooks()
+        if (cursor == null || cursor.count == 0){
+            //No data
+        } else {
+            while (cursor.moveToNext()){
+                println("cursor ${cursor.toString()}")
+                data.add(CustomAdapter.RecyclerBookInfo(R.drawable.ic_book_24, cursor.getString(1), cursor.getString(2), cursor.getLong(0),))
+            }
+        }
         // This will pass the ArrayList to our Adapter
         adapter = CustomAdapter(this,data)
 //        {it ->
@@ -120,11 +126,19 @@ class MainActivity : AppCompatActivity() {
                 val book = BookUtil.processEpub(loadBook(selectedFile))
                 Log.i(TAG, "hash code ${book.hashCode()}")
 
-                if (data.contains(book)) {
-                    Toast.makeText(applicationContext, "Book already loaded", Toast.LENGTH_SHORT).show()
+                //TODO: instead check with database
+//                if (data.contains(book)) {
+//                    Toast.makeText(applicationContext, "Book already loaded", Toast.LENGTH_SHORT).show()
+//                    return@registerForActivityResult
+//                }
+
+                val appDB : BookDatabaseHelper = BookDatabaseHelper(applicationContext)
+                val id = appDB.addBook(book)
+                if (id < 0) {
+                    Toast.makeText(applicationContext, "DB failed to save book", Toast.LENGTH_SHORT).show()
                     return@registerForActivityResult
                 }
-                data.add(0, book)
+                data.add(0, CustomAdapter.RecyclerBookInfo(book.image, book.author, book.title, id)) //TODO: send it name, title and ID
                 adapter.notifyItemInserted(0)
 
 

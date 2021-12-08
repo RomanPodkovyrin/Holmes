@@ -12,11 +12,12 @@ import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.romanp.fyp.BookReaderActivity
 import com.romanp.fyp.R
-import com.romanp.fyp.models.book.BookInfo
+import com.romanp.fyp.database.BookDatabaseHelper
+import java.io.Serializable
 
 class CustomAdapter(
     private val context: Context,
-    private val mList: List<BookInfo>,
+    private val mList: MutableList<RecyclerBookInfo>,
 //    private val onItemClicked: (Book) -> Unit
 ) : RecyclerView.Adapter<CustomAdapter.ViewHolder>() {
     companion object {
@@ -56,7 +57,9 @@ class CustomAdapter(
 //        }
 
         val imageView: ImageView = itemView.findViewById(R.id.imageview)
-        val textView: TextView = itemView.findViewById(R.id.textView)
+        val titleTV: TextView = itemView.findViewById(R.id.titleTV)
+        val authorTV: TextView = itemView.findViewById(R.id.authorTV)
+        val deleteView: ImageView = itemView.findViewById(R.id.deleteButton)
 //        val context = itemView.context
 
 
@@ -72,7 +75,8 @@ class CustomAdapter(
             imageView.setImageResource(itemsViewModel.image)
 
             // sets the text to the textview from our itemHolder class
-            textView.text = "${itemsViewModel.title} - ${itemsViewModel.author}"
+            titleTV.text = itemsViewModel.title
+            authorTV.text = itemsViewModel.author
             itemView.setOnClickListener {
                 Toast.makeText(context,"Clicked ${itemsViewModel.title}" , Toast.LENGTH_SHORT).show();
 
@@ -83,11 +87,24 @@ class CustomAdapter(
 //                    .apply {
 //                    putExtra(EXTRA_MESSAGE, itemsViewModel)
 //                }
-                intent.putExtra(EXTRA_MESSAGE, itemsViewModel)
+                intent.putExtra(EXTRA_MESSAGE, itemsViewModel.id)
                 context.startActivity(intent)
+            }
+
+            deleteView.setOnClickListener{
+                Toast.makeText(context,"Delete ${itemsViewModel.title}" , Toast.LENGTH_SHORT).show();
+                val myDB = BookDatabaseHelper(context)
+                myDB.deleteBook(itemsViewModel.id)
+                mList.removeAt(position)
+                notifyDataSetChanged()
             }
             //TODO No op
         }
     }
-//    interface  RecyclerViewClickListener
+    data class RecyclerBookInfo(
+        val image: Int,
+        val author: String,
+        val title: String,
+        val id: Long
+    ) : Serializable
 }
