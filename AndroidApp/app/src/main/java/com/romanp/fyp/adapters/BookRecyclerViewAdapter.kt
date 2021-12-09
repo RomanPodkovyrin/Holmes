@@ -15,11 +15,11 @@ import com.romanp.fyp.R
 import com.romanp.fyp.database.BookDatabaseHelper
 import java.io.Serializable
 
-class CustomAdapter(
+class BookRecyclerViewAdapter(
     private val context: Context,
     private val mList: MutableList<RecyclerBookInfo>,
 //    private val onItemClicked: (Book) -> Unit
-) : RecyclerView.Adapter<CustomAdapter.ViewHolder>() {
+) : RecyclerView.Adapter<BookRecyclerViewAdapter.ViewHolder>() {
     companion object {
         private const val TAG = "CustomAdapter"
     }

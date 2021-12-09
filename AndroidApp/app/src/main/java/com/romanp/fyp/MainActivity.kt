@@ -9,21 +9,28 @@ import android.widget.Button
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.romanp.fyp.adapters.CustomAdapter
+import com.romanp.fyp.adapters.BookRecyclerViewAdapter
 import com.romanp.fyp.database.BookDatabaseHelper
 import com.romanp.fyp.models.book.BookInfo
 import com.romanp.fyp.models.book.BookUtil
+import com.romanp.fyp.viewmodels.MainActivityViewModel
+import com.romanp.fyp.viewmodels.MainViewModelFactory
 import nl.siegmann.epublib.domain.Book as EpubBook
 import nl.siegmann.epublib.epub.EpubReader
 import java.io.InputStream
 
 
 class MainActivity : AppCompatActivity() {
-    private lateinit var adapter: CustomAdapter
+    private lateinit var adapter: BookRecyclerViewAdapter
     // ArrayList of class ItemsViewModel
-    private val data = ArrayList<CustomAdapter.RecyclerBookInfo>()
+    private val data = ArrayList<BookRecyclerViewAdapter.RecyclerBookInfo>()
+
+    private lateinit var viewModel: MainActivityViewModel;
+    private lateinit var recyclerview: RecyclerView
 
     companion object {
         private const val TAG = "MainActivity"
@@ -34,37 +41,14 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-        // recycler view
         // getting the recyclerview by its id
-        val recyclerview = findViewById<RecyclerView>(R.id.recyclerViewBooks)
-
-        // this creates a vertical layout Manager
-        recyclerview.layoutManager = LinearLayoutManager(this)
+        recyclerview= findViewById<RecyclerView>(R.id.recyclerViewBooks)
 
 
+        // view model
+        initialiseViewModel()
 
-        val myDB = BookDatabaseHelper(applicationContext)
-        val cursor: Cursor? = myDB.getAllBooks()
-        if (cursor == null || cursor.count == 0){
-            //No data
-        } else {
-            while (cursor.moveToNext()){
-                println("cursor ${cursor.toString()}")
-                data.add(CustomAdapter.RecyclerBookInfo(R.drawable.ic_book_24, cursor.getString(1), cursor.getString(2), cursor.getLong(0),))
-            }
-        }
-        // This will pass the ArrayList to our Adapter
-        adapter = CustomAdapter(this,data)
-//        {it ->
-//            Log.i("", "Clicked ${it.title}")
-//        }
-
-        // Setting the Adapter with the recyclerview
-        recyclerview.adapter = adapter
-        adapter.notifyDataSetChanged()
-
-        /// recycler view end
+        initialiseAdapter()
 
 
         // Finding layout views by id
@@ -110,6 +94,60 @@ class MainActivity : AppCompatActivity() {
 //        }
     }
 
+    private fun initialiseViewModel() {
+        val factory = MainViewModelFactory()
+        viewModel = ViewModelProvider(this, factory).get(MainActivityViewModel::class.java)
+
+        viewModel.getBooks().observe(this, Observer {
+            // Triggers when it's changed
+            adapter.notifyDataSetChanged()
+    //            Log.i("data",it.toString())
+    //            mainrecycler.adapter= NoteRecyclerAdapter(viewModel, it, this)
+
+        })
+    }
+
+    private fun initialiseAdapter() {
+
+
+        getBookData()
+        // This will pass the ArrayList to our Adapter
+        println(viewModel.getBooks())
+        println(viewModel.getBooks().value)
+        if (viewModel.getBooks().value != null) {
+            adapter = BookRecyclerViewAdapter(this, viewModel.getBooks().value!!)
+        }
+//        adapter = BookRecyclerViewAdapter(this, data)
+        // this creates a vertical layout Manager
+        recyclerview.layoutManager = LinearLayoutManager(this)
+        // Setting the Adapter with the recyclerview
+        recyclerview.adapter = adapter
+        adapter.notifyDataSetChanged()
+
+        /// recycler view end
+    }
+
+    private fun getBookData() {
+        // TODO: repeat in BookInfoRepository remove
+        val myDB = BookDatabaseHelper(applicationContext)
+        val cursor: Cursor? = myDB.getAllBooks()
+        if (cursor == null || cursor.count == 0) {
+            //No data
+        } else {
+            while (cursor.moveToNext()) {
+                println("cursor ${cursor.toString()}")
+                data.add(
+                    BookRecyclerViewAdapter.RecyclerBookInfo(
+                        R.drawable.ic_book_24,
+                        cursor.getString(1),
+                        cursor.getString(2),
+                        cursor.getLong(0),
+                    )
+                )
+            }
+        }
+    }
+
     private var resultLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode != RESULT_OK || result.data == null) {
@@ -138,7 +176,7 @@ class MainActivity : AppCompatActivity() {
                     Toast.makeText(applicationContext, "DB failed to save book", Toast.LENGTH_SHORT).show()
                     return@registerForActivityResult
                 }
-                data.add(0, CustomAdapter.RecyclerBookInfo(book.image, book.author, book.title, id)) //TODO: send it name, title and ID
+                data.add(0, BookRecyclerViewAdapter.RecyclerBookInfo(book.image, book.author, book.title, id)) //TODO: send it name, title and ID
                 adapter.notifyItemInserted(0)
 
 
