@@ -1,7 +1,6 @@
 package com.romanp.fyp
 
 import android.content.Intent
-import android.database.Cursor
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -14,11 +13,9 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.romanp.fyp.adapters.BookRecyclerViewAdapter
-import com.romanp.fyp.database.BookDatabaseHelper
-import com.romanp.fyp.models.book.BookInfo
 import com.romanp.fyp.models.book.BookUtil
+import com.romanp.fyp.utils.InjectorUtils
 import com.romanp.fyp.viewmodels.MainActivityViewModel
-import com.romanp.fyp.viewmodels.MainViewModelFactory
 import nl.siegmann.epublib.domain.Book as EpubBook
 import nl.siegmann.epublib.epub.EpubReader
 import java.io.InputStream
@@ -47,14 +44,10 @@ class MainActivity : AppCompatActivity() {
 
         // view model
         initialiseViewModel()
-
-        initialiseAdapter()
+        initialiseRecyclerViewAdapter()
 
 
         // Finding layout views by id
-//        val editText = findViewById<EditText>(R.id.editTextForNER)
-//        val textOutPut = findViewById<TextView>(R.id.textViewExtractedNames)
-//        val buttonExtract = findViewById<Button>(R.id.buttonExtractNames)
         val buttonLoadBook = findViewById<Button>(R.id.loadBookButton)
         val buttonGraph = findViewById<Button>(R.id.getGraph)
 
@@ -65,7 +58,6 @@ class MainActivity : AppCompatActivity() {
 
 
         buttonLoadBook.setOnClickListener {
-
             val intent = Intent()
                 .setType("application/epub+zip")
                 .setAction(Intent.ACTION_GET_CONTENT)
@@ -73,79 +65,43 @@ class MainActivity : AppCompatActivity() {
             resultLauncher.launch(Intent.createChooser(intent, "Select a file"))
         }
 
-//        buttonExtract.setOnClickListener {
-//            Log.i(TAG, "Extract Button clicked")
-//            Log.i(TAG, editText.text.toString())
-//
-//            try {
-//                Thread {
-////                    CoreNLP_API.pingServer(applicationContext, textOutPut)
-//                    CoreNlpAPI.nerTagger(applicationContext, editText.text.toString(), textOutPut)
-//                }.start()
-//
-//            } catch (e: Exception) {
-//                Log.e(TAG, "Error extracting names: $e")
-//                Toast.makeText(
-//                    applicationContext,
-//                    getString(R.string.error_extracting_names),
-//                    Toast.LENGTH_SHORT
-//                ).show()
-//            }
-//        }
     }
 
     private fun initialiseViewModel() {
-        val factory = MainViewModelFactory()
+        val factory = InjectorUtils.provideMainActivityViewModelFactory(application)
         viewModel = ViewModelProvider(this, factory).get(MainActivityViewModel::class.java)
-
+//        viewModel.init()
         viewModel.getBooks().observe(this, Observer {
             // Triggers when it's changed
+
+//            recyclerview.adapter?.notifyDataSetChanged()
             adapter.notifyDataSetChanged()
-    //            Log.i("data",it.toString())
-    //            mainrecycler.adapter= NoteRecyclerAdapter(viewModel, it, this)
+            //
+            Log.i(TAG, "Observer called it ${it as MutableList<BookRecyclerViewAdapter.RecyclerBookInfo>}")
+//            adapter.updateBookList(it as MutableList<BookRecyclerViewAdapter.RecyclerBookInfo>)
 
         })
     }
 
-    private fun initialiseAdapter() {
+    private fun initialiseRecyclerViewAdapter() {
 
 
-        getBookData()
+//        getBookData()
         // This will pass the ArrayList to our Adapter
-        println(viewModel.getBooks())
-        println(viewModel.getBooks().value)
-        if (viewModel.getBooks().value != null) {
-            adapter = BookRecyclerViewAdapter(this, viewModel.getBooks().value!!)
-        }
+        println("books ${viewModel.getBooks()}")
+        println("value ${viewModel.getBooks().value!!.size } ${viewModel.getBooks().value}")
+//        if (viewModel.getBooks().value != null) {
+        adapter = BookRecyclerViewAdapter(this, viewModel.getBooks().value!!)
+//        }
 //        adapter = BookRecyclerViewAdapter(this, data)
         // this creates a vertical layout Manager
         recyclerview.layoutManager = LinearLayoutManager(this)
         // Setting the Adapter with the recyclerview
+        print("adapter $adapter")
         recyclerview.adapter = adapter
-        adapter.notifyDataSetChanged()
+//        adapter.notifyDataSetChanged()
 
         /// recycler view end
-    }
-
-    private fun getBookData() {
-        // TODO: repeat in BookInfoRepository remove
-        val myDB = BookDatabaseHelper(applicationContext)
-        val cursor: Cursor? = myDB.getAllBooks()
-        if (cursor == null || cursor.count == 0) {
-            //No data
-        } else {
-            while (cursor.moveToNext()) {
-                println("cursor ${cursor.toString()}")
-                data.add(
-                    BookRecyclerViewAdapter.RecyclerBookInfo(
-                        R.drawable.ic_book_24,
-                        cursor.getString(1),
-                        cursor.getString(2),
-                        cursor.getLong(0),
-                    )
-                )
-            }
-        }
     }
 
     private var resultLauncher =
@@ -170,26 +126,28 @@ class MainActivity : AppCompatActivity() {
 //                    return@registerForActivityResult
 //                }
 
-                val appDB : BookDatabaseHelper = BookDatabaseHelper(applicationContext)
-                val id = appDB.addBook(book)
+//                val appDB : BookDatabaseHelper = BookDatabaseHelper(applicationContext)
+                val id = viewModel.addBook(book)
                 if (id < 0) {
                     Toast.makeText(applicationContext, "DB failed to save book", Toast.LENGTH_SHORT).show()
                     return@registerForActivityResult
                 }
-                data.add(0, BookRecyclerViewAdapter.RecyclerBookInfo(book.image, book.author, book.title, id)) //TODO: send it name, title and ID
-                adapter.notifyItemInserted(0)
+
+//                data.add(0, BookRecyclerViewAdapter.RecyclerBookInfo(book.image, book.author, book.title, id)) //TODO: send it name, title and ID
+//                adapter.notifyItemInserted(0)
+                adapter.notifyDataSetChanged()
 
 
 //                switchToBookActivity(book)
             }
         }
 
-    fun switchToBookActivity(bookInfo: BookInfo) {
-        val intent = Intent(this, BookReaderActivity::class.java).apply {
-            putExtra(EXTRA_MESSAGE, bookInfo)
-        }
-        startActivity(intent)
-    }
+//    fun switchToBookActivity(bookInfo: BookInfo) {
+//        val intent = Intent(this, BookReaderActivity::class.java).apply {
+//            putExtra(EXTRA_MESSAGE, bookInfo)
+//        }
+//        startActivity(intent)
+//    }
 
     //TODO: temp for testing duplicate from BookReaderActivity
     @Throws(Exception::class)
@@ -211,5 +169,25 @@ class MainActivity : AppCompatActivity() {
 //        val myBook: Book = BookUtil.processEpub(book)
         return book
     }
+
+//    buttonExtract.setOnClickListener {
+//            Log.i(TAG, "Extract Button clicked")
+//            Log.i(TAG, editText.text.toString())
+//
+//            try {
+//                Thread {
+////                    CoreNLP_API.pingServer(applicationContext, textOutPut)
+//                    CoreNlpAPI.nerTagger(applicationContext, editText.text.toString(), textOutPut)
+//                }.start()
+//
+//            } catch (e: Exception) {
+//                Log.e(TAG, "Error extracting names: $e")
+//                Toast.makeText(
+//                    applicationContext,
+//                    getString(R.string.error_extracting_names),
+//                    Toast.LENGTH_SHORT
+//                ).show()
+//            }
+//        }
 
 }

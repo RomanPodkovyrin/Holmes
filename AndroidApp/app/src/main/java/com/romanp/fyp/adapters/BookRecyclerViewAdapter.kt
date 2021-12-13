@@ -43,6 +43,14 @@ class BookRecyclerViewAdapter(
     override fun getItemCount(): Int {
         return mList.size
     }
+//    fun updateBookList(books:MutableList<RecyclerBookInfo>) {
+//        Log.i(TAG, "mlist $mList \nbooks $books")
+////        mList.clear()
+//        Log.i(TAG, "mlist $mList \nbooks $books")
+//        mList.addAll(books)
+//        Log.i(TAG, "mlist $mList \nbooks $books")
+//        notifyDataSetChanged()
+//    }
 
     // Holds the views for adding it to image and text
     inner class ViewHolder(
@@ -101,6 +109,7 @@ class BookRecyclerViewAdapter(
             //TODO No op
         }
     }
+
     data class RecyclerBookInfo(
         val image: Int,
         val author: String,

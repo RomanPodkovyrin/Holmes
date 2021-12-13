@@ -2,37 +2,48 @@ package com.romanp.fyp.repositories
 
 import android.content.Context
 import android.database.Cursor
+import android.widget.Toast
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.romanp.fyp.R
 import com.romanp.fyp.adapters.BookRecyclerViewAdapter
 import com.romanp.fyp.database.BookDatabaseHelper
+import com.romanp.fyp.models.book.BookInfo
 
 /**
  * Singleton pattern
  */
 class BookInfoRepository {
     companion object {
-        private lateinit var instance: BookInfoRepository
+        @Volatile
+        private var instance: BookInfoRepository? = null
         private var dataSet: ArrayList<BookRecyclerViewAdapter.RecyclerBookInfo> = ArrayList()
 
-        fun getInstance() :BookInfoRepository{
-            if (instance == null){
-                instance = BookInfoRepository()
-            }
-            return instance
+        fun getInstance() :BookInfoRepository = instance ?: synchronized(this) {
+            instance ?: BookInfoRepository().also { instance = it }
+
         }
 
     }
 
-    fun getBookInfo(context: Context) : MutableLiveData<MutableList<BookRecyclerViewAdapter.RecyclerBookInfo>>{
-        setBookInfo(context)
+    fun getBookInfo(context: Context): MutableLiveData<MutableList<BookRecyclerViewAdapter.RecyclerBookInfo>> {
+        refreshBookInfo(context)
 
         val data = MutableLiveData<MutableList<BookRecyclerViewAdapter.RecyclerBookInfo>>()
         data.value = dataSet
+        println("dataset in repository $dataSet")
         return data
     }
 
-    private fun setBookInfo(context: Context) {
+    //TODO: implement
+    fun addBookInfo(context: Context, book: BookInfo): Long {
+        val appDB : BookDatabaseHelper = BookDatabaseHelper(context )
+        val id = appDB.addBook(book)
+        return id
+    }
+
+    private fun refreshBookInfo(context: Context) {
+        dataSet.clear()
         // Get data from the database
         // TODO: repeat in main remove
         val myDB = BookDatabaseHelper(context)
