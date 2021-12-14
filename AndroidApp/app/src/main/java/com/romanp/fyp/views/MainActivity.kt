@@ -12,7 +12,6 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.romanp.fyp.BookGraph
 import com.romanp.fyp.R
 import com.romanp.fyp.adapters.BookRecyclerViewAdapter
 import com.romanp.fyp.models.book.BookUtil
