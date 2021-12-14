@@ -2,8 +2,6 @@ package com.romanp.fyp.repositories
 
 import android.content.Context
 import android.database.Cursor
-import android.widget.Toast
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.romanp.fyp.R
 import com.romanp.fyp.adapters.BookRecyclerViewAdapter
@@ -38,8 +36,7 @@ class BookInfoRepository {
     //TODO: implement
     fun addBookInfo(context: Context, book: BookInfo): Long {
         val appDB: BookDatabaseHelper = BookDatabaseHelper(context)
-        val id = appDB.addBook(book)
-        return id
+        return appDB.addBook(book)
     }
 
     fun refreshBookInfo(context: Context) {
@@ -52,7 +49,6 @@ class BookInfoRepository {
             //No data
         } else {
             while (cursor.moveToNext()) {
-                println("cursor ${cursor.toString()}")
                 dataSet.add(
                     BookRecyclerViewAdapter.RecyclerBookInfo(
                         R.drawable.ic_book_24,

@@ -134,7 +134,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         if (inputStreamNameFinder == null) {
-//            Log.e(BookReaderActivity.TAG, "There was an error while loading book $selectedFile")
+            Log.e(BookReaderActivity.TAG, "There was an error while loading book $selectedFile")
             finish()
             throw Error()
         }
