@@ -10,7 +10,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
-import com.romanp.fyp.BookReaderActivity
+import com.romanp.fyp.views.BookReaderActivity
 import com.romanp.fyp.R
 import com.romanp.fyp.database.BookDatabaseHelper
 import java.io.Serializable

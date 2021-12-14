@@ -1,10 +1,11 @@
-package com.romanp.fyp
+package com.romanp.fyp.views
 
 import android.os.Bundle
 import android.webkit.WebChromeClient
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.appcompat.app.AppCompatActivity
+import com.romanp.fyp.R
 
 
 class BookGraph : AppCompatActivity() {

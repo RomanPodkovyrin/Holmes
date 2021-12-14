@@ -1,4 +1,4 @@
-package com.romanp.fyp
+package com.romanp.fyp.views
 
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
@@ -8,6 +8,7 @@ import android.webkit.WebView
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
+import com.romanp.fyp.R
 import com.romanp.fyp.database.BookDatabaseHelper
 import com.romanp.fyp.models.book.BookInfo
 import com.romanp.fyp.models.book.Chapter

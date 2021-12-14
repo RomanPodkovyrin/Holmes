@@ -42,7 +42,7 @@ class BookInfoRepository {
         return id
     }
 
-    private fun refreshBookInfo(context: Context) {
+    fun refreshBookInfo(context: Context) {
         dataSet.clear()
         // Get data from the database
         // TODO: repeat in main remove
