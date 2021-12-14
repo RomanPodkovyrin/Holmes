@@ -1,6 +1,7 @@
 package com.romanp.fyp
 
 
+import androidx.lifecycle.Lifecycle
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.withId
@@ -14,12 +15,13 @@ import org.junit.runner.RunWith
 
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.romanp.fyp.views.MainActivity
 
 @RunWith(AndroidJUnit4::class)
 @LargeTest
 class MainActivityTest {
 
-    private lateinit var stringToBetyped: String
+    private lateinit var buttonText: String
 
     @get:Rule
     var activityRule: ActivityScenarioRule<MainActivity>
@@ -28,13 +30,12 @@ class MainActivityTest {
     @Before
     fun initValidString() {
         // Specify a valid string.
-        stringToBetyped = "No book loaded"
+        buttonText = "Load Book"
     }
 
     @Test
     fun changeText_sameActivity() {
-        // Check that the text was changed.
-        onView(withId(R.id.book_title))
-            .check(matches(withText(stringToBetyped)))
+        onView(withId(R.id.loadBookButton))
+            .check(matches(withText(buttonText)))
     }
 }

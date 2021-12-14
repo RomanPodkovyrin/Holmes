@@ -1,4 +1,4 @@
-package com.romanp.fyp
+package com.romanp.fyp.views
 
 import android.content.Intent
 import android.net.Uri
@@ -12,12 +12,15 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.romanp.fyp.BookGraph
+import com.romanp.fyp.R
 import com.romanp.fyp.adapters.BookRecyclerViewAdapter
 import com.romanp.fyp.models.book.BookUtil
 import com.romanp.fyp.utils.InjectorUtils
 import com.romanp.fyp.viewmodels.MainActivityViewModel
 import nl.siegmann.epublib.domain.Book as EpubBook
 import nl.siegmann.epublib.epub.EpubReader
+import org.jetbrains.annotations.TestOnly
 import java.io.InputStream
 
 
@@ -189,5 +192,10 @@ class MainActivity : AppCompatActivity() {
 //                ).show()
 //            }
 //        }
+
+    @TestOnly
+    fun setTestViewModel(testViewModel: MainActivityViewModel) {
+        viewModel = testViewModel
+    }
 
 }
