@@ -35,14 +35,12 @@ class BookReaderActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         Log.i(TAG, "Opened Book Reader Activity")
         setContentView(R.layout.activity_book_reader)
-//        val myBook: Book = intent.extras?.get(EXTRA_MESSAGE) as Book
-//        Log.i(TAG, "Output: ${intent.getStringExtra(EXTRA_MESSAGE)}")
-//        intent.extras?.getSerializable(EXTRA_MESSAGE)
 
         Log.i(TAG, "check : ${intent.hasExtra("Book")}")
-        val bookId = intent.getLongExtra("Book",-1) //TODO: do i need this default?
-        val myBookInfo: BookInfo? = BookDatabaseHelper(applicationContext).getBook(bookId)//intent.getSerializableExtra("Book") as? BookInfo
-        if (myBookInfo == null || myBookInfo.image==-1) {
+        val bookId = intent.getLongExtra("Book", -1) //TODO: do i need this default?
+        val myBookInfo: BookInfo? =
+            BookDatabaseHelper(applicationContext).getBook(bookId)//intent.getSerializableExtra("Book") as? BookInfo
+        if (myBookInfo == null || myBookInfo.image == -1) {
             Toast.makeText(
                 applicationContext,
                 "There was an error loading your book",
@@ -51,23 +49,6 @@ class BookReaderActivity : AppCompatActivity() {
             finish()
             return
         }
-        // Get the Intent
-//        val selectedFile: Uri? = Uri.parse(intent.getStringExtra(EXTRA_MESSAGE))
-//        var book: EpubBook
-//        try {
-//           book = loadBook(selectedFile)
-//        } catch (e: Exception){
-//            Toast.makeText(
-//                applicationContext,
-//                "There was an error loading your book",
-//                Toast.LENGTH_SHORT
-//            ).show()
-//            finish()
-//            return
-//        }
-
-
-//        val myBook: Book = BookUtil.processEpub(book)
 
         val chapters: ArrayList<Chapter> = myBookInfo.chapters
         bookTitle = myBookInfo.title
@@ -107,7 +88,7 @@ class BookReaderActivity : AppCompatActivity() {
     @Throws(Exception::class)
     fun loadBook(selectedFile: Uri?): nl.siegmann.epublib.domain.Book {
         Log.i(TAG, "Loading book")
-//        selectedFile.e
+
         val inputStreamNameFinder: InputStream? = selectedFile?.let {
             contentResolver.openInputStream(it)
         }
@@ -120,7 +101,6 @@ class BookReaderActivity : AppCompatActivity() {
         val epubReader: EpubReader = EpubReader()
         val book: EpubBook = epubReader.readEpub(inputStreamNameFinder)
 
-//        val myBook: Book = BookUtil.processEpub(book)
         return book
     }
 

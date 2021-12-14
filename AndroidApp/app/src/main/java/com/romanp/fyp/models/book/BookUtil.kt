@@ -33,7 +33,6 @@ class BookUtil {
                         val text = Jsoup.parse(text).text()
                         if (text.isNotEmpty()) {
                             parts.add(text)
-//                            println("content \"${text}\"")
                         }
 
                     }

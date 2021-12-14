@@ -17,8 +17,7 @@ import java.io.Serializable
 
 class BookRecyclerViewAdapter(
     private val context: Context,
-    private val mList: MutableList<RecyclerBookInfo>,
-//    private val onItemClicked: (Book) -> Unit
+    private val mList: MutableList<RecyclerBookInfo>
 ) : RecyclerView.Adapter<BookRecyclerViewAdapter.ViewHolder>() {
     companion object {
         private const val TAG = "CustomAdapter"
@@ -43,37 +42,18 @@ class BookRecyclerViewAdapter(
     override fun getItemCount(): Int {
         return mList.size
     }
-//    fun updateBookList(books:MutableList<RecyclerBookInfo>) {
-//        Log.i(TAG, "mlist $mList \nbooks $books")
-////        mList.clear()
-//        Log.i(TAG, "mlist $mList \nbooks $books")
-//        mList.addAll(books)
-//        Log.i(TAG, "mlist $mList \nbooks $books")
-//        notifyDataSetChanged()
-//    }
 
     // Holds the views for adding it to image and text
     inner class ViewHolder(
-        ItemView: View,
-//        onItemClicked: (Int) -> Unit
+        ItemView: View
     ) : RecyclerView.ViewHolder(ItemView) {
 
-//        init {
-//            itemView.setOnClickListener {
-//                onItemClicked(adapterPosition)
-//            }
-//        }
 
         val imageView: ImageView = itemView.findViewById(R.id.imageview)
         val titleTV: TextView = itemView.findViewById(R.id.titleTV)
         val authorTV: TextView = itemView.findViewById(R.id.authorTV)
         val deleteView: ImageView = itemView.findViewById(R.id.deleteButton)
-//        val context = itemView.context
 
-
-//        fun onClick(v: View?) {
-//            Toast.makeText(context, "The Item Clicked is: $position", Toast.LENGTH_SHORT).show()
-//        }
 
         fun bind(position: Int) {
 
@@ -86,27 +66,25 @@ class BookRecyclerViewAdapter(
             titleTV.text = itemsViewModel.title
             authorTV.text = itemsViewModel.author
             itemView.setOnClickListener {
-                Toast.makeText(context,"Clicked ${itemsViewModel.title}" , Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "Clicked ${itemsViewModel.title}", Toast.LENGTH_SHORT)
+                    .show();
 
                 Log.i(TAG, "Clicked ${itemsViewModel.title}")
                 val EXTRA_MESSAGE = "Book"
                 Log.i(TAG, " object $itemsViewModel")
                 val intent = Intent(context, BookReaderActivity::class.java)
-//                    .apply {
-//                    putExtra(EXTRA_MESSAGE, itemsViewModel)
-//                }
                 intent.putExtra(EXTRA_MESSAGE, itemsViewModel.id)
                 context.startActivity(intent)
             }
 
-            deleteView.setOnClickListener{
-                Toast.makeText(context,"Delete ${itemsViewModel.title}" , Toast.LENGTH_SHORT).show();
+            deleteView.setOnClickListener {
+                Toast.makeText(context, "Delete ${itemsViewModel.title}", Toast.LENGTH_SHORT)
+                    .show();
                 val myDB = BookDatabaseHelper(context)
                 myDB.deleteBook(itemsViewModel.id)
                 mList.removeAt(position)
                 notifyDataSetChanged()
             }
-            //TODO No op
         }
     }
 

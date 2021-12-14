@@ -9,7 +9,7 @@ import com.romanp.fyp.viewmodels.MainViewModelFactory
  */
 object InjectorUtils {
 
-    fun provideMainActivityViewModelFactory(application: Application): MainViewModelFactory{
+    fun provideMainActivityViewModelFactory(application: Application): MainViewModelFactory {
         //TODO: try to remove the use application
         return MainViewModelFactory(application, BookInfoRepository.getInstance())
     }

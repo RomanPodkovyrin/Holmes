@@ -19,7 +19,7 @@ class BookInfoRepository {
         private var instance: BookInfoRepository? = null
         private var dataSet: ArrayList<BookRecyclerViewAdapter.RecyclerBookInfo> = ArrayList()
 
-        fun getInstance() :BookInfoRepository = instance ?: synchronized(this) {
+        fun getInstance(): BookInfoRepository = instance ?: synchronized(this) {
             instance ?: BookInfoRepository().also { instance = it }
 
         }
@@ -37,7 +37,7 @@ class BookInfoRepository {
 
     //TODO: implement
     fun addBookInfo(context: Context, book: BookInfo): Long {
-        val appDB : BookDatabaseHelper = BookDatabaseHelper(context )
+        val appDB: BookDatabaseHelper = BookDatabaseHelper(context)
         val id = appDB.addBook(book)
         return id
     }
