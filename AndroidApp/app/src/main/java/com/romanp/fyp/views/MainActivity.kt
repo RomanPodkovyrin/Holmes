@@ -1,7 +1,6 @@
 package com.romanp.fyp.views
 
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
@@ -14,13 +13,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.romanp.fyp.R
 import com.romanp.fyp.adapters.BookRecyclerViewAdapter
-import com.romanp.fyp.models.book.BookUtil
 import com.romanp.fyp.utils.InjectorUtils
 import com.romanp.fyp.viewmodels.MainActivityViewModel
-import nl.siegmann.epublib.domain.Book as EpubBook
-import nl.siegmann.epublib.epub.EpubReader
 import org.jetbrains.annotations.TestOnly
-import java.io.InputStream
 
 
 class MainActivity : AppCompatActivity() {
@@ -110,10 +105,8 @@ class MainActivity : AppCompatActivity() {
                 Log.i(TAG, "File selected $selectedFile")//The uri with the location of the file
                 Log.i(TAG, "Loading book")
 
-                val book = BookUtil.processEpub(loadBook(selectedFile))
-                Log.i(TAG, "hash code ${book.hashCode()}")
 
-                val id = viewModel.addBook(book)
+                val id = viewModel.addBook(selectedFile)
                 if (id < 0) {
                     Toast.makeText(applicationContext, "DB failed to save book", Toast.LENGTH_SHORT)
                         .show()
@@ -125,24 +118,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-    // TODO: temp for testing duplicate from BookReaderActivity
-    @Throws(Exception::class)
-    fun loadBook(selectedFile: Uri?): nl.siegmann.epublib.domain.Book {
-//        Log.i(BookReaderActivity.TAG, "Loading book")
-        val inputStreamNameFinder: InputStream? = selectedFile?.let {
-            contentResolver.openInputStream(it)
-        }
 
-        if (inputStreamNameFinder == null) {
-            Log.e(BookReaderActivity.TAG, "There was an error while loading book $selectedFile")
-            finish()
-            throw Error()
-        }
-        val epubReader: EpubReader = EpubReader()
-        val book: EpubBook = epubReader.readEpub(inputStreamNameFinder)
-
-        return book
-    }
 
 //    buttonExtract.setOnClickListener {
 //            Log.i(TAG, "Extract Button clicked")

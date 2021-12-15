@@ -85,25 +85,6 @@ class BookReaderActivity : AppCompatActivity() {
         }
     }
 
-    @Throws(Exception::class)
-    fun loadBook(selectedFile: Uri?): nl.siegmann.epublib.domain.Book {
-        Log.i(TAG, "Loading book")
-
-        val inputStreamNameFinder: InputStream? = selectedFile?.let {
-            contentResolver.openInputStream(it)
-        }
-
-        if (inputStreamNameFinder == null) {
-            Log.e(TAG, "There was an error while loading book $selectedFile")
-            finish()
-            throw Error()
-        }
-        val epubReader: EpubReader = EpubReader()
-        val book: EpubBook = epubReader.readEpub(inputStreamNameFinder)
-
-        return book
-    }
-
     fun updatePage(chapters: ArrayList<Chapter>, page: Int) {
         webViewBookContent?.loadData(chapters[page].text, "text/html", "UTF-8")
         textView = findViewById<TextView>(R.id.textViewBookTitle).apply {

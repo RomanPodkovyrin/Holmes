@@ -1,12 +1,33 @@
 package com.romanp.fyp.models.book
 
+import android.content.Context
+import android.net.Uri
+import android.util.Log
 import com.romanp.fyp.R
+import nl.siegmann.epublib.epub.EpubReader
 import nl.siegmann.epublib.domain.Book as EpubBook
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
+import java.io.InputStream
 
 class BookUtil {
     companion object {
+        private const val TAG = "BookUtil"
+
+        fun loadBook(context: Context, selectedFile: Uri?): BookInfo {
+            val inputStreamNameFinder: InputStream? = selectedFile?.let {
+                context.contentResolver.openInputStream(it)
+            }
+
+            if (inputStreamNameFinder == null) {
+                Log.e(TAG, "There was an error while loading book $selectedFile")
+                throw Error()
+            }
+            val epubReader: EpubReader = EpubReader()
+            val book: nl.siegmann.epublib.domain.Book = epubReader.readEpub(inputStreamNameFinder)
+            return processEpub(book)
+        }
+
         fun processEpub(book: EpubBook): BookInfo {
             val title = book.title
             val author = book.metadata.authors.toString()

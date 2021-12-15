@@ -1,18 +1,22 @@
 package com.romanp.fyp.viewmodels
 
 import android.app.Application
+import android.net.Uri
 import androidx.lifecycle.*
-import com.romanp.fyp.R
 import com.romanp.fyp.adapters.BookRecyclerViewAdapter
 import com.romanp.fyp.models.book.BookInfo
 import com.romanp.fyp.repositories.BookInfoRepository
-import android.os.AsyncTask
+import com.romanp.fyp.models.book.BookUtil.Companion.loadBook
 
 
 class MainActivityViewModel(
     application: Application,
     private val repository: BookInfoRepository
 ) : AndroidViewModel(application) {
+
+    companion object{
+        private const val TAG = "MainActivityViewModel"
+    }
 
     //TODO: should it be MutableList or List
     var books: MutableLiveData<MutableList<BookRecyclerViewAdapter.RecyclerBookInfo>> =
@@ -31,7 +35,9 @@ class MainActivityViewModel(
         return repository.getBookInfo(getApplication())
     }
 
-    fun addBook(book: BookInfo): Long {
+    fun addBook(selectedFile: Uri?): Long {
+        val book = loadSelectedBook( selectedFile)
+
         // TODO check the id
         val id = repository.addBookInfo(getApplication(), book)
 
@@ -40,6 +46,13 @@ class MainActivityViewModel(
 
         return id
     }
+
+    fun loadSelectedBook(selectedFile: Uri?): BookInfo {
+       return loadBook(getApplication(), selectedFile)
+    }
+
+
+
 }
 
 class MainViewModelFactory(
