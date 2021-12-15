@@ -1,7 +1,5 @@
 package com.romanp.fyp.utils
 
-import androidx.lifecycle.ViewModelProvider
-import com.romanp.fyp.viewmodels.MainActivityViewModel
 import org.junit.Assert.assertNotNull
 import org.junit.Test
 import org.junit.runner.RunWith
