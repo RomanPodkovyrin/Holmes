@@ -19,7 +19,6 @@ class MainActivityViewModel(
         private const val TAG = "MainActivityViewModel"
     }
 
-    //TODO: should it be MutableList or List
     var books: MutableLiveData<MutableList<BookRecyclerViewAdapter.RecyclerBookInfo>> =
         MutableLiveData()
 
@@ -48,7 +47,6 @@ class MainActivityViewModel(
         }
 
 
-        // TODO check the id
         val id = repository.addBookInfo(getApplication(), book)
 
         if (id < 0) Log.e(TAG, "Error while saving book '${book.title}' to database")
