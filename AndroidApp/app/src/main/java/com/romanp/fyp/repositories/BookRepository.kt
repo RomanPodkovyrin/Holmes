@@ -42,7 +42,6 @@ class BookRepository {
 
         val data = MutableLiveData<MutableList<BookRecyclerViewAdapter.RecyclerBookInfo>>()
         data.value = dataSet
-        println("dataset in repository $dataSet")
         return data
     }
 

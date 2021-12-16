@@ -9,6 +9,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.romanp.fyp.R
+import com.romanp.fyp.adapters.BookRecyclerViewAdapter
 import com.romanp.fyp.models.book.AlreadyOnTheFirstPageException
 import com.romanp.fyp.models.book.BookInfo
 import com.romanp.fyp.models.book.Chapter
@@ -33,7 +34,7 @@ class BookReaderActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val bookId = intent.getLongExtra("Book", -1) //TODO: do i need this default?
+        val bookId = intent.getLongExtra(BookRecyclerViewAdapter.EXTRA_MESSAGE, -1) //TODO: do i need this default?
         initialiseViewModel(bookId)
 
         Log.i(TAG, "Opened Book Reader Activity")

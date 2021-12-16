@@ -6,7 +6,6 @@ import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import android.util.Log
-import android.widget.Toast
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.romanp.fyp.models.book.BookInfo
@@ -21,14 +20,14 @@ class BookDatabaseHelper(
     companion object {
         val gson = Gson()
         private const val TAG = "BookDatabaseHelper"
-        private val DATABASE_VERSION = 1
-        private val DATABASE_NAME = "BookLibrary.db"
-        private val TABLE_NAME = "book_library"
-        private val COL_ID = "id"
-        private val COL_AUTHOR = "author"
-        private val COL_TITLE = "title"
-        private val COL_DATA = "data"
-        private val COL_IMAGE = "image"
+        private const val DATABASE_VERSION = 1
+        private const val DATABASE_NAME = "BookLibrary.db"
+        private const val TABLE_NAME = "book_library"
+        private const val COL_ID = "id"
+        private const val COL_AUTHOR = "author"
+        private const val COL_TITLE = "title"
+        private const val COL_DATA = "data"
+//        private const val COL_IMAGE = "image"
     }
 
     override fun onCreate(db: SQLiteDatabase?) {
@@ -81,7 +80,6 @@ class BookDatabaseHelper(
         //2nd argument is String containing nullColumnHack
         if (success < 0) {
             Log.i(TAG, "Failed to add '${book.title}' to the db")
-            Toast.makeText(context, "Failed db", Toast.LENGTH_SHORT).show()
         } else {
             Log.i(TAG, "Added '${book.title}' at id $success")
         }
@@ -120,7 +118,6 @@ class BookDatabaseHelper(
         return BookInfo(-1, "", "", ArrayList())
     }
 
-    //TODO: also need to read all data to get author, title and id to display in the recycler view
     fun getAllBooks(): Cursor? {
         //TODO: and possibly the image id ?
         val query = "SELECT $COL_ID, $COL_AUTHOR, $COL_TITLE FROM $TABLE_NAME"
@@ -137,7 +134,7 @@ class BookDatabaseHelper(
         val output = db.delete(TABLE_NAME, "$COL_ID=?", arrayOf(id.toString()))
         db.close()
         if (output == 0) {
-            Toast.makeText(context, "Failed to delete", Toast.LENGTH_SHORT).show()
+            Log.i(TAG, "Failed to delete book with id=$id")
         }
         return output
     }

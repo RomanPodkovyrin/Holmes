@@ -10,9 +10,9 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
-import com.romanp.fyp.views.BookReaderActivity
 import com.romanp.fyp.R
 import com.romanp.fyp.database.BookDatabaseHelper
+import com.romanp.fyp.views.BookReaderActivity
 import java.io.Serializable
 
 class BookRecyclerViewAdapter(
@@ -21,6 +21,7 @@ class BookRecyclerViewAdapter(
 ) : RecyclerView.Adapter<BookRecyclerViewAdapter.ViewHolder>() {
     companion object {
         private const val TAG = "CustomAdapter"
+        const val EXTRA_MESSAGE = "BookId"
     }
 
     // create new views
@@ -49,10 +50,10 @@ class BookRecyclerViewAdapter(
     ) : RecyclerView.ViewHolder(ItemView) {
 
 
-        val imageView: ImageView = itemView.findViewById(R.id.imageview)
-        val titleTV: TextView = itemView.findViewById(R.id.titleTV)
-        val authorTV: TextView = itemView.findViewById(R.id.authorTV)
-        val deleteView: ImageView = itemView.findViewById(R.id.deleteButton)
+        private val imageView: ImageView = itemView.findViewById(R.id.imageview)
+        private val titleTV: TextView = itemView.findViewById(R.id.titleTV)
+        private val authorTV: TextView = itemView.findViewById(R.id.authorTV)
+        private val deleteView: ImageView = itemView.findViewById(R.id.deleteButton)
 
 
         fun bind(position: Int) {
@@ -70,8 +71,7 @@ class BookRecyclerViewAdapter(
                     .show();
 
                 Log.i(TAG, "Clicked ${itemsViewModel.title}")
-                val EXTRA_MESSAGE = "Book"
-                Log.i(TAG, " object $itemsViewModel")
+
                 val intent = Intent(context, BookReaderActivity::class.java)
                 intent.putExtra(EXTRA_MESSAGE, itemsViewModel.id)
                 context.startActivity(intent)
