@@ -108,7 +108,7 @@ class MainActivity : AppCompatActivity() {
 
                 val id = viewModel.addBook(selectedFile)
                 if (id < 0) {
-                    Toast.makeText(applicationContext, "DB failed to save book", Toast.LENGTH_SHORT)
+                    Toast.makeText(applicationContext, "Issue while loading", Toast.LENGTH_SHORT)
                         .show()
                     return@registerForActivityResult
                 }

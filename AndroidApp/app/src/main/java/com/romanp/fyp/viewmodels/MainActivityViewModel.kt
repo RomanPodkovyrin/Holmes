@@ -2,6 +2,7 @@ package com.romanp.fyp.viewmodels
 
 import android.app.Application
 import android.net.Uri
+import android.util.Log
 import androidx.lifecycle.*
 import com.romanp.fyp.adapters.BookRecyclerViewAdapter
 import com.romanp.fyp.models.book.BookInfo
@@ -35,11 +36,23 @@ class MainActivityViewModel(
         return repository.getBookInfo(getApplication())
     }
 
+    /**
+     * @return id if successful or -1 if failed
+     */
     fun addBook(selectedFile: Uri?): Long {
-        val book = loadSelectedBook( selectedFile)
+        var book: BookInfo?
+        try {
+           book = loadSelectedBook( selectedFile)
+        } catch (e: Exception) {
+            Log.e(TAG, "Error while loading the book $selectedFile")
+            return -1
+        }
+
 
         // TODO check the id
         val id = repository.addBookInfo(getApplication(), book)
+
+        if(id < 0) Log.e(TAG, "Error while saving book '${book.title}' to database")
 
         books.postValue(getBooks().value)
 
