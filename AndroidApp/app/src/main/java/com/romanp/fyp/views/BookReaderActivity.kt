@@ -7,10 +7,14 @@ import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
 import com.romanp.fyp.R
-import com.romanp.fyp.database.BookDatabaseHelper
+import com.romanp.fyp.models.book.AlreadyOnTheFirstPageException
 import com.romanp.fyp.models.book.BookInfo
 import com.romanp.fyp.models.book.Chapter
+import com.romanp.fyp.models.book.NoMorePagesException
+import com.romanp.fyp.utils.InjectorUtils
+import com.romanp.fyp.viewmodels.BookReaderActivityViewModel
 
 
 class BookReaderActivity : AppCompatActivity() {
@@ -18,7 +22,8 @@ class BookReaderActivity : AppCompatActivity() {
         private const val TAG = "BookReaderActivity"
     }
 
-    private var currentPage: Int = 0
+    private lateinit var viewModel: BookReaderActivityViewModel
+
 
     private var webViewBookContent: WebView? = null
     private var textView: TextView? = null
@@ -28,14 +33,15 @@ class BookReaderActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        val bookId = intent.getLongExtra("Book", -1) //TODO: do i need this default?
+        initialiseViewModel(bookId)
+
         Log.i(TAG, "Opened Book Reader Activity")
         setContentView(R.layout.activity_book_reader)
-        // TODO: implement MVVM
-        val bookId = intent.getLongExtra("Book", -1) //TODO: do i need this default?
 
-        val myBookInfo: BookInfo? =
-            BookDatabaseHelper(applicationContext).getBook(bookId)
-        if (myBookInfo == null || myBookInfo.image == -1) {
+
+        val myBookInfo: BookInfo = viewModel.getCurrentBookInfo()
+        if (myBookInfo.image == -1) {
             Toast.makeText(
                 applicationContext,
                 "There was an error loading your book",
@@ -45,56 +51,53 @@ class BookReaderActivity : AppCompatActivity() {
             return
         }
 
-        val chapters: ArrayList<Chapter> = myBookInfo.chapters
         bookTitle = myBookInfo.title
         textView = findViewById<TextView>(R.id.textViewBookTitle).apply {
             text = bookTitle
         }
         webViewBookContent = findViewById<WebView>(R.id.webViewBookContent).apply {
-            loadData(chapters[currentPage].text, "text/html", "UTF-8")
+            loadData(viewModel.getCurrentChapter().text, "text/html", "UTF-8")
         }
 
         findViewById<Button>(R.id.buttonNext).apply {
             setOnClickListener {
                 Log.i(TAG, "Next Button pressed")
-                nextButton(myBookInfo, chapters)
+                try {
+                    updatePage(viewModel.nextButton())
+                } catch (e: NoMorePagesException) {
+                    Toast.makeText(
+                        applicationContext,
+                        "No More Pages",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+
 
             }
         }
         findViewById<Button>(R.id.buttonBack).apply {
             setOnClickListener {
                 Log.i(TAG, "Back Button pressed")
-                backButton(chapters)
+                try {
+                    updatePage(viewModel.backButton())
+                } catch (e: AlreadyOnTheFirstPageException) {
+
+                }
 
             }
         }
     }
 
-    private fun nextButton(
-        myBookInfo: BookInfo,
-        chapters: ArrayList<Chapter>
-    ) {
-        if (currentPage >= myBookInfo.chapters.size - 1) {
-            Log.i(TAG, "Max page reached")
-            return
-        }
-        currentPage++
-        updatePage(chapters, currentPage)
+    private fun initialiseViewModel(bookId: Long) {
+        val factory = InjectorUtils.provideBookReaderActivityViewModelFactor(application, bookId)
+        viewModel = ViewModelProvider(this, factory).get(BookReaderActivityViewModel::class.java)
     }
 
-    private fun backButton(chapters: ArrayList<Chapter>) {
-        if (currentPage <= 0) {
-            Log.i(TAG, "Min page reached")
-            return
-        }
-        currentPage--
-        updatePage(chapters, currentPage)
-    }
 
-    private fun updatePage(chapters: ArrayList<Chapter>, page: Int) {
-        webViewBookContent?.loadData(chapters[page].text, "text/html", "UTF-8")
+    private fun updatePage(chapters: Chapter) {
+        webViewBookContent?.loadData(chapters.text, "text/html", "UTF-8")
         textView = findViewById<TextView>(R.id.textViewBookTitle).apply {
-            text = "$bookTitle | ${chapters[page].chapterTitle}"
+            text = "$bookTitle | ${chapters.chapterTitle}"
         }
     }
 }

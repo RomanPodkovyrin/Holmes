@@ -1,17 +1,13 @@
 package com.romanp.fyp.models.book
 
 import com.romanp.fyp.database.BookDatabaseHelper.Companion.gson
-import org.junit.Assert.assertEquals
 import nl.siegmann.epublib.domain.Book
 import nl.siegmann.epublib.epub.EpubReader
+import org.junit.Assert.assertEquals
 import org.junit.Assert.fail
 import org.junit.Before
 import org.junit.Test
-import org.junit.jupiter.params.ParameterizedTest
-import org.junit.jupiter.params.provider.CsvSource
-import org.junit.jupiter.params.provider.ValueSource
 import java.io.File
-import java.lang.Error
 import java.net.URL
 
 
@@ -30,7 +26,7 @@ internal class BookUtilTest {
         println(fileName)
         var resource: URL? = null
         try {
-            resource= this::class.java.classLoader.getResource(fileName)
+            resource = this::class.java.classLoader.getResource(fileName)
 
         } catch (e: Error) {
             fail("Problem accessing test files")
@@ -47,7 +43,7 @@ internal class BookUtilTest {
 //    @ParameterizedTest(name = "isPalindrome should return true for {0}")
 //    @ValueSource(strings = ["pg11", "pg84", "pg345", "pg1342", "pg2701", "pg64317", "pg66691"])
     @Test
-    fun `processEpub returns the book with stripped info`(){
+    fun `processEpub returns the book with stripped info`() {
         val file = "pg84"
         val epub = getFileFromPath("epubs/$file.epub")
         val epubReader: EpubReader = EpubReader()
@@ -61,7 +57,7 @@ internal class BookUtilTest {
         assertEquals("Book title", bookObject.title, processedBook.title)
         assertEquals("Number of chapters", bookObject.chapters.size, processedBook.chapters.size)
         assertEquals("Image", bookObject.image, processedBook.image)
-        assertEquals("Content of the book",bookObject, processedBook)
+        assertEquals("Content of the book", bookObject, processedBook)
 
     }
 }

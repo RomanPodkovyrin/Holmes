@@ -1,18 +1,14 @@
 package com.romanp.fyp.viewmodels
 
-import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.romanp.fyp.adapters.BookRecyclerViewAdapter
-import com.romanp.fyp.models.book.BookInfo
-import com.romanp.fyp.models.book.Chapter
-import com.romanp.fyp.repositories.BookInfoRepository
+import com.romanp.fyp.repositories.BookRepository
 import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.runner.RunWith
 import org.mockito.Mock
@@ -23,7 +19,6 @@ import org.mockito.junit.MockitoRule
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.RuntimeEnvironment.getApplication
 import org.robolectric.annotation.Config
-import org.robolectric.shadows.ShadowContentResolver
 
 
 @RunWith(RobolectricTestRunner::class)
@@ -37,7 +32,7 @@ class MainViewActivityTest {
 
 
     @Mock
-    private val mockRepo = mock(BookInfoRepository::class.java)
+    private val mockRepo = mock(BookRepository::class.java)
 
     @Rule
     @JvmField
@@ -51,7 +46,7 @@ class MainViewActivityTest {
                 BookRecyclerViewAdapter.RecyclerBookInfo(1, "Orwell", "1984", 1L)
             )
         )
-        `when`(mockRepo.getBookInfo(org.mockito.kotlin.any())).thenReturn(booksLiveData)
+        `when`(mockRepo.getRecyclerBookInfoList(org.mockito.kotlin.any())).thenReturn(booksLiveData)
         `when`(mockRepo.addBookInfo(org.mockito.kotlin.any(), org.mockito.kotlin.any())).thenReturn(
             1
         )
@@ -72,7 +67,7 @@ class MainViewActivityTest {
      */
     @Test
     fun `getBooks Should Return Books From Repo`() = runBlocking {
-        var booksCheck = liveBooks.value
+        val booksCheck = liveBooks.value
         assertNotNull(booksCheck)
         return@runBlocking
     }
