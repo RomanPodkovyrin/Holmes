@@ -7,6 +7,7 @@
     <string name="next_page_button">Next</string>
     <string name="previous_page_button">Back</string>
     <string name="load_book_button">Load Book</string>
+    <string name="graph_button">Graph</string>
 
     <!--    Error Messages-->
     <string name="error_extracting_names">There was an error extracting names</string>

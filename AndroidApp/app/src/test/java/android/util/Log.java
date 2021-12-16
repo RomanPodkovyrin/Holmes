@@ -3,7 +3,6 @@ package android.util;
 /*
 This class is used to mock android logger for Unit test, given
 they don't have access to android API
-TODO: convert to kotlin. Attempted but keeps giving IncompatibleClassChangeError, so leaving it for now
  */
 
 @SuppressWarnings({"SameReturnValue", "unused"})
