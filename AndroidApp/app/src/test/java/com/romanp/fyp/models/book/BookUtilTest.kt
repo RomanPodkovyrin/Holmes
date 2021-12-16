@@ -57,7 +57,11 @@ internal class BookUtilTest {
         val json = getFileFromPath("processedBooks/$file.json")
         val jsonBook = json?.readText()
         val bookObject = gson.fromJson(jsonBook, BookInfo::class.java)
-        assertEquals(bookObject, processedBook)
+        assertEquals("Same authors", bookObject.author, processedBook.author)
+        assertEquals("Book title", bookObject.title, processedBook.title)
+        assertEquals("Number of chapters", bookObject.chapters.size, processedBook.chapters.size)
+        assertEquals("Image", bookObject.image, processedBook.image)
+        assertEquals("Content of the book",bookObject, processedBook)
 
     }
 }
