@@ -48,46 +48,46 @@ jobs:
         with:
           name: app
           path: AndroidApp/app/build/outputs/apk/debug/app-debug.apk
-  release:
-      name: Create a release
-      runs-on: ubuntu-latest
-      # if: startsWith(github.ref, 'refs/tags/v')
-      if: github.ref == 'refs/heads/master' || github.event.pull_request.merged == 'true'
-      steps:          
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1.1.4
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#         if: startsWith(github.ref, 'refs/tags/dev-')
-        with:
-          tag_name: ${{ github.ref }}
-#           release_name: Release ${{ github.ref }}
-          release_name:  Release ${{ github.ref }}
-          draft: false
-          prerelease: false
-          body: |
-            Changes in this Release
-            - 
-      - name: Save name of our Artifact
-        id: set-result-artifact
-#         working-directory: ./AndroidApp
-        run: |
-          ARTIFACT_PATHNAME_APK=$(ls AndroidApp/app/build/outputs/apk/release/*.apk | head -n 1)
-          ARTIFACT_NAME_APK=$(basename $ARTIFACT_PATHNAME_APK)
-          echo "ARTIFACT_NAME_APK is " ${ARTIFACT_NAME_APK}
-          echo "ARTIFACT_PATHNAME_APK=${ARTIFACT_PATHNAME_APK}" >> $GITHUB_ENV
-          echo "ARTIFACT_NAME_APK=${ARTIFACT_NAME_APK}" >> $GITHUB_ENV
+#   release:
+#       name: Create a release
+#       runs-on: ubuntu-latest
+#       # if: startsWith(github.ref, 'refs/tags/v')
+#       if: github.ref == 'refs/heads/master' || github.event.pull_request.merged == 'true'
+#       steps:          
+#       - name: Create Release
+#         id: create_release
+#         uses: actions/create-release@v1.1.4
+#         env:
+#           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+# #         if: startsWith(github.ref, 'refs/tags/dev-')
+#         with:
+#           tag_name: ${{ github.ref }}
+# #           release_name: Release ${{ github.ref }}
+#           release_name:  Release ${{ github.ref }}
+#           draft: false
+#           prerelease: false
+#           body: |
+#             Changes in this Release
+#             - 
+#       - name: Save name of our Artifact
+#         id: set-result-artifact
+# #         working-directory: ./AndroidApp
+#         run: |
+#           ARTIFACT_PATHNAME_APK=$(ls AndroidApp/app/build/outputs/apk/release/*.apk | head -n 1)
+#           ARTIFACT_NAME_APK=$(basename $ARTIFACT_PATHNAME_APK)
+#           echo "ARTIFACT_NAME_APK is " ${ARTIFACT_NAME_APK}
+#           echo "ARTIFACT_PATHNAME_APK=${ARTIFACT_PATHNAME_APK}" >> $GITHUB_ENV
+#           echo "ARTIFACT_NAME_APK=${ARTIFACT_NAME_APK}" >> $GITHUB_ENV
           
-      - name: Upload our Artifact Assets
-        id: upload-release-asset
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-#           working-directory: ./AndroidApp
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path:  ${{ env.ARTIFACT_PATHNAME_APK }}
-          asset_name: ${{ env.ARTIFACT_NAME_APK }}
-          asset_content_type: application/zip
+#       - name: Upload our Artifact Assets
+#         id: upload-release-asset
+#         uses: actions/upload-release-asset@v1
+#         env:
+#           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#         with:
+# #           working-directory: ./AndroidApp
+#           upload_url: ${{ steps.create_release.outputs.upload_url }}
+#           asset_path:  ${{ env.ARTIFACT_PATHNAME_APK }}
+#           asset_name: ${{ env.ARTIFACT_NAME_APK }}
+#           asset_content_type: application/zip
 
