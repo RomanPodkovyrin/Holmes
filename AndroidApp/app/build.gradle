@@ -45,7 +45,6 @@ dependencies {
     implementation files('libs/epublib-core-latest.jar')
     implementation files('libs/slf4j-android-1.6.1-RC1-sources.jar')
     implementation 'com.google.code.gson:gson:2.8.9'
-    implementation 'org.apache.opennlp:opennlp-tools:1.6.0'
     implementation 'org.slf4j:slf4j-api:1.7.25'
     implementation 'org.jsoup:jsoup:1.14.3'
     implementation 'com.squareup.retrofit2:retrofit:2.7.2'
