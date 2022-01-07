@@ -1,8 +1,13 @@
 package com.server
 
+import com.mongodb.BasicDBObject
+import com.server.models.ProcessedBook
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
 import com.server.plugins.configureRouting
+import org.litote.kmongo.coroutine.coroutine
+import org.litote.kmongo.reactivestreams.KMongo
+
 //import io.ktor.network.tls.certificates.*
 //import java.io.File
 
@@ -16,6 +21,14 @@ fun main() {
 //        jksPassword = "foobar"
 //    )
 
+    // Setup KMongo DB
+    val client = KMongo.createClient("mongodb://localhost:27017").coroutine
+    val database = client.getDatabase("Book")
+    val col = database.getCollection<ProcessedBook>()
+
+
+
+
     embeddedServer(Netty, port = 8080, host = "0.0.0.0") {
 //        applicationEngineEnvironment {
 //            sslConnector(
@@ -27,6 +40,6 @@ fun main() {
 //                keyStorePath = keyStoreFile
 //            }
 //        }
-        configureRouting()
+        configureRouting(col)
     }.start(wait = true)
 }
