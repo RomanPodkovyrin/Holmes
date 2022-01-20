@@ -9,6 +9,7 @@ import com.android.volley.RetryPolicy
 import com.android.volley.VolleyError
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
+import com.romanp.fyp.adapters.BookRecyclerViewAdapter
 import com.romanp.fyp.database.BookDatabaseHelper.Companion.gson
 import com.romanp.fyp.models.book.ProcessedBook
 import com.romanp.fyp.repositories.BookRepository
@@ -119,7 +120,8 @@ class CoreNlpAPI {
             applicationContext: Context,
             title: String,
             author: String,
-            id: Long
+            id: Long,
+            books: MutableLiveData<MutableList<BookRecyclerViewAdapter.RecyclerBookInfo>>
         ) {
             val bookRepository = BookRepository.getInstance()
 
@@ -141,7 +143,23 @@ class CoreNlpAPI {
 
                         val processedBookInfo: ProcessedBook =
                             gson.fromJson(response, ProcessedBook::class.java)
-                        bookRepository.updateBook(applicationContext, id, processedBookInfo)
+                        if (bookRepository.updateBook(
+                                applicationContext,
+                                id,
+                                processedBookInfo
+                            ) == 0
+                        ) {
+                            // Update live data
+                            books.postValue(books.value!!.filter { x -> x.id == id }.map { it ->
+                                BookRecyclerViewAdapter.RecyclerBookInfo(
+                                    it.image,
+                                    it.author,
+                                    it.title,
+                                    it.id,
+                                    true
+                                )
+                            }.toMutableList())
+                        }
 
                         Log.d(TAG, "Book $id: $title processed ")
 

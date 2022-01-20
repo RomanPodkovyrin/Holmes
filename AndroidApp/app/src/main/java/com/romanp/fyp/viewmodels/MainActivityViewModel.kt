@@ -69,7 +69,7 @@ class MainActivityViewModel : AndroidViewModel {
 
 
     fun startThreads() {
-        Log.i(TAG,"Starting thread handler")
+        Log.i(TAG, "Starting thread handler")
         mainHandler.post(pingRunnable)
         mainHandler.post(checkRunnable)
     }
@@ -83,9 +83,8 @@ class MainActivityViewModel : AndroidViewModel {
 
     fun getBooks(): LiveData<MutableList<BookRecyclerViewAdapter.RecyclerBookInfo>> {
         val value = repository.getRecyclerBookInfoList(getApplication())
-        books.postValue(value.value)
-
-        return value
+        books.value = value.value
+        return books
     }
 
     /**
@@ -103,7 +102,7 @@ class MainActivityViewModel : AndroidViewModel {
                 return@launch
             }
 
-            processedBook.postValue(book)
+            processedBook.value = book
             CoreNlpAPI.nerTagger(getApplication(), book.toString(), book.title, book.author)
 
 
@@ -111,10 +110,10 @@ class MainActivityViewModel : AndroidViewModel {
 
             if (id < 0) {
                 Log.e(TAG, "Error while saving book '${book.title}' to database")
-                ToastUtils.toast(getApplication(),"Issue while loading")
+                ToastUtils.toast(getApplication(), "Issue while loading")
             }
 
-            books.postValue(getBooks().value)
+            books.value = getBooks().value
 
 
         }

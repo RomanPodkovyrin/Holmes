@@ -10,7 +10,6 @@ import android.util.Log
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.romanp.fyp.models.book.BookInfo
-import java.util.*
 
 
 class BookDatabaseHelper(
@@ -91,7 +90,7 @@ class BookDatabaseHelper(
         return success
     }
 
-    fun getBook(id: Long): BookInfo {
+    fun getBook(id: Long): BookInfo? {
         val query = "SELECT data FROM $TABLE_NAME WHERE id == $id"
         val db = writableDatabase
         var cursor: Cursor? = null
@@ -118,14 +117,13 @@ class BookDatabaseHelper(
                 }
             }
 //        println(cursor)
-        } catch (e: SQLiteBlobTooBigException)     {
+        } catch (e: SQLiteBlobTooBigException) {
             //TODO: This error sometimes happens when the app is left running for too long
             Log.e(TAG, e.toString())
         } catch (e: Exception) {
             Log.e(TAG, e.toString())
         }
-        //TODO: use -1 to check for error
-        return BookInfo(-1, "", "", ArrayList(), ArrayList(), ArrayList())
+        return null
     }
 
     fun getAllBooks(): Cursor? {
@@ -148,6 +146,10 @@ class BookDatabaseHelper(
         return output
     }
 
+    /**
+     * @return error code
+     * 0 failed
+     */
     fun updateBook(id: Long, book: BookInfo, processed: Boolean): Int {
         val contentValues = ContentValues()
         contentValues.put(COL_AUTHOR, book.author)

@@ -13,6 +13,7 @@ import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.romanp.fyp.R
 import com.romanp.fyp.database.BookDatabaseHelper
+import com.romanp.fyp.utils.ToastUtils
 import com.romanp.fyp.views.BookReaderActivity
 import java.io.Serializable
 
@@ -21,7 +22,7 @@ class BookRecyclerViewAdapter(
     private val mList: MutableList<RecyclerBookInfo>
 ) : RecyclerView.Adapter<BookRecyclerViewAdapter.ViewHolder>() {
     companion object {
-        private const val TAG = "CustomAdapter"
+        private const val TAG = "BookRecyclerViewAdapter"
         const val EXTRA_MESSAGE = "BookId"
     }
 
@@ -55,7 +56,8 @@ class BookRecyclerViewAdapter(
         private val titleTV: TextView = itemView.findViewById(R.id.titleTV)
         private val authorTV: TextView = itemView.findViewById(R.id.authorTV)
         private val deleteView: ImageView = itemView.findViewById(R.id.deleteButton)
-        private val progressBarProcessing: ProgressBar = itemView.findViewById(R.id.progressBarProcessing)
+        private val progressBarProcessing: ProgressBar =
+            itemView.findViewById(R.id.progressBarProcessing)
 
 
         fun bind(position: Int) {
@@ -90,8 +92,7 @@ class BookRecyclerViewAdapter(
 
             // TODO: move to viewModel and repository
             deleteView.setOnClickListener {
-                Toast.makeText(context, "Delete ${itemsViewModel.title}", Toast.LENGTH_SHORT)
-                    .show();
+                ToastUtils.toast(context, "Delete ${itemsViewModel.title}")
                 val myDB = BookDatabaseHelper(context)
                 myDB.deleteBook(itemsViewModel.id)
                 mList.removeAt(position)

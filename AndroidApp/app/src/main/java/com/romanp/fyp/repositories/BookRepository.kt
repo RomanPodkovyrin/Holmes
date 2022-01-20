@@ -30,7 +30,7 @@ class BookRepository {
 
     fun getBookInfo(context: Context, bookId: Long): BookInfo {
         val book = BookDatabaseHelper(context).getBook(bookId)
-        if (book == null || book.image == -1) {
+        if (book == null) {
             Log.e(TAG, "Problem getting a book from repository")
             return throw Exception()
         }
@@ -76,13 +76,25 @@ class BookRepository {
     /**
      * Updates book processed status to true and updates it's book object
      * @param processedBookInfo - Object to be updated
+     * @return error code
+     * 0: no issues
+     * -1: error
      */
-    fun updateBook(context: Context, id: Long, processedBookInfo: ProcessedBook) {
-        val currentBookInfo = BookDatabaseHelper(context)
-        val book = currentBookInfo.getBook(id)
-        book.characters.addAll(processedBookInfo.chapters)
-        book.locations.addAll(processedBookInfo.locations)
-        currentBookInfo.updateBook(id, book, true)
+    fun updateBook(context: Context, id: Long, processedBookInfo: ProcessedBook): Int {
+        try {
+            val bookDBHelper = BookDatabaseHelper(context)
+            val book = bookDBHelper.getBook(id)
+                ?: throw java.lang.Exception("Issue when getting a book by id: $id")
+            book.characters.addAll(processedBookInfo.chapters)
+            book.locations.addAll(processedBookInfo.locations)
+            if (bookDBHelper.updateBook(id, book, true) == 0) {
+                throw java.lang.Exception("Issue when updating a book by id: $id")
+            }
+            return 0
+        } catch (e: Exception) {
+            Log.e(TAG, e.toString())
+        }
+        return -1
     }
 
 }

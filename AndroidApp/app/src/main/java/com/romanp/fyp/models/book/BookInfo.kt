@@ -1,7 +1,6 @@
 package com.romanp.fyp.models.book
 
 import com.google.gson.annotations.SerializedName
-import com.romanp.fyp.R
 import java.io.Serializable
 
 data class Chapter(
