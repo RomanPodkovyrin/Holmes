@@ -3,6 +3,7 @@ package com.romanp.fyp.database
 import android.content.ContentValues
 import android.content.Context
 import android.database.Cursor
+import android.database.sqlite.SQLiteBlobTooBigException
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import android.util.Log
@@ -27,6 +28,7 @@ class BookDatabaseHelper(
         private const val COL_AUTHOR = "author"
         private const val COL_TITLE = "title"
         private const val COL_DATA = "data"
+        private const val COL_PROCESSED = "processed"
 //        private const val COL_IMAGE = "image"
     }
 
@@ -38,6 +40,7 @@ class BookDatabaseHelper(
                         "$COL_AUTHOR TEXT," +
                         "$COL_TITLE TEXT," +
                         "$COL_DATA BLOB," +
+                        "$COL_PROCESSED BOOLEAN NOT NULL CHECK ($COL_PROCESSED IN (0,1))," +
                         "UNIQUE($COL_AUTHOR, $COL_TITLE)" +
                         ")"
                 )
@@ -60,14 +63,14 @@ class BookDatabaseHelper(
     /**
      * @return -1 if an error occurred or the Id of the row inserted
      */
-    fun addBook(book: BookInfo): Long {
+    fun addBook(book: BookInfo, processed: Boolean = false): Long {
         Log.i(TAG, "Adding a new book row '${book.title}'")
-        println("book inserted ${gson.toJson(book).reversed()}")
         val db: SQLiteDatabase = this.writableDatabase
         val contentValues = ContentValues()
         contentValues.put(COL_AUTHOR, book.author)
         contentValues.put(COL_TITLE, book.title)
         contentValues.put(COL_DATA, gson.toJson(book))
+        contentValues.put(COL_PROCESSED, processed)
 
         // Inserting Row
         var success = -1L
@@ -79,7 +82,7 @@ class BookDatabaseHelper(
         }
         //2nd argument is String containing nullColumnHack
         if (success < 0) {
-            Log.i(TAG, "Failed to add '${book.title}' to the db")
+            Log.e(TAG, "Failed to add '${book.title}' to the db")
         } else {
             Log.i(TAG, "Added '${book.title}' at id $success")
         }
@@ -96,31 +99,37 @@ class BookDatabaseHelper(
             //TODO: sanitise SQL
             cursor = db.rawQuery(query, null)
         }
+        try {
+            if (cursor != null) {
+                if (cursor.moveToFirst()) {
+                    val blob = cursor.getBlob(0)
+                    val temp = blob.filter { e -> e != null }.toByteArray()
+//                println(blob.toList().subList(0, blob.size - 1).reversed())
+//                println("Getting ${String(blob).dropLast(1).reversed().filter { e -> e != null }}")
+                    val gson = GsonBuilder()
+                        .setLenient()
+                        .create()
 
-        if (cursor != null) {
-            if (cursor.moveToFirst()) {
-                val blob = cursor.getBlob(0)
-                val temp = blob.filter { e -> e != null }.toByteArray()
-                println(blob.toList().subList(0, blob.size - 1).reversed())
-                println("Getting ${String(blob).dropLast(1).reversed().filter { e -> e != null }}")
-                val gson = GsonBuilder()
-                    .setLenient()
-                    .create()
-
-                //TODO: figureout why null is being added at the end
-                val book: BookInfo = gson.fromJson(String(blob).dropLast(1), BookInfo::class.java)
-                Log.i(TAG, "Success")
-                return book
+                    //TODO: figureout why null is being added at the end
+                    val book: BookInfo =
+                        gson.fromJson(String(blob).dropLast(1), BookInfo::class.java)
+                    Log.i(TAG, "Success")
+                    return book
+                }
             }
+//        println(cursor)
+        } catch (e: SQLiteBlobTooBigException)     {
+            //TODO: This error sometimes happens when the app is left running for too long
+            Log.e(TAG, e.toString())
+        } catch (e: Exception) {
+            Log.e(TAG, e.toString())
         }
-        println(cursor)
         //TODO: use -1 to check for error
-        return BookInfo(-1, "", "", ArrayList())
+        return BookInfo(-1, "", "", ArrayList(), ArrayList(), ArrayList())
     }
 
     fun getAllBooks(): Cursor? {
-        //TODO: and possibly the image id ?
-        val query = "SELECT $COL_ID, $COL_AUTHOR, $COL_TITLE FROM $TABLE_NAME"
+        val query = "SELECT $COL_ID, $COL_AUTHOR, $COL_TITLE, $COL_PROCESSED FROM $TABLE_NAME"
         val db = writableDatabase
         var cursor: Cursor? = null
         if (db != null) {
@@ -134,7 +143,25 @@ class BookDatabaseHelper(
         val output = db.delete(TABLE_NAME, "$COL_ID=?", arrayOf(id.toString()))
         db.close()
         if (output == 0) {
-            Log.i(TAG, "Failed to delete book with id=$id")
+            Log.e(TAG, "Failed to delete book with id=$id")
+        }
+        return output
+    }
+
+    fun updateBook(id: Long, book: BookInfo, processed: Boolean): Int {
+        val contentValues = ContentValues()
+        contentValues.put(COL_AUTHOR, book.author)
+        contentValues.put(COL_TITLE, book.title)
+        contentValues.put(COL_DATA, gson.toJson(book))
+        contentValues.put(COL_PROCESSED, processed)
+
+        val db: SQLiteDatabase = writableDatabase
+        val output = db.update(TABLE_NAME, contentValues, "$COL_ID=?", arrayOf(id.toString()))
+        db.close()
+        if (output == 0) {
+            Log.e(TAG, "Failed to update book $id")
+        } else {
+            Log.i(TAG, "Updated book $id")
         }
         return output
     }

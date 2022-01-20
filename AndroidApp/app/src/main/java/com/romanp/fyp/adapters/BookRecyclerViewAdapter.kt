@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
@@ -54,6 +55,7 @@ class BookRecyclerViewAdapter(
         private val titleTV: TextView = itemView.findViewById(R.id.titleTV)
         private val authorTV: TextView = itemView.findViewById(R.id.authorTV)
         private val deleteView: ImageView = itemView.findViewById(R.id.deleteButton)
+        private val progressBarProcessing: ProgressBar = itemView.findViewById(R.id.progressBarProcessing)
 
 
         fun bind(position: Int) {
@@ -76,7 +78,17 @@ class BookRecyclerViewAdapter(
                 intent.putExtra(EXTRA_MESSAGE, itemsViewModel.id)
                 context.startActivity(intent)
             }
+            /* TODO: need to find a way to observe the change
+            might need to implement mvvm for adapter
+            */
+            if (!itemsViewModel.processed) {
+                Log.i(TAG, "item in position $position is set to visible progress bar")
+                progressBarProcessing.visibility = View.VISIBLE
+            } else {
+                progressBarProcessing.visibility = View.INVISIBLE
+            }
 
+            // TODO: move to viewModel and repository
             deleteView.setOnClickListener {
                 Toast.makeText(context, "Delete ${itemsViewModel.title}", Toast.LENGTH_SHORT)
                     .show();
@@ -92,6 +104,7 @@ class BookRecyclerViewAdapter(
         val image: Int,
         val author: String,
         val title: String,
-        val id: Long
+        val id: Long,
+        var processed: Boolean
     ) : Serializable
 }
