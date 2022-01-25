@@ -32,7 +32,7 @@ class BookRepository {
         val book = BookDatabaseHelper(context).getBook(bookId)
         if (book == null) {
             Log.e(TAG, "Problem getting a book from repository")
-            return throw Exception()
+            return throw Exception("Problem getting a book from repository")
         }
         return book
     }
@@ -46,6 +46,9 @@ class BookRepository {
         return data
     }
 
+    /**
+     * @return book id or -1 if there was an error
+     */
     fun addBookInfo(context: Context, book: BookInfo): Long {
         val appDB: BookDatabaseHelper = BookDatabaseHelper(context)
         return appDB.addBook(book)
