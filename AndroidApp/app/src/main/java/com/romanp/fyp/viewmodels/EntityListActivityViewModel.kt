@@ -2,6 +2,9 @@ package com.romanp.fyp.viewmodels
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import com.romanp.fyp.adapters.entityRecyclerView.EntityRecyclerViewAdapter
 import com.romanp.fyp.models.book.BookInfo
 import com.romanp.fyp.models.book.Entity
 import com.romanp.fyp.repositories.BookRepository
@@ -62,10 +65,26 @@ class EntityListActivityViewModel : AndroidViewModel {
     /**
      * Returns correct type of the list, either characters or locations
      */
-    fun getCurrentList(): ArrayList<Entity> {
-        return when (listType()) {
+    fun getCurrentList(): ArrayList<EntityRecyclerViewAdapter.RecyclerEntityInfo> {
+        val recyclerList = when (listType()) {
             true -> getCharacters()
             false -> getLocations()
-        }
+        }.map { it -> EntityRecyclerViewAdapter.RecyclerEntityInfo(it.name) }
+
+        return ArrayList(recyclerList)
     }
+}
+
+class EntityListActivityViewModelFactory(
+    private val application: Application,
+    private val repository: BookRepository,
+    private val bookId: Long,
+    private val listType: Boolean
+) :
+    ViewModelProvider.NewInstanceFactory() {
+
+    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+        return EntityListActivityViewModel(application, repository, bookId, listType) as T
+    }
+
 }

@@ -1,5 +1,6 @@
 package com.romanp.fyp.viewmodels
 
+import com.romanp.fyp.adapters.entityRecyclerView.EntityRecyclerViewAdapter
 import com.romanp.fyp.models.book.*
 import com.romanp.fyp.repositories.BookRepository
 import kotlinx.coroutines.runBlocking
@@ -37,6 +38,17 @@ class EntityListActivityViewModelTest {
             Entity(1340, 1349, "", "", "Eastasia")
         )
     )
+
+    private val expectedLocations =
+        arrayListOf(
+            EntityRecyclerViewAdapter.RecyclerEntityInfo(currentBookExpected.locations[0].name),
+            EntityRecyclerViewAdapter.RecyclerEntityInfo(currentBookExpected.locations[1].name)
+        )
+    private val expectedCharacters =
+        arrayListOf(
+            EntityRecyclerViewAdapter.RecyclerEntityInfo(currentBookExpected.characters[0].name),
+            EntityRecyclerViewAdapter.RecyclerEntityInfo(currentBookExpected.characters[1].name)
+        )
 
     @Mock
     private val mockRepo = Mockito.mock(BookRepository::class.java)
@@ -91,7 +103,7 @@ class EntityListActivityViewModelTest {
         Assert.assertEquals("Character list", true, listType)
 
         val characters = viewModel.getCurrentList()
-        Assert.assertEquals("Correct characters list", currentBookExpected.characters, characters)
+        Assert.assertEquals("Correct characters list", expectedCharacters, characters)
     }
 
     @Test
@@ -103,7 +115,7 @@ class EntityListActivityViewModelTest {
 
 
         val locations = viewModel.getCurrentList()
-        Assert.assertEquals("Correct locations list", currentBookExpected.locations, locations)
+        Assert.assertEquals("Correct locations list", expectedLocations, locations)
     }
 
 }

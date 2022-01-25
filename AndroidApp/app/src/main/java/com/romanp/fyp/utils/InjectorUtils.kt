@@ -3,6 +3,7 @@ package com.romanp.fyp.utils
 import android.app.Application
 import com.romanp.fyp.repositories.BookRepository
 import com.romanp.fyp.viewmodels.BookReaderViewModelFactory
+import com.romanp.fyp.viewmodels.EntityListActivityViewModelFactory
 import com.romanp.fyp.viewmodels.MainViewModelFactory
 
 /**
@@ -15,11 +16,23 @@ object InjectorUtils {
         return MainViewModelFactory(application, BookRepository.getInstance())
     }
 
-    fun provideBookReaderActivityViewModelFactor(
+    fun provideBookReaderActivityViewModelFactory(
         application: Application,
         bookId: Long
     ): BookReaderViewModelFactory {
         return BookReaderViewModelFactory(application, BookRepository.getInstance(), bookId)
     }
 
+    fun provideEntityListActivityViewModelFactory(
+        application: Application,
+        bookId: Long,
+        listType: Boolean
+    ): EntityListActivityViewModelFactory {
+        return EntityListActivityViewModelFactory(
+            application,
+            BookRepository.getInstance(),
+            bookId,
+            listType
+        )
+    }
 }

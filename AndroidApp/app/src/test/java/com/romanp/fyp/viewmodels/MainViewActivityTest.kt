@@ -83,10 +83,7 @@ class MainViewActivityTest {
 //        val returnBookInfo = BookRecyclerViewAdapter.RecyclerBookInfo(image, author, title, 1)
 //
 //        `when`(mockRepo.getBookInfo(org.mockito.kotlin.any())).thenReturn(
-//            MutableLiveData(
-//                mutableListOf<BookRecyclerViewAdapter.RecyclerBookInfo>(
-//                    BookRecyclerViewAdapter.RecyclerBookInfo(1, "Orwell", "1984", 1L),
-//                    returnBookInfo
+//                    BookInfo(1, "Orwell", "1984", arrayListOf(), arrayListOf(), arrayListOf())
 //                )
 //            )
 //        )
