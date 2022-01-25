@@ -35,7 +35,11 @@ dependencies {
     // Database
     implementation("org.litote.kmongo:kmongo-coroutine:4.2.8")
 
-
+    // Test
+    def mockitoVersion = '4.0.0'
+    testImplementation "org.mockito.kotlin:mockito-kotlin:$mockitoVersion"
+    testImplementation "org.mockito:mockito-core:$mockitoVersion"
+    testImplementation "org.mockito:mockito-inline:$mockitoVersion"
     testImplementation "io.ktor:ktor-server-tests:$ktor_version"
     testImplementation "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version"
 }
@@ -45,8 +49,10 @@ task fetchJar(type: Jar) {
     manifest {
         attributes 'Main-Class': mainClassName
     }
-    from { configurations.runtimeClasspath.collect{
-        it.isDirectory() ? it: zipTree(it)
-    }}
+    from {
+        configurations.runtimeClasspath.collect {
+            it.isDirectory() ? it : zipTree(it)
+        }
+    }
     with jar
 }

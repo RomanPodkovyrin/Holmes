@@ -14,6 +14,4 @@ data class ProcessedBook(
     val author: String,
     val characters: ArrayList<Entity>,
     val locations: ArrayList<Entity>,
-
-
-    )
+)
