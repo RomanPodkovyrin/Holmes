@@ -17,7 +17,7 @@ class BookRepository {
     companion object {
         @Volatile
         private var instance: BookRepository? = null
-        private var dataSet: ArrayList<BookRecyclerViewAdapter.RecyclerBookInfo> = ArrayList()
+        private var temporaryStaticDataStore: ArrayList<BookRecyclerViewAdapter.RecyclerBookInfo> = ArrayList()
         val data = MutableLiveData<MutableList<BookRecyclerViewAdapter.RecyclerBookInfo>>()
         fun getInstance(): BookRepository = instance ?: synchronized(this) {
             instance ?: BookRepository().also { instance = it }
@@ -39,10 +39,7 @@ class BookRepository {
 
 
     fun getRecyclerBookInfoList(context: Context): MutableLiveData<MutableList<BookRecyclerViewAdapter.RecyclerBookInfo>> {
-        refreshBookInfo(context)
-
-
-        data.value = dataSet
+        data.value = refreshBookInfo(context)
         return data
     }
 
@@ -54,8 +51,11 @@ class BookRepository {
         return appDB.addBook(book)
     }
 
-    private fun refreshBookInfo(context: Context) {
-        dataSet.clear()
+    /**
+     * Returns fresh database dataset
+     */
+    private fun refreshBookInfo(context: Context): ArrayList<BookRecyclerViewAdapter.RecyclerBookInfo> {
+        temporaryStaticDataStore.clear()
         // Get data from the database
         val myDB = BookDatabaseHelper(context)
         val cursor: Cursor? = myDB.getAllBooks()
@@ -63,7 +63,7 @@ class BookRepository {
             //No data
         } else {
             while (cursor.moveToNext()) {
-                dataSet.add(
+                temporaryStaticDataStore.add(
                     BookRecyclerViewAdapter.RecyclerBookInfo(
                         image = R.drawable.ic_book_24,
                         author = cursor.getString(1),
@@ -74,6 +74,7 @@ class BookRepository {
                 )
             }
         }
+        return temporaryStaticDataStore
     }
 
     /**

@@ -77,10 +77,6 @@ class MainActivityViewModel : AndroidViewModel {
 
     fun getNLPServiceStatus(): LiveData<Boolean> = serviceStatus
 
-    fun pingService() {
-        CoreNlpAPI.pingServer(getApplication(), serviceStatus)
-    }
-
     fun getBooks(): LiveData<MutableList<BookRecyclerViewAdapter.RecyclerBookInfo>> {
         val value = repository.getRecyclerBookInfoList(getApplication())
         books.value = value.value
