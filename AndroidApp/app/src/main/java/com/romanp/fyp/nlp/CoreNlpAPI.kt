@@ -79,7 +79,7 @@ class CoreNlpAPI {
                                 ToastUtils.toast(applicationContext, "Already Processed")
                             }
                         }
-                        Log.d(TAG, "Response is: $response")
+                        Log.d(TAG, "$title: $response")
                     },
                     Response.ErrorListener { error ->
 
