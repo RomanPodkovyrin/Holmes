@@ -33,7 +33,7 @@ class EntityListActivity : AppCompatActivity() {
         )
         val listType = intent.getStringExtra(
             EXTRA_MESSAGE_TYPE
-        ) == "Characters"
+        ) == EntityType.CHARACTERS.message
 
         recyclerview = findViewById(R.id.recyclerViewEntities)
 
@@ -58,4 +58,9 @@ class EntityListActivity : AppCompatActivity() {
             InjectorUtils.provideEntityListActivityViewModelFactory(application, bookId, listType)
         viewModel = ViewModelProvider(this, factory).get(EntityListActivityViewModel::class.java)
     }
+}
+
+enum class EntityType(val message: String) {
+    CHARACTERS("Characters"),
+    LOCATIONS("Locations")
 }

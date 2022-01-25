@@ -1,5 +1,7 @@
 package com.romanp.fyp.views
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.webkit.WebView
@@ -15,6 +17,7 @@ import com.romanp.fyp.models.book.BookInfo
 import com.romanp.fyp.models.book.Chapter
 import com.romanp.fyp.models.book.NoMorePagesException
 import com.romanp.fyp.utils.InjectorUtils
+import com.romanp.fyp.utils.ToastUtils
 import com.romanp.fyp.viewmodels.BookReaderActivityViewModel
 
 
@@ -34,7 +37,10 @@ class BookReaderActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val bookId = intent.getLongExtra(BookRecyclerViewAdapter.EXTRA_MESSAGE, -1) //TODO: do i need this default?
+        val bookId = intent.getLongExtra(
+            BookRecyclerViewAdapter.EXTRA_MESSAGE,
+            -1
+        ) //TODO: do i need this default?
         initialiseViewModel(bookId)
 
         Log.i(TAG, "Opened Book Reader Activity")
@@ -59,6 +65,16 @@ class BookReaderActivity : AppCompatActivity() {
         webViewBookContent = findViewById<WebView>(R.id.webViewBookContent).apply {
             loadData(viewModel.getCurrentChapter().text, "text/html", "UTF-8")
         }
+        findViewById<Button>(R.id.buttonCharacters).apply {
+            setOnClickListener {
+                switchToEntityList(context, bookId, EntityType.CHARACTERS)
+            }
+        }
+        findViewById<Button>(R.id.buttonLocations).apply {
+            setOnClickListener {
+                switchToEntityList(context, bookId, EntityType.LOCATIONS)
+            }
+        }
 
         findViewById<Button>(R.id.buttonNext).apply {
             setOnClickListener {
@@ -66,11 +82,7 @@ class BookReaderActivity : AppCompatActivity() {
                 try {
                     updatePage(viewModel.nextButton())
                 } catch (e: NoMorePagesException) {
-                    Toast.makeText(
-                        applicationContext,
-                        "No More Pages",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    ToastUtils.toast(context, "No More Pages")
                 }
 
 
@@ -90,7 +102,7 @@ class BookReaderActivity : AppCompatActivity() {
     }
 
     private fun initialiseViewModel(bookId: Long) {
-        val factory = InjectorUtils.provideBookReaderActivityViewModelFactor(application, bookId)
+        val factory = InjectorUtils.provideBookReaderActivityViewModelFactory(application, bookId)
         viewModel = ViewModelProvider(this, factory).get(BookReaderActivityViewModel::class.java)
     }
 
@@ -100,5 +112,12 @@ class BookReaderActivity : AppCompatActivity() {
         textView = findViewById<TextView>(R.id.textViewBookTitle).apply {
             text = "$bookTitle | ${chapters.chapterTitle}"
         }
+    }
+
+    private fun switchToEntityList(context: Context, bookId: Long, entityType: EntityType) {
+        val intent = Intent(context, EntityListActivity::class.java)
+        intent.putExtra(EntityListActivity.EXTRA_MESSAGE, bookId)
+        intent.putExtra(EntityListActivity.EXTRA_MESSAGE_TYPE, entityType.message)
+        context.startActivity(intent)
     }
 }
