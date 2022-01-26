@@ -61,7 +61,6 @@ class MainActivityViewModel : AndroidViewModel {
     }
 
     private fun setupThreads() {
-        //TODO: if it doesn't set processed to true, then it keeps sending it for processing
         mainHandler = Handler(Looper.getMainLooper())
         pingRunnable = Runnables.PingNLPAPIRunnable(getApplication(), mainHandler, serviceStatus)
         checkRunnable = Runnables.CheckNLPAPIRunnable(getApplication(), mainHandler, books)
