@@ -7,9 +7,10 @@ import io.ktor.server.netty.*
 
 
 fun main() {
+    val address = "mongodb" // "localhost"
 
     // Setup KMongo DB
-    val dbRepo = DataBaseRepository("mongodb://localhost:27017", "Book")
+    val dbRepo = DataBaseRepository("mongodb://$address:27017", "Book")
 
     embeddedServer(Netty, port = 8080, host = "0.0.0.0") {
 
