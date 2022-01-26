@@ -1,15 +1,66 @@
 package com.example
 
-import io.ktor.http.*
-import kotlin.test.*
-import io.ktor.server.testing.*
+import com.google.gson.Gson
+import com.server.models.Entity
+import com.server.models.ProcessedBook
 import com.server.plugins.configureRouting
+import com.server.repository.DataBaseRepository
+import io.ktor.http.*
+import io.ktor.server.testing.*
+import kotlinx.coroutines.runBlocking
+import org.junit.After
+import org.junit.Before
+import org.junit.Rule
+import org.litote.kmongo.eq
+import org.mockito.Mock
+import org.mockito.Mockito
+import org.mockito.junit.MockitoJUnit
+import org.mockito.junit.MockitoRule
+import org.mockito.kotlin.any
+import org.mockito.kotlin.eq
+import kotlin.test.Test
+import kotlin.test.assertEquals
 
 class ApplicationTest {
+    private val gson = Gson()
+
+    @Mock
+    private val mockDBrepo = Mockito.mock(DataBaseRepository::class.java)
+
+    private val processedBooks: List<ProcessedBook> = arrayListOf(
+        ProcessedBook(
+            "1984", "Orwell", arrayListOf(
+                Entity(1, 2, "", "", "Julia")
+            ), arrayListOf(
+                Entity(1, 2, "", "", "London")
+            )
+
+        )
+    )
+
+
+    @Rule
+    @JvmField
+    val mockitoRule: MockitoRule = MockitoJUnit.rule()
+
+    @Before
+    fun setUp() = runBlocking {
+
+        Mockito.`when`(mockDBrepo.find(eq(ProcessedBook::title eq "1984"), any())).thenReturn(processedBooks)
+        Mockito.`when`(mockDBrepo.find(eq(ProcessedBook::title eq "Night Manager"), any())).thenReturn(listOf())
+        Mockito.`when`(mockDBrepo.insertOne(any())).thenReturn(Unit)
+
+        Mockito.clearInvocations(mockDBrepo)
+    }
+
+    @After
+    fun cleanUp() {
+        Mockito.reset(mockDBrepo)
+    }
 
     @Test
-    fun testRoot() {
-        withTestApplication({ configureRouting() }) {
+    fun testPing() {
+        withTestApplication({ configureRouting(mockDBrepo) }) {
             handleRequest(HttpMethod.Get, "/").apply {
                 assertEquals(HttpStatusCode.OK, response.status())
                 assertEquals("ping", response.content)
@@ -18,20 +69,37 @@ class ApplicationTest {
     }
 
     @Test
-    fun testBookCheck() {
+    fun `check book that exists`() {
         val bookTitle = "1984"
         val bookAuthor = "George Orwell"
-        withTestApplication({ configureRouting() }) {
+        withTestApplication({ configureRouting(mockDBrepo) }) {
             handleRequest(HttpMethod.Get, "/check-book/$bookTitle/$bookAuthor").apply {
                 assertEquals(HttpStatusCode.OK, response.status())
-                assertEquals("IMPLEMENT $bookTitle and $bookAuthor", response.content)
+
+                val json = response.content
+                val actualProcessedBook = gson.fromJson(json, ProcessedBook::class.java)
+                assertEquals<ProcessedBook>(processedBooks[0], actualProcessedBook)
+            }
+        }
+    }
+
+    @Test
+    fun `check book that does not exists`() {
+        val bookTitle = "Night Manager"
+        val bookAuthor = "John le Carre"
+        withTestApplication({ configureRouting(mockDBrepo) }) {
+            handleRequest(HttpMethod.Get, "/check-book/$bookTitle/$bookAuthor").apply {
+                assertEquals(HttpStatusCode.OK, response.status())
+
+                //TODO: used enums for reponses
+                assertEquals("Does not Exist", response.content)
             }
         }
     }
 
     @Test
     fun testBookCheckNoParams() {
-        withTestApplication({ configureRouting() }) {
+        withTestApplication({ configureRouting(mockDBrepo) }) {
             handleRequest(HttpMethod.Get, "/check-book/").apply {
                 assertEquals(HttpStatusCode.NotFound, response.status())
             }

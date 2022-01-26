@@ -35,7 +35,9 @@ class BookReaderActivityViewModelTest {
             Chapter("Chapter 1", "text 1"),
             Chapter("Chapter 2", "text 2"),
             Chapter("Chapter 3", "text 3")
-        )
+        ),
+        ArrayList(),
+        ArrayList()
     )
 
     @Mock

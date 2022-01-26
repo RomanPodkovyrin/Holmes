@@ -12,7 +12,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.FYP"
         android:usesCleartextTraffic="true">
-        <activity android:name=".views.BookGraph"></activity>
+        <activity
+            android:name=".views.EntityListActivity"
+            android:exported="false" />
+        <activity android:name=".views.BookGraph" />
         <activity
             android:name=".views.BookReaderActivity"
             android:parentActivityName=".views.MainActivity" />

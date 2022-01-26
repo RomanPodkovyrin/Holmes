@@ -19,7 +19,14 @@ class InjectorUtilsTest {
 
     @Test
     fun `test BookReaderActivityViewModelFactory Injector`() {
-        val factory = InjectorUtils.provideBookReaderActivityViewModelFactor(getApplication(), 1)
+        val factory = InjectorUtils.provideBookReaderActivityViewModelFactory(getApplication(), 1)
+        assertNotNull(factory)
+    }
+
+    @Test
+    fun `test EntityListActivityViewModelFactory Injector`() {
+        val factory =
+            InjectorUtils.provideEntityListActivityViewModelFactory(getApplication(), 1, true)
         assertNotNull(factory)
     }
 }

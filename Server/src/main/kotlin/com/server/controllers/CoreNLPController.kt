@@ -20,10 +20,7 @@ private val client = HttpClient(CIO) {
 }
 
 suspend fun sendBookToCoreNLP(
-    pipelineContext: PipelineContext<Unit, ApplicationCall>,
-    coreNlpUrl: String,
-    coreNlpPort: String,
-    text: String
+    pipelineContext: PipelineContext<Unit, ApplicationCall>, coreNlpUrl: String, coreNlpPort: String, text: String
 ): String {
     //TODO: LOGGING
     val response: Deferred<String> = pipelineContext.async {
@@ -32,12 +29,11 @@ suspend fun sendBookToCoreNLP(
                 timeout {
                     requestTimeoutMillis = 120000 // 2 mins
                 }
-                val properties: Map<String, Any> =
-                    mapOf(
-                        "annotators" to "tokenize,ssplit,ner",//,parse,depparse,coref,kbp,quote,pos
-                        "outputFormat" to "json",
+                val properties: Map<String, Any> = mapOf(
+                    "annotators" to "tokenize,ssplit,ner",//,parse,depparse,coref,kbp,quote,pos
+                    "outputFormat" to "json",
 
-                        )
+                    )
                 parameter("properties", Gson().toJson(properties))
                 body = text
             }
