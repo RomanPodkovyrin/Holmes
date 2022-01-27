@@ -12,10 +12,10 @@ import com.romanp.fyp.repositories.BookRepository
 class BookReaderActivityViewModel : AndroidViewModel {
 
     companion object {
-        private const val TAG = "MainActivityViewModel"
+        private const val TAG = "BookReaderActivityViewModel"
     }
 
-    private lateinit var repository: BookRepository
+    private var repository: BookRepository
 
     /**
      * @param application

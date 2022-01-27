@@ -4,10 +4,10 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -21,29 +21,29 @@ import org.jetbrains.annotations.TestOnly
 class MainActivity : AppCompatActivity() {
     private lateinit var adapter: BookRecyclerViewAdapter
 
-    // ArrayList of class ItemsViewModel
-    private val data = ArrayList<BookRecyclerViewAdapter.RecyclerBookInfo>()
-
-    private lateinit var viewModel: MainActivityViewModel;
+    private lateinit var viewModel: MainActivityViewModel
     private lateinit var recyclerview: RecyclerView
 
     companion object {
         private const val TAG = "MainActivity"
-        const val EXTRA_MESSAGE = "com.example.MainActivity.book"
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.v(TAG, "$TAG Destroyed")
+        viewModel.onDestroy()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Log.v(TAG, "View Created")
         setContentView(R.layout.activity_main)
-        // getting the recyclerview by its id
-        recyclerview = findViewById<RecyclerView>(R.id.recyclerViewBooks)
 
+        recyclerview = findViewById<RecyclerView>(R.id.recyclerViewBooks)
 
         // view model
         initialiseViewModel()
         initialiseRecyclerViewAdapter()
-
 
         // Finding layout views by id
         val buttonLoadBook = findViewById<Button>(R.id.loadBookButton)
@@ -66,16 +66,26 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initialiseViewModel() {
+        Log.i(TAG, "Initialising view model")
         val factory = InjectorUtils.provideMainActivityViewModelFactory(application)
         viewModel = ViewModelProvider(this, factory).get(MainActivityViewModel::class.java)
-        viewModel.getBooks().observe(this, Observer {
+        viewModel.startThreads()//TODO: is this a good idea?
+        viewModel.getBooks().observe(this, {
             // Triggers when it's changed
             adapter.notifyDataSetChanged()
             Log.i(
                 TAG,
-                "Observer called it ${it as MutableList<BookRecyclerViewAdapter.RecyclerBookInfo>}"
+                "Book list got updated ${it as MutableList<BookRecyclerViewAdapter.RecyclerBookInfo>}"
             )
 
+        })
+        viewModel.getNLPServiceStatus().observe(this, {
+            val tvServiceStatus = findViewById<TextView>(R.id.tvServiceStatus)
+            tvServiceStatus.text = when (it) {
+                true -> resources.getString(R.string.service_online)
+                false -> resources.getString(R.string.service_offline)
+            }
+            Log.i(TAG, "Service Status got Updated to: $it")
         })
     }
 
@@ -105,40 +115,14 @@ class MainActivity : AppCompatActivity() {
                 Log.i(TAG, "File selected $selectedFile")//The uri with the location of the file
                 Log.i(TAG, "Loading book")
 
-
-                val id = viewModel.addBook(selectedFile)
-                if (id < 0) {
-                    Toast.makeText(applicationContext, "Issue while loading", Toast.LENGTH_SHORT)
-                        .show()
-                    return@registerForActivityResult
-                }
+                // TODO: Run in a thread while the book is being processed
+                viewModel.addBook(selectedFile)
 
                 adapter.notifyDataSetChanged()
 
             }
         }
 
-
-
-//    buttonExtract.setOnClickListener {
-//            Log.i(TAG, "Extract Button clicked")
-//            Log.i(TAG, editText.text.toString())
-//
-//            try {
-//                Thread {
-////                    CoreNLP_API.pingServer(applicationContext, textOutPut)
-//                    CoreNlpAPI.nerTagger(applicationContext, editText.text.toString(), textOutPut)
-//                }.start()
-//
-//            } catch (e: Exception) {
-//                Log.e(TAG, "Error extracting names: $e")
-//                Toast.makeText(
-//                    applicationContext,
-//                    getString(R.string.error_extracting_names),
-//                    Toast.LENGTH_SHORT
-//                ).show()
-//            }
-//        }
 
     @TestOnly
     fun setTestViewModel(testViewModel: MainActivityViewModel) {

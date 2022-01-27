@@ -85,7 +85,7 @@ class BookUtil {
                 )
             }
 
-            return BookInfo(R.drawable.ic_book_24, bookTitle, author, chapters)
+            return BookInfo(R.drawable.ic_book_24, bookTitle, author, chapters, ArrayList(), ArrayList())
         }
     }
 }
