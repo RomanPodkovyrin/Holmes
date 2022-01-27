@@ -61,7 +61,7 @@ class ApplicationTest {
 
     @Test
     fun testPing() {
-        withTestApplication({ configureRouting(mockDBrepo) }) {
+        withTestApplication({ configureRouting(mockDBrepo,"","") }) {
             handleRequest(HttpMethod.Get, "/").apply {
                 assertEquals(HttpStatusCode.OK, response.status())
                 assertEquals(RoutingResponses.PING.message, response.content)
@@ -73,7 +73,7 @@ class ApplicationTest {
     fun `check book that exists`() {
         val bookTitle = "1984"
         val bookAuthor = "George Orwell"
-        withTestApplication({ configureRouting(mockDBrepo) }) {
+        withTestApplication({ configureRouting(mockDBrepo,"","") }) {
             handleRequest(HttpMethod.Get, "/check-book/$bookTitle/$bookAuthor").apply {
                 assertEquals(HttpStatusCode.OK, response.status())
 
@@ -88,11 +88,10 @@ class ApplicationTest {
     fun `check book that does not exists`() {
         val bookTitle = "Night Manager"
         val bookAuthor = "John le Carre"
-        withTestApplication({ configureRouting(mockDBrepo) }) {
+        withTestApplication({ configureRouting(mockDBrepo,"","") }) {
             handleRequest(HttpMethod.Get, "/check-book/$bookTitle/$bookAuthor").apply {
                 assertEquals(HttpStatusCode.OK, response.status())
 
-                //TODO: used enums for reponses
                 assertEquals(RoutingResponses.DOES_NOT_EXIST.message, response.content)
             }
         }
@@ -100,7 +99,7 @@ class ApplicationTest {
 
     @Test
     fun testBookCheckNoParams() {
-        withTestApplication({ configureRouting(mockDBrepo) }) {
+        withTestApplication({ configureRouting(mockDBrepo,"","") }) {
             handleRequest(HttpMethod.Get, "/check-book/").apply {
                 assertEquals(HttpStatusCode.NotFound, response.status())
             }

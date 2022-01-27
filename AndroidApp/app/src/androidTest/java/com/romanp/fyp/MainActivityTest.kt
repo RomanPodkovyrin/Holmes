@@ -18,7 +18,7 @@ import org.junit.runner.RunWith
 @LargeTest
 class MainActivityTest {
 
-    private var LoadBookButtonText: String = "Load Book"
+    private var loadBookButtonText: String = "Load Book"
 
     @get:Rule
     var activityRule: ActivityScenarioRule<MainActivity> =
@@ -28,7 +28,7 @@ class MainActivityTest {
     @Test
     fun loadButtonWorks() {
         onView(withId(R.id.loadBookButton))
-            .check(matches(withText(LoadBookButtonText)))
+            .check(matches(withText(loadBookButtonText)))
         onView(withId(R.id.loadBookButton)).perform(click())
     }
 

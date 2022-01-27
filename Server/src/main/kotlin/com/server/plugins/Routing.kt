@@ -13,25 +13,10 @@ import io.ktor.response.*
 import io.ktor.routing.*
 import org.litote.kmongo.eq
 import org.litote.kmongo.json
-import java.util.*
-import kotlin.system.exitProcess
 
 
-fun Application.configureRouting(dbRepo: DataBaseRepository) {
-    var coreNlpUrl = "localhost"
-    var coreNlpPort = "9000"
-    // Load properties
-    // TODO move to application and pass in the parameters for easy testability
-    try {
-        val fis = javaClass.getResourceAsStream("/server.properties")
-        val prop = Properties()
-        prop.load(fis)
-        coreNlpUrl = prop.getProperty("coreNLP_url")
-        coreNlpPort = prop.getProperty("coreNLP_port")
-    } catch (e: Exception) {
-        log.error("Error while loading properties file $e")
-        exitProcess(-1)
-    }
+fun Application.configureRouting(dbRepo: DataBaseRepository, coreNlpUrl: String, coreNlpPort: String) {
+
 
     routing {
 
