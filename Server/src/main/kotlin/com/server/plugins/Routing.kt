@@ -1,6 +1,6 @@
 package com.server.plugins
 
-import com.server.controllers.sendBookToCoreNLP
+import com.server.controllers.CoreNLPController
 import com.server.models.Entity
 import com.server.models.ProcessedBook
 import com.server.repository.DataBaseRepository
@@ -15,7 +15,7 @@ import org.litote.kmongo.eq
 import org.litote.kmongo.json
 
 
-fun Application.configureRouting(dbRepo: DataBaseRepository, coreNlpUrl: String, coreNlpPort: String) {
+fun Application.configureRouting(dbRepo: DataBaseRepository, coreNLPCont: CoreNLPController) {
 
 
     routing {
@@ -73,7 +73,7 @@ fun Application.configureRouting(dbRepo: DataBaseRepository, coreNlpUrl: String,
 
             call.respondText(RoutingResponses.RECEIVED.message)
 
-            val requestContent = sendBookToCoreNLP(this, coreNlpUrl, coreNlpPort, text)
+            val requestContent = coreNLPCont.sendBookToCoreNLP(this, text)
             if (requestContent == "ERROR: CORENLP") {
                 //TODO: never seen this one actually fire
                 call.response.status(HttpStatusCode(500, "Server side error"))

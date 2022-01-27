@@ -1,5 +1,6 @@
 package com.server
 
+import com.server.controllers.CoreNLPController
 import com.server.plugins.configureRouting
 import com.server.repository.DataBaseRepository
 import com.typesafe.config.ConfigFactory
@@ -32,13 +33,13 @@ fun main() {
 //        log.error("Error while loading properties file $e")
         exitProcess(-1)
     }
-    //TODO: pass corenlp controller for easy testability
 
     // Setup KMongo DB
     val dbRepo = DataBaseRepository("mongodb://$mongodbUrl:$mongodbPort", "Book")
+    val coreNLPCont = CoreNLPController(coreNlpUrl, coreNlpPort)
 
     embeddedServer(Netty, port = 8080, host = "0.0.0.0") {
 
-        configureRouting(dbRepo, coreNlpUrl, coreNlpPort)
+        configureRouting(dbRepo, coreNLPCont)
     }.start(wait = true)
 }
