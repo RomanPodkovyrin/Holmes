@@ -20,13 +20,17 @@ fun Application.configureRouting(dbRepo: DataBaseRepository, coreNlpUrl: String,
 
     routing {
 
-        // Root used to ping the server
+        /**
+        Root used to ping the server
+         */
         get("/") {
             log.info("'/' ping from ${call.request.local.remoteHost}")
             call.respondText(RoutingResponses.PING.message)
         }
 
-        // Checks if the book has already been processed
+        /**
+         * Checks if the book has already been processed
+         */
         get("/check-book/{bookName}/{bookAuthor}") {
             val title = call.parameters["bookName"]
             val author = call.parameters["bookAuthor"]
@@ -37,45 +41,49 @@ fun Application.configureRouting(dbRepo: DataBaseRepository, coreNlpUrl: String,
                 call.respondText(RoutingResponses.DOES_NOT_EXIST.message)
                 return@get
             }
-            val book = dbRepo.find(ProcessedBook::title eq title, ProcessedBook::author eq author).first()
+
+            val book = list.first()
             call.respondText(book.json)
         }
 
-        // Processes the book
+        /**
+         * Processes the book
+         */
         post("/process-book/{bookName}/{bookAuthor}") {
             val title = call.parameters["bookName"]
             val author = call.parameters["bookAuthor"]
             if (title.isNullOrEmpty() || author.isNullOrEmpty()) {
                 //TODO: don't think this one is being called when not giving params, gives 404 instead
+                //TODO: should i check it for other routes as well?
                 call.response.status(HttpStatusCode(400, "title or author not given"))
-
                 return@post
             }
             log.info("'/process-book' Process book is called for book $title - $author")
-            val text = call.receiveText()
 
-            log.debug("Received body of size ${text.length}")
             val list = dbRepo.find(ProcessedBook::title eq title, ProcessedBook::author eq author).toList()
             if (list.isNotEmpty()) {
-
                 log.info("Book has already been processed before")
                 call.respondText(RoutingResponses.ALREADY_PROCESSED.message)
                 return@post
             }
+
+            //TODO: should i receive json instead?
+            val text = call.receiveText()
+            log.debug("Received body of size ${text.length}")
+
             call.respondText(RoutingResponses.RECEIVED.message)
 
             val requestContent = sendBookToCoreNLP(this, coreNlpUrl, coreNlpPort, text)
             if (requestContent == "ERROR: CORENLP") {
-                //TODO: never seen this on actually fire
+                //TODO: never seen this one actually fire
                 call.response.status(HttpStatusCode(500, "Server side error"))
 
                 return@post
             }
+            //TODO: check if timed out enter error state for the given book
 
             val (person: ArrayList<Entity>, location: ArrayList<Entity>) = extractUsefulTags(requestContent)
             dbRepo.insertOne(ProcessedBook(title, author, characters = person, locations = location))
-//            log.info("Returning processed book")
-//            call.respondText("PERSON ${person}, LOCATION $location")
         }
     }
 }
