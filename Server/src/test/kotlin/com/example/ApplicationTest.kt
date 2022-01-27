@@ -5,6 +5,7 @@ import com.server.models.Entity
 import com.server.models.ProcessedBook
 import com.server.plugins.configureRouting
 import com.server.repository.DataBaseRepository
+import com.server.responses.RoutingResponses
 import io.ktor.http.*
 import io.ktor.server.testing.*
 import kotlinx.coroutines.runBlocking
@@ -63,7 +64,7 @@ class ApplicationTest {
         withTestApplication({ configureRouting(mockDBrepo) }) {
             handleRequest(HttpMethod.Get, "/").apply {
                 assertEquals(HttpStatusCode.OK, response.status())
-                assertEquals("ping", response.content)
+                assertEquals(RoutingResponses.PING.message, response.content)
             }
         }
     }
@@ -92,7 +93,7 @@ class ApplicationTest {
                 assertEquals(HttpStatusCode.OK, response.status())
 
                 //TODO: used enums for reponses
-                assertEquals("Does not Exist", response.content)
+                assertEquals(RoutingResponses.DOES_NOT_EXIST.message, response.content)
             }
         }
     }

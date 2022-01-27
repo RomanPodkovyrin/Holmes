@@ -4,6 +4,7 @@ import com.server.controllers.sendBookToCoreNLP
 import com.server.models.Entity
 import com.server.models.ProcessedBook
 import com.server.repository.DataBaseRepository
+import com.server.responses.RoutingResponses
 import com.server.utils.extractUsefulTags
 import io.ktor.application.*
 import io.ktor.http.*
@@ -37,7 +38,7 @@ fun Application.configureRouting(dbRepo: DataBaseRepository) {
         // Root used to ping the server
         get("/") {
             log.info("'/' ping from ${call.request.local.remoteHost}")
-            call.respondText("ping")
+            call.respondText(RoutingResponses.PING.message)
         }
 
         // Checks if the book has already been processed
@@ -48,8 +49,7 @@ fun Application.configureRouting(dbRepo: DataBaseRepository) {
 
             val list = dbRepo.find(ProcessedBook::title eq title, ProcessedBook::author eq author)
             if (list.isEmpty()) {
-                //TODO: make enum with messages
-                call.respondText("Does not Exist")
+                call.respondText(RoutingResponses.DOES_NOT_EXIST.message)
                 return@get
             }
             val book = dbRepo.find(ProcessedBook::title eq title, ProcessedBook::author eq author).first()
@@ -74,10 +74,10 @@ fun Application.configureRouting(dbRepo: DataBaseRepository) {
             if (list.isNotEmpty()) {
 
                 log.info("Book has already been processed before")
-                call.respondText("Already Processed")
+                call.respondText(RoutingResponses.ALREADY_PROCESSED.message)
                 return@post
             }
-            call.respondText("Received")
+            call.respondText(RoutingResponses.RECEIVED.message)
 
             val requestContent = sendBookToCoreNLP(this, coreNlpUrl, coreNlpPort, text)
             if (requestContent == "ERROR: CORENLP") {
