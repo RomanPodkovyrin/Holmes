@@ -15,7 +15,7 @@ private val client = HttpClient(CIO) {
         requestTimeout = 0 // 0 to disable, or a millisecond value to fit your needs
     }
     install(HttpTimeout) {
-        requestTimeoutMillis = 120000 // 2 mins
+        requestTimeoutMillis = 360000 // 6 * 60000 = 6 minutes
     }
 }
 
@@ -27,7 +27,7 @@ suspend fun sendBookToCoreNLP(
         try {
             client.post("http://$coreNlpUrl:$coreNlpPort/") {
                 timeout {
-                    requestTimeoutMillis = 120000 // 2 mins
+                    requestTimeoutMillis = 360000 // 6 * 60000 = 6 minutes
                 }
                 val properties: Map<String, Any> = mapOf(
                     "annotators" to "tokenize,ssplit,ner",//,parse,depparse,coref,kbp,quote,pos
