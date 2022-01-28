@@ -33,7 +33,7 @@ class CoreNLPController(private val coreNlpUrl: String, private val coreNlpPort:
                         requestTimeoutMillis = 360000 // 6 * 60000 = 6 minutes
                     }
                     val properties: Map<String, Any> = mapOf(
-                        "annotators" to "tokenize,ssplit,ner",//,parse,depparse,coref,kbp,quote,pos
+                        "annotators" to "tokenize,ssplit,ner, coref",//,parse,depparse,coref,kbp,quote,pos
                         "outputFormat" to "json",
 
                         )
