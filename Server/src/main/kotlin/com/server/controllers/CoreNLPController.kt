@@ -15,7 +15,8 @@ private val client = HttpClient(CIO) {
         requestTimeout = 0 // 0 to disable, or a millisecond value to fit your needs
     }
     install(HttpTimeout) {
-        requestTimeoutMillis = 360000 // 6 * 60000 = 6 minutes
+        //TODO: set the same timeout for corenlp docker
+        requestTimeoutMillis = 600000 // 10 * 60000 = 10 minutes
     }
 }
 
@@ -30,7 +31,8 @@ class CoreNLPController(private val coreNlpUrl: String, private val coreNlpPort:
             try {
                 client.post("http://$coreNlpUrl:$coreNlpPort/") {
                     timeout {
-                        requestTimeoutMillis = 360000 // 6 * 60000 = 6 minutes
+                        //TODO: set the same timeout for corenlp docker
+                        requestTimeoutMillis = 600000 // 10 * 60000 = 10 minutes
                     }
                     val properties: Map<String, Any> = mapOf(
                         "annotators" to "tokenize,ssplit,ner, coref",//,parse,depparse,coref,kbp,quote,pos
