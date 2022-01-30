@@ -1,7 +1,7 @@
 package com.server.plugins
 
 import com.server.controllers.CoreNLPController
-import com.server.models.ProcessedBook
+import com.server.models.BookData
 import com.server.repository.DataBaseRepository
 import com.server.responses.RoutingResponses
 import com.server.utils.extractUsefulTags
@@ -35,7 +35,7 @@ fun Application.configureRouting(dbRepo: DataBaseRepository, coreNLPCont: CoreNL
             val author = call.parameters["bookAuthor"]
             log.info("'/check-book' Check book called for book $title - $author\"")
 
-            val list = dbRepo.find(ProcessedBook::title eq title, ProcessedBook::author eq author)
+            val list = dbRepo.find(BookData::title eq title, BookData::author eq author)
             if (list.isEmpty()) {
                 call.respondText(RoutingResponses.DOES_NOT_EXIST.message)
                 return@get
@@ -59,7 +59,7 @@ fun Application.configureRouting(dbRepo: DataBaseRepository, coreNLPCont: CoreNL
             }
             log.info("'/process-book' Process book is called for book $title - $author")
 
-            val list = dbRepo.find(ProcessedBook::title eq title, ProcessedBook::author eq author).toList()
+            val list = dbRepo.find(BookData::title eq title, BookData::author eq author).toList()
             if (list.isNotEmpty()) {
                 log.info("Book has already been processed before")
                 call.respondText(RoutingResponses.ALREADY_PROCESSED.message)
@@ -81,8 +81,8 @@ fun Application.configureRouting(dbRepo: DataBaseRepository, coreNLPCont: CoreNL
             }
             //TODO: check if timed out enter error state for the given book
 
-            val processedBook = extractUsefulTags(title, author, requestContent)
-            dbRepo.insertOne(processedBook)
+            val bookData = extractUsefulTags(title, author, requestContent)
+            dbRepo.insertOne(bookData)
         }
     }
 }

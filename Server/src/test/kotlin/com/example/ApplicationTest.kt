@@ -1,9 +1,10 @@
 package com.example
 
+import com.example.TestUtils.Companion.getFileFromPath
 import com.google.gson.Gson
 import com.server.controllers.CoreNLPController
+import com.server.models.BookData
 import com.server.models.Entity
-import com.server.models.ProcessedBook
 import com.server.plugins.configureRouting
 import com.server.repository.DataBaseRepository
 import com.server.responses.RoutingResponses
@@ -21,30 +22,11 @@ import org.mockito.junit.MockitoRule
 import org.mockito.kotlin.any
 import org.mockito.kotlin.eq
 import org.mockito.kotlin.verifyNoInteractions
-import java.io.File
-import java.net.URL
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.fail
 
 class ApplicationTest {
 
-
-    private fun getFileFromPath(fileName: String): File? {
-        var resource: URL? = null
-        try {
-            resource = this::class.java.classLoader.getResource(fileName)
-
-        } catch (e: Error) {
-            fail("Problem accessing test files")
-        }
-        if (resource == null) {
-            fail("Problem accessing test files")
-            return null
-        }
-
-        return File(resource.file)
-    }
 
     private val gson = Gson()
 
@@ -54,12 +36,30 @@ class ApplicationTest {
     @Mock
     private val mockCoreNLPController = Mockito.mock(CoreNLPController::class.java)
 
-    private val processedBooks: List<ProcessedBook> = arrayListOf(
-        ProcessedBook(
+    private val processedBooks: List<BookData> = arrayListOf(
+        BookData(
             "1984", "Orwell", arrayListOf(
-                Entity(1, 2, "", "", "Julia")
+                Entity(
+                    "Julia",
+                    aliases = arrayListOf<String>().toSet(),
+                    "PERSON",
+                    "PROPER",
+                    "SINGULAR",
+                    "FEMALE",
+                    "ANIMATE",
+                    arrayListOf(Pair(1, 4))
+                )
             ), arrayListOf(
-                Entity(1, 2, "", "", "London")
+                Entity(
+                    "Julia",
+                    aliases = arrayListOf<String>().toSet(),
+                    "CITY",
+                    "PROPER",
+                    "SINGULAR",
+                    "NEUTRAL",
+                    "INANIMATE",
+                    arrayListOf(Pair(5, 2))
+                )
             )
 
         )
@@ -74,9 +74,9 @@ class ApplicationTest {
     @Before
     fun setUp() = runBlocking {
 
-        Mockito.`when`(mockDBrepo.find(eq(ProcessedBook::title eq "1984"), any())).thenReturn(processedBooks)
-        Mockito.`when`(mockDBrepo.find(eq(ProcessedBook::title eq "Night Manager"), any())).thenReturn(listOf())
-        Mockito.`when`(mockDBrepo.find(eq(ProcessedBook::title eq "Sherlock Holmes"), any())).thenReturn(listOf())
+        Mockito.`when`(mockDBrepo.find(eq(BookData::title eq "1984"), any())).thenReturn(processedBooks)
+        Mockito.`when`(mockDBrepo.find(eq(BookData::title eq "Night Manager"), any())).thenReturn(listOf())
+        Mockito.`when`(mockDBrepo.find(eq(BookData::title eq "Sherlock Holmes"), any())).thenReturn(listOf())
         Mockito.`when`(mockDBrepo.insertOne(any())).thenReturn(Unit)
 
         Mockito.`when`(mockCoreNLPController.sendBookToCoreNLP(any(), any())).thenReturn(processedText)
@@ -109,8 +109,8 @@ class ApplicationTest {
                 assertEquals(HttpStatusCode.OK, response.status())
 
                 val json = response.content
-                val actualProcessedBook = gson.fromJson(json, ProcessedBook::class.java)
-                assertEquals<ProcessedBook>(processedBooks[0], actualProcessedBook, "Should return processed book")
+                val actualProcessedBook = gson.fromJson(json, BookData::class.java)
+                assertEquals<BookData>(processedBooks[0], actualProcessedBook, "Should return processed book")
             }
         }
     }
