@@ -1,7 +1,6 @@
 package com.server.plugins
 
 import com.server.controllers.CoreNLPController
-import com.server.models.Entity
 import com.server.models.ProcessedBook
 import com.server.repository.DataBaseRepository
 import com.server.responses.RoutingResponses
@@ -82,8 +81,8 @@ fun Application.configureRouting(dbRepo: DataBaseRepository, coreNLPCont: CoreNL
             }
             //TODO: check if timed out enter error state for the given book
 
-            val (person: ArrayList<Entity>, location: ArrayList<Entity>) = extractUsefulTags(requestContent)
-            dbRepo.insertOne(ProcessedBook(title, author, characters = person, locations = location))
+            val processedBook = extractUsefulTags(title, author, requestContent)
+            dbRepo.insertOne(processedBook)
         }
     }
 }

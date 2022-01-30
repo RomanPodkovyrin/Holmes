@@ -2,8 +2,10 @@ package com.server.utils
 
 import com.google.gson.JsonParser
 import com.server.models.Entity
+import com.server.models.ProcessedBook
 
-fun extractUsefulTags(requestContent: String): Pair<ArrayList<Entity>, ArrayList<Entity>> {
+
+fun extractUsefulTags(title: String, author: String, requestContent: String): ProcessedBook {
     //TODO: LOGGING
     val jsonObject = JsonParser.parseString(requestContent).asJsonObject
     val person: ArrayList<Entity> = arrayListOf()
@@ -33,5 +35,5 @@ fun extractUsefulTags(requestContent: String): Pair<ArrayList<Entity>, ArrayList
             }
         }
     }
-    return Pair(person, location)
+    return ProcessedBook(title, author, characters = person, locations = location)
 }
