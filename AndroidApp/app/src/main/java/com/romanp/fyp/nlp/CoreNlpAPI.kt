@@ -23,7 +23,7 @@ class CoreNlpAPI {
     companion object {
         //TODO: make properties file to change it there
 //        private const val url = "http://108.61.173.161:8080/" //online server
-//        private const val url = "http://192.168.129.26:8080/" //connected android device
+//        private const val url = "http://192.168.129.26:8080/" //connected android device (find with ip addr)
         private const val url = "http://10.0.2.2:8080/" //localhost from emulator
 
         private const val TAG = "CoreNLPAPI"
@@ -35,9 +35,14 @@ class CoreNlpAPI {
             val stringRequest = StringRequest(
                 Request.Method.GET, url,
                 { response ->
-                    if (serviceStatus.value == false || serviceStatus.value == null) serviceStatus.postValue(true)
-                    //TODO: check if it actually sends ping message back
-                    Log.d(TAG, "Got ping back with message: $response")
+                    if ((serviceStatus.value == false || serviceStatus.value == null) && response.equals(
+                            ServerResponse.PING.message
+                        )
+                    ) {
+                        serviceStatus.postValue(true)
+                        Log.d(TAG, "Got ping back with message: $response")
+
+                    }
                 },
                 {
                     if (serviceStatus.value == true) serviceStatus.postValue(false)
