@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.romanp.fyp.adapters.entityRecyclerView.EntityRecyclerViewAdapter
 import com.romanp.fyp.models.book.BookInfo
 import com.romanp.fyp.models.book.Entity
+import com.romanp.fyp.models.book.getBookInfoErrorState
 import com.romanp.fyp.repositories.BookRepository
 
 class EntityListActivityViewModel : AndroidViewModel {
@@ -43,8 +44,11 @@ class EntityListActivityViewModel : AndroidViewModel {
 
 
     private fun getBookInfo(bookId: Long): BookInfo {
-        currentBook = repository.getBookInfo(getApplication(), bookId)
-
+        currentBook = try {
+            repository.getBookInfo(getApplication(), bookId)
+        } catch (e: Exception) {
+            return getBookInfoErrorState()
+        }
         return currentBook
     }
 
