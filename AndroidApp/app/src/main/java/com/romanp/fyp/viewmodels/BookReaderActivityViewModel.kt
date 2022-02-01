@@ -1,13 +1,16 @@
 package com.romanp.fyp.viewmodels
 
 import android.app.Application
+import android.content.Context
+import android.content.Intent
 import android.util.Log
-import androidx.lifecycle.*
-import com.romanp.fyp.models.book.AlreadyOnTheFirstPageException
-import com.romanp.fyp.models.book.BookInfo
-import com.romanp.fyp.models.book.Chapter
-import com.romanp.fyp.models.book.NoMorePagesException
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import com.romanp.fyp.models.book.*
 import com.romanp.fyp.repositories.BookRepository
+import com.romanp.fyp.views.EntityListActivity
+import com.romanp.fyp.views.EntityType
 
 class BookReaderActivityViewModel : AndroidViewModel {
 
@@ -16,6 +19,7 @@ class BookReaderActivityViewModel : AndroidViewModel {
     }
 
     private var repository: BookRepository
+    private val bookId: Long
 
     /**
      * @param application
@@ -26,8 +30,11 @@ class BookReaderActivityViewModel : AndroidViewModel {
         application
     ) {
         this@BookReaderActivityViewModel.repository = repository
+        this@BookReaderActivityViewModel.bookId = bookId
         getBookInfo(bookId)
     }
+
+    fun getBookID() = bookId
 
     private lateinit var currentBook: BookInfo
 
@@ -35,9 +42,16 @@ class BookReaderActivityViewModel : AndroidViewModel {
 
     fun getCurrentBookInfo() = currentBook
 
+    /**
+     * @return bookInfo with error state if there was a problem getting it
+     */
     private fun getBookInfo(bookId: Long): BookInfo {
-        currentBook = repository.getBookInfo(getApplication(), bookId)
-
+        currentBook = try {
+            repository.getBookInfo(getApplication(), bookId)
+        } catch (e: Exception) {
+            Log.e(TAG, "Problem Loading Book with ID: $bookId")
+            getBookInfoErrorState()
+        }
         return currentBook
     }
 
@@ -69,6 +83,13 @@ class BookReaderActivityViewModel : AndroidViewModel {
 
     fun getCurrentChapter(): Chapter {
         return currentBook.chapters[currentPage]
+    }
+
+    fun switchToEntityList(context: Context, entityType: EntityType) {
+        val intent = Intent(context, EntityListActivity::class.java)
+        intent.putExtra(EntityListActivity.EXTRA_MESSAGE, getBookID())
+        intent.putExtra(EntityListActivity.EXTRA_MESSAGE_TYPE, entityType.message)
+        context.startActivity(intent)
     }
 
 

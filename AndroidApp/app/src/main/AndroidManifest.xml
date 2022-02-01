@@ -15,7 +15,7 @@
         <activity
             android:name=".views.EntityListActivity"
             android:exported="false" />
-        <activity android:name=".views.BookGraph" />
+        <activity android:name=".views.BookGraphActivity" />
         <activity
             android:name=".views.BookReaderActivity"
             android:parentActivityName=".views.MainActivity" />

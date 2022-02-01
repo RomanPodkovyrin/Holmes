@@ -47,12 +47,7 @@ class MainActivity : AppCompatActivity() {
 
         // Finding layout views by id
         val buttonLoadBook = findViewById<Button>(R.id.loadBookButton)
-        val buttonGraph = findViewById<Button>(R.id.getGraph)
 
-        buttonGraph.setOnClickListener {
-            val intent = Intent(this, BookGraph::class.java)
-            startActivity(intent)
-        }
 
 
         buttonLoadBook.setOnClickListener {

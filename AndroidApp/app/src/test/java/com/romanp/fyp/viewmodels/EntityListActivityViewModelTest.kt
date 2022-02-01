@@ -30,12 +30,12 @@ class EntityListActivityViewModelTest {
             Chapter("Chapter 3", "text 3")
         ),
         arrayListOf(
-            Entity(1, 6, "", "", "Julia"),
-            Entity(10, 8, "", "", "Winston")
+            Entity("Julia", setOf(),"","","","","", arrayListOf()),
+            Entity("Winston", setOf(),"","","","","", arrayListOf())
         ),
         arrayListOf(
-            Entity(122, 131, "", "", "Oceania"),
-            Entity(1340, 1349, "", "", "Eastasia")
+            Entity("Eastasia", setOf(),"","","","","", arrayListOf()),
+            Entity("Oceania", setOf(),"","","","","", arrayListOf())
         )
     )
 
