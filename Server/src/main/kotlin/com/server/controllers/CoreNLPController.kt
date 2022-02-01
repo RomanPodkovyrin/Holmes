@@ -10,13 +10,15 @@ import io.ktor.util.pipeline.*
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
 
+private const val TIMEOUT = 30 * 60000L // 10 * 60000 = 10 minutes
+
 private val client = HttpClient(CIO) {
     engine {
         requestTimeout = 0 // 0 to disable, or a millisecond value to fit your needs
     }
     install(HttpTimeout) {
         //TODO: set the same timeout for corenlp docker
-        requestTimeoutMillis = 600000 // 10 * 60000 = 10 minutes
+        requestTimeoutMillis = TIMEOUT
     }
 }
 
@@ -32,7 +34,7 @@ class CoreNLPController(private val coreNlpUrl: String, private val coreNlpPort:
                 client.post("http://$coreNlpUrl:$coreNlpPort/") {
                     timeout {
                         //TODO: set the same timeout for corenlp docker
-                        requestTimeoutMillis = 600000 // 10 * 60000 = 10 minutes
+                        requestTimeoutMillis = TIMEOUT
                     }
                     val properties: Map<String, Any> = mapOf(
                         "annotators" to "tokenize,ssplit,ner, coref",//,parse,depparse,coref,kbp,quote,pos
