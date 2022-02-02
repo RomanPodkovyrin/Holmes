@@ -4,22 +4,23 @@ import android.app.Application
 import android.content.Context
 import android.content.Intent
 import android.util.Log
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.romanp.fyp.models.book.*
+import com.romanp.fyp.models.book.AlreadyOnTheFirstPageException
+import com.romanp.fyp.models.book.Chapter
+import com.romanp.fyp.models.book.NoMorePagesException
 import com.romanp.fyp.repositories.BookRepository
 import com.romanp.fyp.views.EntityListActivity
 import com.romanp.fyp.views.EntityType
 
-class BookReaderActivityViewModel : AndroidViewModel {
+class BookReaderActivityViewModel : BookViewModel {
 
     companion object {
         private const val TAG = "BookReaderActivityViewModel"
     }
 
-    private var repository: BookRepository
-    private val bookId: Long
+
+    private var currentPage: Int = 0
 
     /**
      * @param application
@@ -27,33 +28,11 @@ class BookReaderActivityViewModel : AndroidViewModel {
      * @param bookId id of the book to be loaded from repository
      */
     constructor(application: Application, repository: BookRepository, bookId: Long) : super(
-        application
+        application, repository, bookId
     ) {
-        this@BookReaderActivityViewModel.repository = repository
-        this@BookReaderActivityViewModel.bookId = bookId
         getBookInfo(bookId)
     }
 
-    fun getBookID() = bookId
-
-    private lateinit var currentBook: BookInfo
-
-    private var currentPage: Int = 0
-
-    fun getCurrentBookInfo() = currentBook
-
-    /**
-     * @return bookInfo with error state if there was a problem getting it
-     */
-    private fun getBookInfo(bookId: Long): BookInfo {
-        currentBook = try {
-            repository.getBookInfo(getApplication(), bookId)
-        } catch (e: Exception) {
-            Log.e(TAG, "Problem Loading Book with ID: $bookId")
-            getBookInfoErrorState()
-        }
-        return currentBook
-    }
 
     /**
      * @return next chapter

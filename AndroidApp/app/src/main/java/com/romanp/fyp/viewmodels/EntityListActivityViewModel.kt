@@ -1,25 +1,19 @@
 package com.romanp.fyp.viewmodels
 
 import android.app.Application
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.romanp.fyp.adapters.entityRecyclerView.EntityRecyclerViewAdapter
-import com.romanp.fyp.models.book.BookInfo
-import com.romanp.fyp.models.book.Entity
-import com.romanp.fyp.models.book.getBookInfoErrorState
 import com.romanp.fyp.repositories.BookRepository
 
-class EntityListActivityViewModel : AndroidViewModel {
+class EntityListActivityViewModel : BookViewModel {
 
     companion object {
         private const val TAG = "EntityListActivityViewModel"
     }
 
-    private lateinit var currentBook: BookInfo
     private var bookListType: Boolean
 
-    private var repository: BookRepository
 
     /**
      * @param application
@@ -33,34 +27,12 @@ class EntityListActivityViewModel : AndroidViewModel {
         bookId: Long,
         listType: Boolean
     ) : super(
-        application
+        application, repository, bookId
     ) {
         bookListType = listType
-        this.repository = repository
         getBookInfo(bookId)
     }
 
-    fun getCurrentBookInfo() = currentBook
-
-
-    private fun getBookInfo(bookId: Long): BookInfo {
-        currentBook = try {
-            repository.getBookInfo(getApplication(), bookId)
-        } catch (e: Exception) {
-            return getBookInfoErrorState()
-        }
-        return currentBook
-    }
-
-    fun getCharacters(): ArrayList<Entity> {
-        val book = getCurrentBookInfo()
-        return book.characters
-    }
-
-    fun getLocations(): ArrayList<Entity> {
-        val book = getCurrentBookInfo()
-        return book.locations
-    }
 
     fun listType(): Boolean {
         return bookListType

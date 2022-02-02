@@ -1,16 +1,18 @@
 package com.romanp.fyp.views
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.webkit.WebChromeClient
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
 import com.google.gson.Gson
 import com.romanp.fyp.R
 import com.romanp.fyp.models.book.Entity
-import com.romanp.fyp.repositories.BookRepository
-import com.romanp.fyp.utils.ToastUtils
+import com.romanp.fyp.utils.InjectorUtils
+import com.romanp.fyp.viewmodels.BookGraphActivityViewModel
 
 
 class BookGraphActivity : AppCompatActivity() {
@@ -18,26 +20,27 @@ class BookGraphActivity : AppCompatActivity() {
         private const val TAG = "BookGraphActivity"
     }
 
+    private lateinit var viewModel: BookGraphActivityViewModel
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_book_graph)
-        //TODO: pass type of graph as an enum to fun the right function
-        //TODO: make a view model
+        //TODO: pass type of graph as an enum to display right graph
         val bookId = intent.getLongExtra(
             "ID",
             -1
         )
-        val book = try {
-            BookRepository.getInstance().getBookInfo(applicationContext, bookId)
-        } catch (e: Exception) {
-            ToastUtils.toast(applicationContext, "Error Loading Book Data")
-            return
-        }
+        initialiseViewModel(bookId)
 
+        setUpWebView()
+    }
 
-        val dataset = book.characters
+    @SuppressLint("SetJavaScriptEnabled")
+    private fun setUpWebView() {
         val webView = findViewById<WebView>(R.id.WebViewGraph)
         val webSettings = webView.settings
+        webSettings.blockNetworkLoads = true
+//        webSettings.forceDark = WebSettings.FORCE_DARK_ON
         webSettings.javaScriptEnabled = true
         webSettings.builtInZoomControls = true
         webSettings.setSupportZoom(true)
@@ -53,7 +56,7 @@ class BookGraphActivity : AppCompatActivity() {
 
                 // after the HTML page loads,
                 // load the pie chart
-                loadPieChart(dataset)
+                loadPieChart(viewModel.getCharacters())
             }
         }
 
@@ -63,6 +66,12 @@ class BookGraphActivity : AppCompatActivity() {
                     "html/pieChart.html"
         )
     }
+
+    private fun initialiseViewModel(bookId: Long) {
+        val factory = InjectorUtils.provideBookGraphActivityViewModelFactory(application, bookId)
+        viewModel = ViewModelProvider(this, factory).get(BookGraphActivityViewModel::class.java)
+    }
+
 
     fun loadPieChart(data: ArrayList<Entity>) {
         Log.i(TAG, "Loading Pie Chart")
