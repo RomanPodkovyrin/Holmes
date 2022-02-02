@@ -10,6 +10,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.Mockito.*
@@ -66,9 +67,16 @@ class MainViewActivityTest {
     runBlocking {} to ensure that all running coroutines get a chance to complete before the test function returns.
      */
     @Test
-    fun `getBooks Should Return Books From Repo`() = runBlocking {
+    fun `book data should not be null`() = runBlocking {
         val booksCheck = liveBooks.value
         assertNotNull(booksCheck)
+        return@runBlocking
+    }
+
+    @Test
+    fun `test NLP Server Status`() = runBlocking {
+        val nlpServerStatus = viewModel.getNLPServiceStatus()
+        assertNull(nlpServerStatus.value)
         return@runBlocking
     }
 

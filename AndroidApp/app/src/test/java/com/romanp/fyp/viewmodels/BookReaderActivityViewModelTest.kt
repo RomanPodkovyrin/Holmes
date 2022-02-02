@@ -7,8 +7,7 @@ import com.romanp.fyp.models.book.NoMorePagesException
 import com.romanp.fyp.repositories.BookRepository
 import kotlinx.coroutines.runBlocking
 import org.junit.After
-import org.junit.Assert.assertEquals
-import org.junit.Assert.fail
+import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -17,7 +16,7 @@ import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
-import org.mockito.kotlin.any
+import org.mockito.kotlin.*
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.RuntimeEnvironment
 import org.robolectric.annotation.Config
@@ -47,12 +46,22 @@ class BookReaderActivityViewModelTest {
     @JvmField
     val mockitoRule: MockitoRule = MockitoJUnit.rule()
 
+    private val correctBookID = 2L
+    private val invalidBookID = -1L
+
     @Before
     fun setUp() {
+        Mockito.`when`(mockRepo.getBookInfo(any(), eq(invalidBookID)))
+            .doAnswer { throw Exception("Problem getting a book from repository") }
+        Mockito.`when`(mockRepo.getBookInfo(any(), eq(correctBookID)))
+            .thenReturn(currentBookExpected)
 
-        Mockito.`when`(mockRepo.getBookInfo(any(), any())).thenReturn(currentBookExpected)
 
-        viewModel = BookReaderActivityViewModel(RuntimeEnvironment.getApplication(), mockRepo, 1)
+        viewModel = BookReaderActivityViewModel(
+            RuntimeEnvironment.getApplication(),
+            mockRepo,
+            correctBookID
+        )
         Mockito.clearInvocations(mockRepo)
     }
 
@@ -117,6 +126,24 @@ class BookReaderActivityViewModelTest {
             return@runBlocking
         }
         fail("Was expecting no more pages exception")
+    }
+
+    @Test
+    fun `Test invalid book id`() = runBlocking {
+        val viewModelWithBadID =
+            BookReaderActivityViewModel(
+                RuntimeEnvironment.getApplication(),
+                mockRepo,
+                invalidBookID
+            )
+        val currentBookInfo = viewModelWithBadID.getCurrentBookInfo()
+        verify(mockRepo, times(1)).getBookInfo(any(), eq(invalidBookID))
+        assertTrue("Should give book info with error state", currentBookInfo.isError())
+    }
+
+    @Test
+    fun `Test returns correct BookID`() = runBlocking {
+        assertEquals("Expected to get correct book id", correctBookID, viewModel.getBookID())
     }
 
 
