@@ -9,11 +9,14 @@ data class Chapter(
 ) : Serializable
 
 data class Entity(
-    val characterOffsetBegin: Int,
-    val characterOffsetEnd: Int,
-    val pos: String,
+    val name: String,
+    val aliases: Set<String>,
     val ner: String,
-    val name: String
+    val type: String, // PRONOMINAL, PROPER, NOMINAL
+    val number: String, //SINGULAR, UNKNOWN, PLURAL
+    val gender: String,//FEMALE, UNKNOWN, NEUTRAL, MALE
+    val animacy: String, //ANIMATE, INANIMATE TODO: should it be a boolean?
+    val mentions: ArrayList<Pair<Int, Int>>,// Pair<StartIndex, EndIndex>
 )
 
 data class BookInfo(
@@ -26,11 +29,13 @@ data class BookInfo(
     val characters: ArrayList<Entity>
 
 ) : Serializable {
-
-
+    fun isError() = image == -1
 }
 
+fun getBookInfoErrorState() = BookInfo(-1, "", "", arrayListOf(), arrayListOf(), arrayListOf())
+
 //TODO: should probably be in corenlp folder
+//TODO: change name to BookData?
 data class ProcessedBook(
     @SerializedName("title") val title: String,
     @SerializedName("author") val author: String,

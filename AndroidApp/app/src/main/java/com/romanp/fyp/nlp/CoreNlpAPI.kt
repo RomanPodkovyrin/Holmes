@@ -23,7 +23,7 @@ class CoreNlpAPI {
     companion object {
         //TODO: make properties file to change it there
 //        private const val url = "http://108.61.173.161:8080/" //online server
-//        private const val url = "http://192.168.129.26:8080/" //connected android device
+//        private const val url = "http://192.168.129.26:8080/" //connected android device (find with ip addr)
         private const val url = "http://10.0.2.2:8080/" //localhost from emulator
 
         private const val TAG = "CoreNLPAPI"
@@ -35,12 +35,18 @@ class CoreNlpAPI {
             val stringRequest = StringRequest(
                 Request.Method.GET, url,
                 { response ->
-                    if (serviceStatus.value == false || serviceStatus.value == null) serviceStatus.postValue(true)
-                    //TODO: check if it actually sends ping message back
-                    Log.d(TAG, "Got ping back with message: $response")
+
+                    when (response) {
+                        ServerResponse.PING.message -> {
+                            setServiceStatus(serviceStatus, true)
+                            Log.d(TAG, "Got ping back with message: $response")
+                        }
+                        else -> setServiceStatus(serviceStatus, false)
+                    }
+
                 },
                 {
-                    if (serviceStatus.value == true) serviceStatus.postValue(false)
+                    setServiceStatus(serviceStatus, false)
                     Log.e(TAG, "Failed when calling or waiting for response from $url: $it")
                 })
             //TODO: set timeout
@@ -49,6 +55,20 @@ class CoreNlpAPI {
             queue.add(stringRequest)
         }
 
+        private fun setServiceStatus(serviceStatus: MutableLiveData<Boolean>, status: Boolean) {
+            when (status) {
+                true -> {
+                    if ((serviceStatus.value == false || serviceStatus.value == null)
+                    ) {
+                        serviceStatus.postValue(true)
+                    }
+                }
+                false -> {
+                    if (serviceStatus.value == true) serviceStatus.postValue(false)
+
+                }
+            }
+        }
 
         fun nerTagger(
             applicationContext: Context,
@@ -151,15 +171,16 @@ class CoreNlpAPI {
                             ) == 0
                         ) {
                             // Update live data
-                            books.postValue(books.value!!.filter { x -> x.id == id }.map { it ->
-                                BookRecyclerViewAdapter.RecyclerBookInfo(
-                                    it.image,
-                                    it.author,
-                                    it.title,
-                                    it.id,
-                                    true
-                                )
-                            }.toMutableList())
+                            books.postValue(books.value!!.filter { x -> x.id == id }
+                                .map { bookInfo ->
+                                    BookRecyclerViewAdapter.RecyclerBookInfo(
+                                        bookInfo.image,
+                                        bookInfo.author,
+                                        bookInfo.title,
+                                        bookInfo.id,
+                                        true
+                                    )
+                                }.toMutableList())
                         }
 
                         Log.d(TAG, "Book $id: $title processed ")

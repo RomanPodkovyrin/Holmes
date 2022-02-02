@@ -1,13 +1,13 @@
 package com.romanp.fyp.views
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import android.webkit.WebView
 import android.widget.Button
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.romanp.fyp.R
@@ -31,48 +31,69 @@ class BookReaderActivity : AppCompatActivity() {
 
     private var webViewBookContent: WebView? = null
     private var textView: TextView? = null
-    private var bookTitle: String? = ""
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Log.i(TAG, "Opened Book Reader Activity")
 
         val bookId = intent.getLongExtra(
             BookRecyclerViewAdapter.EXTRA_MESSAGE,
             -1
         ) //TODO: do i need this default?
-        initialiseViewModel(bookId)
 
-        Log.i(TAG, "Opened Book Reader Activity")
+        initialiseViewModel(bookId)
         setContentView(R.layout.activity_book_reader)
 
-
         val myBookInfo: BookInfo = viewModel.getCurrentBookInfo()
-        if (myBookInfo.image == -1) {
-            Toast.makeText(
+        if (myBookInfo.isError()) {
+            ToastUtils.toast(
                 applicationContext,
-                "There was an error loading your book",
-                Toast.LENGTH_SHORT
-            ).show()
+                "There was an error loading your book"
+            )
             finish()
             return
         }
 
-        bookTitle = myBookInfo.title
-        textView = findViewById<TextView>(R.id.textViewBookTitle).apply {
-            text = bookTitle
-        }
+
+        textView = findViewById(R.id.textViewBookTitle)
         webViewBookContent = findViewById<WebView>(R.id.webViewBookContent).apply {
             loadData(viewModel.getCurrentChapter().text, "text/html", "UTF-8")
         }
+
+        setUpActionBar(myBookInfo)
+        setUpListeners()
+    }
+
+    private fun setUpActionBar(myBookInfo: BookInfo) {
+        // calling this activity's function to
+        // use ActionBar utility methods
+        val actionBar = supportActionBar
+
+        // providing title for the ActionBar
+        //TODO: change title size make sure it doesn't overflow
+        actionBar!!.title = myBookInfo.author
+
+        // providing subtitle for the ActionBar
+        actionBar.subtitle = myBookInfo.title
+
+//                // adding icon in the ActionBar
+//                actionBar.setIcon(R.drawable.app_logo)
+
+        // methods to display the icon in the ActionBar
+        actionBar.setDisplayUseLogoEnabled(true)
+        actionBar.setDisplayShowHomeEnabled(true)
+    }
+
+    private fun setUpListeners() {
         findViewById<Button>(R.id.buttonCharacters).apply {
             setOnClickListener {
-                switchToEntityList(context, bookId, EntityType.CHARACTERS)
+                viewModel.switchToEntityList(context, EntityType.CHARACTERS)
             }
         }
         findViewById<Button>(R.id.buttonLocations).apply {
             setOnClickListener {
-                switchToEntityList(context, bookId, EntityType.LOCATIONS)
+                viewModel.switchToEntityList(context, EntityType.LOCATIONS)
             }
         }
 
@@ -94,11 +115,43 @@ class BookReaderActivity : AppCompatActivity() {
                 try {
                     updatePage(viewModel.backButton())
                 } catch (e: AlreadyOnTheFirstPageException) {
-
+                    ToastUtils.toast(context, "Already on the first page")
                 }
 
             }
         }
+    }
+
+
+    /**
+     * method to inflate the options menu when
+     * the user opens the menu for the first time
+     */
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.action_buttons, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+
+    /**
+     * methods to control the operations that will
+     * happen when user clicks on the action buttons
+     */
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.pieChart -> {
+                openPieChart()
+            }
+            R.id.action_settings -> ToastUtils.toast(this, "IMPLEMENT")
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    private fun openPieChart() {
+        ToastUtils.toast(this, "Pie Chart Clicked")
+        val intent = Intent(this, BookGraphActivity::class.java)
+        intent.putExtra("ID", viewModel.getBookID())
+        startActivity(intent)
     }
 
     private fun initialiseViewModel(bookId: Long) {
@@ -110,14 +163,9 @@ class BookReaderActivity : AppCompatActivity() {
     private fun updatePage(chapters: Chapter) {
         webViewBookContent?.loadData(chapters.text, "text/html", "UTF-8")
         textView = findViewById<TextView>(R.id.textViewBookTitle).apply {
-            text = "$bookTitle | ${chapters.chapterTitle}"
+            text = chapters.chapterTitle
         }
     }
 
-    private fun switchToEntityList(context: Context, bookId: Long, entityType: EntityType) {
-        val intent = Intent(context, EntityListActivity::class.java)
-        intent.putExtra(EntityListActivity.EXTRA_MESSAGE, bookId)
-        intent.putExtra(EntityListActivity.EXTRA_MESSAGE_TYPE, entityType.message)
-        context.startActivity(intent)
-    }
+
 }

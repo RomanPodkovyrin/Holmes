@@ -39,7 +39,7 @@ class MainActivity : AppCompatActivity() {
         Log.v(TAG, "View Created")
         setContentView(R.layout.activity_main)
 
-        recyclerview = findViewById<RecyclerView>(R.id.recyclerViewBooks)
+        recyclerview = findViewById(R.id.recyclerViewBooks)
 
         // view model
         initialiseViewModel()
@@ -47,12 +47,7 @@ class MainActivity : AppCompatActivity() {
 
         // Finding layout views by id
         val buttonLoadBook = findViewById<Button>(R.id.loadBookButton)
-        val buttonGraph = findViewById<Button>(R.id.getGraph)
 
-        buttonGraph.setOnClickListener {
-            val intent = Intent(this, BookGraph::class.java)
-            startActivity(intent)
-        }
 
 
         buttonLoadBook.setOnClickListener {
