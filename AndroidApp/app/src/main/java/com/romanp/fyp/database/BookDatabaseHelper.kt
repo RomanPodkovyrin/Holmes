@@ -13,7 +13,7 @@ import com.romanp.fyp.models.book.BookInfo
 
 
 class BookDatabaseHelper(
-    private val context: Context
+    context: Context
 ) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
 
 
@@ -77,6 +77,7 @@ class BookDatabaseHelper(
             success = db.insert(TABLE_NAME, null, contentValues)
         } catch (e: Exception) {
             Log.e(TAG, "Error :$e")
+            db.close() // Closing database connection
             return success
         }
         //2nd argument is String containing nullColumnHack
@@ -102,7 +103,7 @@ class BookDatabaseHelper(
             if (cursor != null) {
                 if (cursor.moveToFirst()) {
                     val blob = cursor.getBlob(0)
-                    val temp = blob.filter { e -> e != null }.toByteArray()
+//                    val temp = blob.filter { e -> e != null }.toByteArray()
 //                println(blob.toList().subList(0, blob.size - 1).reversed())
 //                println("Getting ${String(blob).dropLast(1).reversed().filter { e -> e != null }}")
                     val gson = GsonBuilder()
@@ -113,6 +114,7 @@ class BookDatabaseHelper(
                     val book: BookInfo =
                         gson.fromJson(String(blob).dropLast(1), BookInfo::class.java)
                     Log.i(TAG, "Success")
+                    db.close() // Closing database connection
                     return book
                 }
             }
@@ -123,6 +125,7 @@ class BookDatabaseHelper(
         } catch (e: Exception) {
             Log.e(TAG, e.toString())
         }
+        db.close() // Closing database connection
         return null
     }
 
@@ -139,10 +142,10 @@ class BookDatabaseHelper(
     fun deleteBook(id: Long): Int {
         val db: SQLiteDatabase = writableDatabase
         val output = db.delete(TABLE_NAME, "$COL_ID=?", arrayOf(id.toString()))
-        db.close()
         if (output == 0) {
             Log.e(TAG, "Failed to delete book with id=$id")
         }
+        db.close() // Closing database connection
         return output
     }
 
@@ -159,12 +162,12 @@ class BookDatabaseHelper(
 
         val db: SQLiteDatabase = writableDatabase
         val output = db.update(TABLE_NAME, contentValues, "$COL_ID=?", arrayOf(id.toString()))
-        db.close()
         if (output == 0) {
             Log.e(TAG, "Failed to update book $id")
         } else {
             Log.i(TAG, "Updated book $id")
         }
+        db.close() // Closing database connection
         return output
     }
 
