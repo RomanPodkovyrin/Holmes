@@ -35,17 +35,18 @@ class CoreNlpAPI {
             val stringRequest = StringRequest(
                 Request.Method.GET, url,
                 { response ->
-                    if ((serviceStatus.value == false || serviceStatus.value == null) && response.equals(
-                            ServerResponse.PING.message
-                        )
-                    ) {
-                        serviceStatus.postValue(true)
-                        Log.d(TAG, "Got ping back with message: $response")
 
+                    when (response) {
+                        ServerResponse.PING.message -> {
+                            setServiceStatus(serviceStatus, true)
+                            Log.d(TAG, "Got ping back with message: $response")
+                        }
+                        else -> setServiceStatus(serviceStatus, false)
                     }
+
                 },
                 {
-                    if (serviceStatus.value == true) serviceStatus.postValue(false)
+                    setServiceStatus(serviceStatus, false)
                     Log.e(TAG, "Failed when calling or waiting for response from $url: $it")
                 })
             //TODO: set timeout
@@ -54,6 +55,20 @@ class CoreNlpAPI {
             queue.add(stringRequest)
         }
 
+        private fun setServiceStatus(serviceStatus: MutableLiveData<Boolean>, status: Boolean) {
+            when (status) {
+                true -> {
+                    if ((serviceStatus.value == false || serviceStatus.value == null)
+                    ) {
+                        serviceStatus.postValue(true)
+                    }
+                }
+                false -> {
+                    if (serviceStatus.value == true) serviceStatus.postValue(false)
+
+                }
+            }
+        }
 
         fun nerTagger(
             applicationContext: Context,
@@ -156,15 +171,16 @@ class CoreNlpAPI {
                             ) == 0
                         ) {
                             // Update live data
-                            books.postValue(books.value!!.filter { x -> x.id == id }.map { bookInfo ->
-                                BookRecyclerViewAdapter.RecyclerBookInfo(
-                                    bookInfo.image,
-                                    bookInfo.author,
-                                    bookInfo.title,
-                                    bookInfo.id,
-                                    true
-                                )
-                            }.toMutableList())
+                            books.postValue(books.value!!.filter { x -> x.id == id }
+                                .map { bookInfo ->
+                                    BookRecyclerViewAdapter.RecyclerBookInfo(
+                                        bookInfo.image,
+                                        bookInfo.author,
+                                        bookInfo.title,
+                                        bookInfo.id,
+                                        true
+                                    )
+                                }.toMutableList())
                         }
 
                         Log.d(TAG, "Book $id: $title processed ")
