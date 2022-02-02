@@ -51,7 +51,7 @@ class ApplicationTest {
                 )
             ), arrayListOf(
                 Entity(
-                    "Julia",
+                    "London",
                     aliases = arrayListOf<String>().toSet(),
                     "CITY",
                     "PROPER",
