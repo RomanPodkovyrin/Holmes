@@ -17,7 +17,8 @@ class BookRepository {
     companion object {
         @Volatile
         private var instance: BookRepository? = null
-        private var temporaryStaticDataStore: ArrayList<BookRecyclerViewAdapter.RecyclerBookInfo> = ArrayList()
+        private var temporaryStaticDataStore: ArrayList<BookRecyclerViewAdapter.RecyclerBookInfo> =
+            ArrayList()
         val data = MutableLiveData<MutableList<BookRecyclerViewAdapter.RecyclerBookInfo>>()
         fun getInstance(): BookRepository = instance ?: synchronized(this) {
             instance ?: BookRepository().also { instance = it }
@@ -32,7 +33,7 @@ class BookRepository {
         val book = BookDatabaseHelper(context).getBook(bookId)
         if (book == null) {
             Log.e(TAG, "Problem getting a book from repository")
-            return throw Exception("Problem getting a book from repository")
+            throw Exception("Problem getting a book from repository")
         }
         return book
     }
@@ -47,7 +48,7 @@ class BookRepository {
      * @return book id or -1 if there was an error
      */
     fun addBookInfo(context: Context, book: BookInfo): Long {
-        val appDB: BookDatabaseHelper = BookDatabaseHelper(context)
+        val appDB = BookDatabaseHelper(context)
         return appDB.addBook(book)
     }
 

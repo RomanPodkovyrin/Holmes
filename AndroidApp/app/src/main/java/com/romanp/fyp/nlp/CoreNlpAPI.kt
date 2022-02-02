@@ -156,12 +156,12 @@ class CoreNlpAPI {
                             ) == 0
                         ) {
                             // Update live data
-                            books.postValue(books.value!!.filter { x -> x.id == id }.map { it ->
+                            books.postValue(books.value!!.filter { x -> x.id == id }.map { bookInfo ->
                                 BookRecyclerViewAdapter.RecyclerBookInfo(
-                                    it.image,
-                                    it.author,
-                                    it.title,
-                                    it.id,
+                                    bookInfo.image,
+                                    bookInfo.author,
+                                    bookInfo.title,
+                                    bookInfo.id,
                                     true
                                 )
                             }.toMutableList())

@@ -43,9 +43,7 @@ class BookDatabaseHelper(
                         "UNIQUE($COL_AUTHOR, $COL_TITLE)" +
                         ")"
                 )
-        if (db != null) {
-            db.execSQL(CREATE_TABLE_QUERY)
-        }
+        db?.execSQL(CREATE_TABLE_QUERY)
     }
 
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
@@ -53,9 +51,7 @@ class BookDatabaseHelper(
         val UPDATE_DATABASE_QUERY: String = (
                 "DROP TABLE IF EXISTS $TABLE_NAME"
                 )
-        if (db != null) {
-            db.execSQL(UPDATE_DATABASE_QUERY)
-        }
+        db?.execSQL(UPDATE_DATABASE_QUERY)
         onCreate(db)
     }
 
@@ -110,7 +106,7 @@ class BookDatabaseHelper(
                         .setLenient()
                         .create()
 
-                    //TODO: figureout why null is being added at the end
+                    //TODO: figure out why null is being added at the end
                     val book: BookInfo =
                         gson.fromJson(String(blob).dropLast(1), BookInfo::class.java)
                     Log.i(TAG, "Success")

@@ -39,7 +39,7 @@ class MainActivity : AppCompatActivity() {
         Log.v(TAG, "View Created")
         setContentView(R.layout.activity_main)
 
-        recyclerview = findViewById<RecyclerView>(R.id.recyclerViewBooks)
+        recyclerview = findViewById(R.id.recyclerViewBooks)
 
         // view model
         initialiseViewModel()

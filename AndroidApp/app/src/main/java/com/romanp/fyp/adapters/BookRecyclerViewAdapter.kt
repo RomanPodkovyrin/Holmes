@@ -72,7 +72,7 @@ class BookRecyclerViewAdapter(
             authorTV.text = itemsViewModel.author
             itemView.setOnClickListener {
                 Toast.makeText(context, "Clicked ${itemsViewModel.title}", Toast.LENGTH_SHORT)
-                    .show();
+                    .show()
 
                 Log.i(TAG, "Clicked ${itemsViewModel.title}")
 

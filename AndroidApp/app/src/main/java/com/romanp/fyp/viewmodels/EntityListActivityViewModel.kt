@@ -73,7 +73,7 @@ class EntityListActivityViewModel : AndroidViewModel {
         val recyclerList = when (listType()) {
             true -> getCharacters()
             false -> getLocations()
-        }.map { it -> EntityRecyclerViewAdapter.RecyclerEntityInfo(it.name) }
+        }.map { entity -> EntityRecyclerViewAdapter.RecyclerEntityInfo(entity.name) }
 
         return ArrayList(recyclerList)
     }
