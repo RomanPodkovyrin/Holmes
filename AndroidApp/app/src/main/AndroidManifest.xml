@@ -19,7 +19,8 @@
         <activity
             android:name=".views.BookReaderActivity"
             android:parentActivityName=".views.MainActivity" />
-        <activity android:name=".views.MainActivity">
+        <activity android:name=".views.MainActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
