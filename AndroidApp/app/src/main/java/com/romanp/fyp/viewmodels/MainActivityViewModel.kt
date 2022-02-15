@@ -98,6 +98,7 @@ class MainActivityViewModel : AndroidViewModel {
             }
 
             processedBook.value = book
+            //TODO: call check book first  CoreNlpAPI.checkBook(context, it.title, it.author, it.id, books)
             CoreNlpAPI.nerTagger(getApplication(), book.toString(), book.title, book.author)
 
 
