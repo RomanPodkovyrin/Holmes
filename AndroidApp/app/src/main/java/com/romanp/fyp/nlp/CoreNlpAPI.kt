@@ -95,8 +95,9 @@ class CoreNlpAPI {
                             ServerResponse.ALREADY_PROCESSED.message -> {
                                 Log.i(
                                     TAG,
-                                    "Already relieved"
+                                    "Already Processed"
                                 )
+                                // No actual difference between received and already processed
                                 ToastUtils.toast(applicationContext, "Already Processed")
                             }
                         }
@@ -150,6 +151,7 @@ class CoreNlpAPI {
 
             // Instantiate the RequestQueue.
             val queue = Volley.newRequestQueue(applicationContext)
+            //TODO: calculate hashcode based on book info and use this to test similarity ?
             val url = "$url/check-book/$title/$author"
 
             val stringReq: StringRequest =
