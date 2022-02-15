@@ -59,7 +59,7 @@ class EntityListActivityViewModelFactory(
 ) :
     ViewModelProvider.NewInstanceFactory() {
 
-    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return EntityListActivityViewModel(application, repository, bookId, listType) as T
     }
 
