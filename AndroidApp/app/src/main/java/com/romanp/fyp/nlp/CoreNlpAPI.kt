@@ -22,9 +22,9 @@ class CoreNlpAPI {
 
     companion object {
         //TODO: make properties file to change it there
-//        private const val url = "http://108.61.173.161:8080/" //online server
-//        private const val url = "http://192.168.129.26:8080/" //connected android device (find with ip addr)
-        private const val url = "http://10.0.2.2:8080/" //localhost from emulator
+//        private const val url = "https://108.61.173.161:8443/" //online server
+//        private const val url = "https://192.168.129.26:8443/" //connected android device (find with ip addr)
+        private const val url = "https://10.0.2.2:8443/" //localhost from emulator
 
         private const val TAG = "CoreNLPAPI"
         fun pingServer(applicationContext: Context, serviceStatus: MutableLiveData<Boolean>) {
