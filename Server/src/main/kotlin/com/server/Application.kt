@@ -1,3 +1,5 @@
+@file:Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
+
 package com.server
 
 import com.server.controllers.CoreNLPController
@@ -7,16 +9,19 @@ import com.typesafe.config.ConfigFactory
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
 import java.io.InputStream
+import java.security.KeyStore
 import java.util.*
 import kotlin.system.exitProcess
 
 
 fun main() {
-    var mongodbUrl = "localhost"
-    var mongodbPort = "27017"
-    var coreNlpUrl = "localhost"
-    var coreNlpPort = "9000"
-
+    val mongodbUrl: String
+    val mongodbPort: String
+    val coreNlpUrl: String
+    val coreNlpPort: String
+    val certPath: String
+    val certAlias: String
+    val certPassword: String
     // Load properties
     try {
         ConfigFactory.load()
@@ -28,6 +33,10 @@ fun main() {
 
         mongodbUrl = prop.getProperty("mongodbUrl")
         mongodbPort = prop.getProperty("mongodbPort")
+
+        certPath = prop.getProperty("certPath")
+        certAlias = prop.getProperty("certAlias")
+        certPassword = prop.getProperty("certPassword")
     } catch (e: Exception) {
         println("Error Loading properties: $e")
 //        log.error("Error while loading properties file $e")
@@ -38,8 +47,22 @@ fun main() {
     val dbRepo = DataBaseRepository("mongodb://$mongodbUrl:$mongodbPort", "Book")
     val coreNLPCont = CoreNLPController(coreNlpUrl, coreNlpPort)
 
-    embeddedServer(Netty, port = 8080, host = "0.0.0.0") {
+    val keyStoreFile = {}.javaClass.getResourceAsStream(certPath)
+    val keystore = KeyStore.getInstance(KeyStore.getDefaultType())
 
-        configureRouting(dbRepo, coreNLPCont)
-    }.start(wait = true)
+    keystore.load(keyStoreFile, certPassword.toCharArray())
+
+
+    embeddedServer(Netty, applicationEngineEnvironment {
+        sslConnector(keyStore = keystore,
+            keyAlias = certAlias,
+            keyStorePassword = { certPassword.toCharArray() },
+            privateKeyPassword = { certPassword.toCharArray() }) {
+            port = 8443
+        }
+
+        module {
+            configureRouting(dbRepo, coreNLPCont)
+        }
+    }).start(wait = true)
 }
