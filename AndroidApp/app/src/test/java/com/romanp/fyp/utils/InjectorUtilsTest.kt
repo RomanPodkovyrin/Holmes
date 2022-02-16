@@ -29,4 +29,10 @@ class InjectorUtilsTest {
             InjectorUtils.provideEntityListActivityViewModelFactory(getApplication(), 1, true)
         assertNotNull(factory)
     }
+
+    @Test
+    fun `test BookGraphActivityViewModelFactory Injector`() {
+        val factory = InjectorUtils.provideBookGraphActivityViewModelFactory(getApplication(), 1)
+        assertNotNull(factory)
+    }
 }
