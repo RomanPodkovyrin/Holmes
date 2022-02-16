@@ -8,7 +8,6 @@ import com.server.repository.DataBaseRepository
 import com.typesafe.config.ConfigFactory
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
-import java.io.File
 import java.io.InputStream
 import java.security.KeyStore
 import java.util.*
@@ -48,11 +47,10 @@ fun main() {
     val dbRepo = DataBaseRepository("mongodb://$mongodbUrl:$mongodbPort", "Book")
     val coreNLPCont = CoreNLPController(coreNlpUrl, coreNlpPort)
 
-    val keyStoreFile = File(certPath)
-
+    val keyStoreFile = {}.javaClass.getResourceAsStream(certPath)
     val keystore = KeyStore.getInstance(KeyStore.getDefaultType())
 
-    keystore.load(keyStoreFile.inputStream(), certPassword.toCharArray())
+    keystore.load(keyStoreFile, certPassword.toCharArray())
 
 
     embeddedServer(Netty, applicationEngineEnvironment {
@@ -61,7 +59,6 @@ fun main() {
             keyStorePassword = { certPassword.toCharArray() },
             privateKeyPassword = { certPassword.toCharArray() }) {
             port = 8443
-            keyStorePath = keyStoreFile
         }
 
         module {
