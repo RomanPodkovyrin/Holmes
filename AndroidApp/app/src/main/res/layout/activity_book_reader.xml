@@ -10,23 +10,19 @@
         android:id="@+id/buttonBack"
         android:layout_width="99dp"
         android:layout_height="48dp"
-        android:layout_marginTop="3dp"
         android:layout_marginBottom="8dp"
         android:text="@string/previous_page_button"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/buttonNext"
-        app:layout_constraintHorizontal_bias="0.482"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/webViewBookContent"
-        app:layout_constraintVertical_bias="0.461" />
+        app:layout_constraintHorizontal_bias="0.355"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/textViewBookTitle"
-        android:layout_width="120dp"
-        android:layout_height="58dp"
-        android:layout_marginTop="16dp"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.054"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -34,48 +30,40 @@
         android:id="@+id/webViewBookContent"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginBottom="72dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="4dp"
+        app:layout_constraintBottom_toTopOf="@+id/buttonBack"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.378"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewBookTitle"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintTop_toBottomOf="@+id/buttonCharacters" />
 
     <Button
         android:id="@+id/buttonNext"
         android:layout_width="99dp"
         android:layout_height="48dp"
-        android:layout_marginEnd="72dp"
+        android:layout_marginEnd="64dp"
         android:layout_marginBottom="8dp"
         android:text="@string/next_page_button"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/webViewBookContent" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <Button
         android:id="@+id/buttonCharacters"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
         android:text="@string/characters_button"
         android:textSize="11sp"
-        app:layout_constraintBottom_toTopOf="@+id/webViewBookContent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.099"
-        app:layout_constraintStart_toEndOf="@+id/textViewBookTitle"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.615" />
+        app:layout_constraintEnd_toStartOf="@+id/buttonLocations"
+        app:layout_constraintTop_toBottomOf="@+id/textViewBookTitle" />
 
     <Button
         android:id="@+id/buttonLocations"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="76dp"
         android:text="@string/location_button"
         android:textSize="11sp"
-        app:layout_constraintBottom_toTopOf="@+id/webViewBookContent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.54"
-        app:layout_constraintStart_toEndOf="@+id/buttonCharacters"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.615" />
+        app:layout_constraintTop_toTopOf="@+id/buttonCharacters" />
 </androidx.constraintlayout.widget.ConstraintLayout>

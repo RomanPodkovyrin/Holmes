@@ -7,6 +7,7 @@ import com.romanp.fyp.R
 import nl.siegmann.epublib.epub.EpubReader
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
+import org.jsoup.select.Elements
 import java.io.InputStream
 import nl.siegmann.epublib.domain.Book as EpubBook
 
@@ -54,38 +55,72 @@ class BookUtil {
             book.metadata.firstTitle
             book.metadata.format
             book.metadata.identifiers
+            //TODO: should only be
             book.metadata.language
             book.metadata.publishers
             book.metadata.subjects
             book.metadata.titles
-
+            book.coverImage
 
             val chapters: ArrayList<Chapter> = ArrayList()
             book.contents.forEach { chapter ->
                 val doc: Document = Jsoup.parse(String(chapter.data))
-                val title = doc.body().select("h1, h2, h3, h4, h5, h6")
-                title.first()?.remove()
-                val chapterParts: ArrayList<String> = ArrayList()
-                doc.body().html().split("<h([123456])(.|\\n)*?</h\\1>".toRegex())
-                    .forEach { contentText ->
-                        val text = Jsoup.parse(contentText).text()
-                        if (text.isNotEmpty()) {
-                            chapterParts.add(text)
-                        }
+                // Select all possible titles in the text
+                val title: Elements? = doc.body().select("h1, h2, h3, h4, h5, h6")
 
-                    }
+                val subChapters: ArrayList<String> = ArrayList()
 
-                //TODO: why is it only done for the first one ?
-                val chapterTitle = if (title == null) "" else title.text()
-                println("Title $chapterTitle")
-                chapters.add(Chapter(chapterTitle,
-                    chapterParts.filter { part -> part != null || part == "" }
-                        .joinToString(separator = "<br><br><br>------<br><br><br>")
-                )
-                )
+                // Split on titles with n tag and treat them as separate parts of a chapter
+                // Really only happens when book has sub chapters
+                // or when it has chapter on the page, this method removes it from the page
+                splitIntoSubchapters(doc, subChapters)
+
+                // Now join subchapters back into one chapter with line separators.
+                if (subChapters.isNotEmpty()) {
+                    Log.d(
+                        TAG,
+                        "Book $bookTitle hash subchapters in chapter $title"
+                    )
+                    joinSubChapters(title, chapters, subChapters)
+                }
             }
 
-            return BookInfo(R.drawable.ic_book_24, bookTitle, author, chapters, ArrayList(), ArrayList())
+            return BookInfo(
+                R.drawable.ic_book_24,
+                bookTitle,
+                author,
+                chapters,
+                ArrayList(),
+                ArrayList()
+            )
+        }
+
+        private fun splitIntoSubchapters(
+            doc: Document,
+            subChapters: ArrayList<String>
+        ) {
+            doc.body().html().split("<h([123456])(.|\\n)*?</h\\1>".toRegex())
+                .forEach { contentText ->
+                    val text = Jsoup.parse(contentText).text()
+                    if (text.isNotEmpty()) {
+                        subChapters.add(text)
+                    }
+
+                }
+        }
+
+        private fun joinSubChapters(
+            title: Elements?,
+            chapters: ArrayList<Chapter>,
+            subChapters: ArrayList<String>
+        ) {
+            val chapterTitle = if (title == null) "" else title.text()
+
+            chapters.add(Chapter(chapterTitle,
+                subChapters.filter { part -> part != null || part == "" }
+                    .joinToString(separator = "<br><br><br>------<br><br><br>")
+            )
+            )
         }
     }
 }

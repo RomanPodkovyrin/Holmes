@@ -10,6 +10,7 @@ import java.io.File
 import java.net.URL
 
 
+@Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 internal class BookUtilTest {
 
 
@@ -48,6 +49,6 @@ internal class BookUtilTest {
         assertEquals("Number of chapters", bookObject.chapters.size, processedBook.chapters.size)
         assertEquals("Image", bookObject.image, processedBook.image)
         assertEquals("Content of the book", bookObject, processedBook)
-
+        assertEquals("Hashcode is the same", bookObject.hashCode(), processedBook.hashCode())
     }
 }
