@@ -30,7 +30,7 @@ class BookReaderActivity : AppCompatActivity() {
 
 
     private var webViewBookContent: WebView? = null
-    private var textView: TextView? = null
+    private var bookTitleTV: TextView? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -56,7 +56,9 @@ class BookReaderActivity : AppCompatActivity() {
         }
 
 
-        textView = findViewById(R.id.textViewBookTitle)
+        bookTitleTV = findViewById<TextView>(R.id.textViewBookTitle).apply {
+            text = viewModel.getCurrentChapter().chapterTitle
+        }
         webViewBookContent = findViewById<WebView>(R.id.webViewBookContent).apply {
             loadData(viewModel.getCurrentChapter().text, "text/html", "UTF-8")
         }
@@ -162,7 +164,7 @@ class BookReaderActivity : AppCompatActivity() {
 
     private fun updatePage(chapters: Chapter) {
         webViewBookContent?.loadData(chapters.text, "text/html", "UTF-8")
-        textView = findViewById<TextView>(R.id.textViewBookTitle).apply {
+        bookTitleTV = findViewById<TextView>(R.id.textViewBookTitle).apply {
             text = chapters.chapterTitle
         }
     }
