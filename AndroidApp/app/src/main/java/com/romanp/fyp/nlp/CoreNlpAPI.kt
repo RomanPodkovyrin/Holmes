@@ -3,10 +3,7 @@ package com.romanp.fyp.nlp
 import android.content.Context
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
-import com.android.volley.Request
-import com.android.volley.Response
-import com.android.volley.RetryPolicy
-import com.android.volley.VolleyError
+import com.android.volley.*
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.romanp.fyp.adapters.BookRecyclerViewAdapter
@@ -27,8 +24,18 @@ class CoreNlpAPI {
         private const val url = "https://10.0.2.2:8443/" //localhost from emulator
 
         private const val TAG = "CoreNLPAPI"
+
+        private var requestQueue: RequestQueue? = null
+
+        fun getRequestQueue(applicationContext: Context): RequestQueue {
+            if (requestQueue == null) {
+                requestQueue = Volley.newRequestQueue(applicationContext)
+            }
+            return requestQueue as RequestQueue
+        }
+
         fun pingServer(applicationContext: Context, serviceStatus: MutableLiveData<Boolean>) {
-            val queue = Volley.newRequestQueue(applicationContext)
+            val queue = getRequestQueue(applicationContext)
 
 
             // Request a string response from the provided URL.
@@ -81,7 +88,7 @@ class CoreNlpAPI {
             Log.i(TAG, "Contacting NER Tagger")
 
             // Instantiate the RequestQueue.
-            val queue = Volley.newRequestQueue(applicationContext)
+            val queue = getRequestQueue(applicationContext)
             val url = "$url/process-book/$title/$author"
 
             val stringReq: StringRequest =
@@ -150,7 +157,7 @@ class CoreNlpAPI {
             Log.i(TAG, "Checking book $title $author")
 
             // Instantiate the RequestQueue.
-            val queue = Volley.newRequestQueue(applicationContext)
+            val queue = getRequestQueue(applicationContext)
             //TODO: calculate hashcode based on book info and use this to test similarity ?
             val url = "$url/check-book/$title/$author"
 
