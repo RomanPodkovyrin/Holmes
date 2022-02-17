@@ -5,14 +5,73 @@ import com.google.gson.JsonElement
 import com.google.gson.JsonParser
 import com.server.models.BookData
 import com.server.models.Entity
+import com.server.plugins.Chapter
+import kotlin.streams.toList
 
-
-fun extractUsefulTags(title: String, author: String, requestContent: String): BookData {
+/**
+ * Extracts useful information from CoreNLP processed files
+ */
+fun extractUsefulTags(title: String, author: String, requestContent: String, chapters: ArrayList<Chapter>): BookData {
     //TODO: LOGGING
     val (characters: ArrayList<Entity>, locations: ArrayList<Entity>) = getCharactersAndLocations(requestContent)
 
+    // Calculate lower and upper bound word counts for each chapter
+    var currentTotalWordCount = 0
+    val chapterLimits = arrayListOf<Pair<Int, Int>>()
+    chapters.forEach { chapter ->
+        val lowerBound = currentTotalWordCount
+        currentTotalWordCount += chapter.text.length
+        val upperBound = currentTotalWordCount
+        chapterLimits.add(Pair(lowerBound, upperBound))
+    }
+
+    // Sort characters and locations mentions into chapters and normalise the start and end values
+    chapters.forEachIndexed { chapterIndex, _ ->
+        val lowerBound = chapterLimits[chapterIndex].first
+        val upperBound = chapterLimits[chapterIndex].second
+
+        // Sort Characters by chapters
+        characters.forEach { character ->
+            val matchedMentions: ArrayList<Pair<Int, Int>> = getMentionBetweenBounds(character, lowerBound, upperBound)
+            normalizeSpan(matchedMentions, lowerBound)
+            character.byChapterMentions.add(matchedMentions)
+
+        }
+
+        // Sort Locations by chapters
+        locations.forEach { location ->
+            val matchedMentions: ArrayList<Pair<Int, Int>> = getMentionBetweenBounds(location, lowerBound, upperBound)
+            normalizeSpan(matchedMentions, lowerBound)
+            location.byChapterMentions.add(matchedMentions)
+        }
+    }
+
+
     return BookData(title, author, characters = characters, locations = locations)
 }
+
+/**
+ * Normalise start and end of mentions so that they can be found withing each of the chapter
+ */
+private fun normalizeSpan(
+    matchedMentions: ArrayList<Pair<Int, Int>>, lowerBound: Int
+) {
+    for (i in matchedMentions.indices) {
+        val mentionSpan = matchedMentions[i]
+        matchedMentions[i] = Pair(
+            mentionSpan.first - lowerBound, mentionSpan.second - lowerBound
+        )
+    }
+}
+
+/**
+ * Get all mentions between lower and upper bound of the book chapter text
+ */
+private fun getMentionBetweenBounds(
+    character: Entity, lowerBound: Int, upperBound: Int
+) = ArrayList(character.mentions.stream().filter { mention ->
+    mention.first <= upperBound && mention.second <= upperBound && mention.first >= lowerBound && mention.second >= lowerBound
+}.toList())
 
 
 private fun getCharactersAndLocations(requestContent: String): Pair<ArrayList<Entity>, ArrayList<Entity>> {
@@ -50,7 +109,8 @@ private fun getCharactersAndLocations(requestContent: String): Pair<ArrayList<En
             temp.get("number").asString,
             temp.get("gender").asString,
             temp.get("animacy").asString,
-            mentions
+            mentions,
+            arrayListOf()
         )
         if (entity.ner != "[]") {
             if (ners.contains("PERSON")) characters.add(entity)
@@ -63,10 +123,7 @@ private fun getCharactersAndLocations(requestContent: String): Pair<ArrayList<En
 }
 
 private fun getMentions(
-    obj: JsonElement,
-    sentences: JsonArray,
-    ners: ArrayList<String>,
-    mentions: ArrayList<Pair<Int, Int>>
+    obj: JsonElement, sentences: JsonArray, ners: ArrayList<String>, mentions: ArrayList<Pair<Int, Int>>
 ) {
     //Locations of mentions in tokens
     val position = obj.asJsonObject.get("position")

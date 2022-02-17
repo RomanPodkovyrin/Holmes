@@ -1,6 +1,6 @@
-package com.server.models
+package com.romanp.fyp.models.book
 
-
+//TODO: should probably be in corenlp folder
 data class BookData(
     val title: String,
     val author: String,
@@ -16,7 +16,7 @@ data class Entity(
     val number: String, //SINGULAR, UNKNOWN, PLURAL
     val gender: String,//FEMALE, UNKNOWN, NEUTRAL, MALE
     val animacy: String, //ANIMATE, INANIMATE TODO: should it be a boolean?
-    val mentions: ArrayList<Pair<Int, Int>>,// Pair<StartIndex, EndIndex>
-//    val characterOffsetBegin: Int,
-//    val characterOffsetEnd: Int,
+    var mentions: ArrayList<Pair<Int, Int>>,
+    val byChapterMentions: ArrayList<ArrayList<Pair<Int, Int>>>
 )
+

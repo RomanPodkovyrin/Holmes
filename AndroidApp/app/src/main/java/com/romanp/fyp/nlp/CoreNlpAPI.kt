@@ -8,7 +8,7 @@ import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.romanp.fyp.adapters.BookRecyclerViewAdapter
 import com.romanp.fyp.database.BookDatabaseHelper.Companion.gson
-import com.romanp.fyp.models.book.ProcessedBook
+import com.romanp.fyp.models.book.BookData
 import com.romanp.fyp.repositories.BookRepository
 import com.romanp.fyp.utils.ToastUtils
 import java.nio.charset.Charset
@@ -27,7 +27,7 @@ class CoreNlpAPI {
 
         private var requestQueue: RequestQueue? = null
 
-        fun getRequestQueue(applicationContext: Context): RequestQueue {
+        private fun getRequestQueue(applicationContext: Context): RequestQueue {
             if (requestQueue == null) {
                 requestQueue = Volley.newRequestQueue(applicationContext)
             }
@@ -171,12 +171,12 @@ class CoreNlpAPI {
                         //TODO: if response == processing failed {send book again}
 
 
-                        val processedBookInfo: ProcessedBook =
-                            gson.fromJson(response, ProcessedBook::class.java)
+                        val bookDataInfo: BookData =
+                            gson.fromJson(response, BookData::class.java)
                         if (bookRepository.updateBook(
                                 applicationContext,
                                 id,
-                                processedBookInfo
+                                bookDataInfo
                             ) == 0
                         ) {
                             // Update live data

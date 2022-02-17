@@ -1,5 +1,7 @@
-package com.romanp.fyp.models.book
+package com.server.plugins
 
+
+import com.server.models.Entity
 import java.io.Serializable
 
 data class Chapter(
@@ -28,4 +30,3 @@ data class BookInfo(
 }
 
 fun getBookInfoErrorState() = BookInfo(-1, "", "", arrayListOf(), arrayListOf(), arrayListOf())
-
