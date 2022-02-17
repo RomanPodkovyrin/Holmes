@@ -47,7 +47,8 @@ class ApplicationTest {
                     "SINGULAR",
                     "FEMALE",
                     "ANIMATE",
-                    arrayListOf(Pair(1, 4))
+                    arrayListOf(Pair(1, 4)),
+                    arrayListOf()
                 )
             ), arrayListOf(
                 Entity(
@@ -58,7 +59,8 @@ class ApplicationTest {
                     "SINGULAR",
                     "NEUTRAL",
                     "INANIMATE",
-                    arrayListOf(Pair(5, 2))
+                    arrayListOf(Pair(5, 2)),
+                    arrayListOf()
                 )
             )
 
@@ -143,10 +145,13 @@ class ApplicationTest {
     fun `test new book received for processing`() {
         val bookTitle = "Sherlock Holmes"
         val bookAuthor = "Sir Arthur Conan Doyle"
+        val body =
+            "{\"author\":\"$bookAuthor\",\"chapters\":[{\"chapterTitle\":\"Chapter 1\",\"text\":\"Whatever have you been doing with yourself, Watson? he asked in undisguised wonder, as we walked through London You are as thin as a lath and as brown as a nut.\"}],\"characters\":[],\"image\":1,\"locations\":[],\"title\":\"$bookTitle\"}"
+
         withTestApplication({ configureRouting(mockDBrepo, mockCoreNLPController) }) {
             handleRequest(HttpMethod.Post, "/process-book/$bookTitle/$bookAuthor") {
                 setBody(
-                    "\"Whatever have you been doing with yourself, Watson?\" " + "he asked in undisguised wonder, as we walked through London" + " \"You are as thin as a lath and as brown as a nut.\""
+                    body
                 )
             }.apply {
                 assertEquals(HttpStatusCode.OK, response.status())
