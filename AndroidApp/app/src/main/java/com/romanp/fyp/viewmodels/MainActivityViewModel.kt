@@ -8,6 +8,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.*
 import com.romanp.fyp.adapters.BookRecyclerViewAdapter
+import com.romanp.fyp.database.BookDatabaseHelper.Companion.gson
 import com.romanp.fyp.models.book.BookInfo
 import com.romanp.fyp.models.book.BookUtil.Companion.loadBook
 import com.romanp.fyp.nlp.CoreNlpAPI
@@ -99,8 +100,7 @@ class MainActivityViewModel : AndroidViewModel {
 
             processedBook.value = book
             //TODO: call check book first  CoreNlpAPI.checkBook(context, it.title, it.author, it.id, books)
-            CoreNlpAPI.nerTagger(getApplication(), book.toString(), book.title, book.author)
-
+            CoreNlpAPI.nerTagger(getApplication(), gson.toJson(book), book.title, book.author)
 
             val id = repository.addBookInfo(getApplication(), book)
 
