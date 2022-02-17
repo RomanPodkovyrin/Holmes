@@ -7,8 +7,8 @@ import androidx.lifecycle.MutableLiveData
 import com.romanp.fyp.R
 import com.romanp.fyp.adapters.BookRecyclerViewAdapter
 import com.romanp.fyp.database.BookDatabaseHelper
+import com.romanp.fyp.models.book.BookData
 import com.romanp.fyp.models.book.BookInfo
-import com.romanp.fyp.models.book.ProcessedBook
 
 /**
  * Singleton pattern
@@ -80,18 +80,18 @@ class BookRepository {
 
     /**
      * Updates book processed status to true and updates it's book object
-     * @param processedBookInfo - Object to be updated
+     * @param bookDataInfo - Object to be updated
      * @return error code
      * 0: no issues
      * -1: error
      */
-    fun updateBook(context: Context, id: Long, processedBookInfo: ProcessedBook): Int {
+    fun updateBook(context: Context, id: Long, bookDataInfo: BookData): Int {
         try {
             val bookDBHelper = BookDatabaseHelper(context)
             val book = bookDBHelper.getBook(id)
                 ?: throw java.lang.Exception("Issue when getting a book by id: $id")
-            book.characters.addAll(processedBookInfo.chapters)
-            book.locations.addAll(processedBookInfo.locations)
+            book.characters.addAll(bookDataInfo.characters)
+            book.locations.addAll(bookDataInfo.locations)
             if (bookDBHelper.updateBook(id, book, true) == 0) {
                 throw java.lang.Exception("Issue when updating a book by id: $id")
             }
