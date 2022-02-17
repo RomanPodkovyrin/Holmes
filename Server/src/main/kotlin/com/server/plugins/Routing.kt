@@ -1,5 +1,6 @@
 package com.server.plugins
 
+import com.google.gson.Gson
 import com.server.controllers.CoreNLPController
 import com.server.models.BookData
 import com.server.repository.DataBaseRepository
@@ -15,7 +16,7 @@ import org.litote.kmongo.json
 
 
 fun Application.configureRouting(dbRepo: DataBaseRepository, coreNLPCont: CoreNLPController) {
-
+    val gson = Gson()
 
     routing {
 
@@ -67,12 +68,14 @@ fun Application.configureRouting(dbRepo: DataBaseRepository, coreNLPCont: CoreNL
             }
 
             //TODO: should i receive json instead?
-            val text = call.receiveText()
-            log.debug("Received body of size ${text.length}")
+            val receivedText = call.receiveText()
+            val bookInfo = gson.fromJson(receivedText, BookInfo::class.java)
+            val bodyText = bookInfo.getBodyText()
+            log.debug("Received Book of size ${bodyText.length}")
 
             call.respondText(RoutingResponses.RECEIVED.message)
 
-            val requestContent = coreNLPCont.sendBookToCoreNLP(this, text)
+            val requestContent = coreNLPCont.sendBookToCoreNLP(this, bodyText)
             if (requestContent == "ERROR: CORENLP") {
                 //TODO: never seen this one actually fire
                 call.response.status(HttpStatusCode(500, "Server side error"))
@@ -81,7 +84,7 @@ fun Application.configureRouting(dbRepo: DataBaseRepository, coreNLPCont: CoreNL
             }
             //TODO: check if timed out enter error state for the given book
 
-            val bookData = extractUsefulTags(title, author, requestContent)
+            val bookData = extractUsefulTags(title, author, requestContent, bookInfo.chapters)
             dbRepo.insertOne(bookData)
         }
     }

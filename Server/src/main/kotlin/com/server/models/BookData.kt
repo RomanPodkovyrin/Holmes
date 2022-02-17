@@ -16,7 +16,6 @@ data class Entity(
     val number: String, //SINGULAR, UNKNOWN, PLURAL
     val gender: String,//FEMALE, UNKNOWN, NEUTRAL, MALE
     val animacy: String, //ANIMATE, INANIMATE TODO: should it be a boolean?
-    val mentions: ArrayList<Pair<Int, Int>>,// Pair<StartIndex, EndIndex>
-//    val characterOffsetBegin: Int,
-//    val characterOffsetEnd: Int,
+    var mentions: ArrayList<Pair<Int, Int>>,
+    val byChapterMentions: ArrayList<ArrayList<Pair<Int, Int>>>
 )
