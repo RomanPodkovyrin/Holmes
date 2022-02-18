@@ -1,11 +1,16 @@
 package com.romanp.fyp.views
 
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
+import android.text.SpannableString
+import android.text.TextPaint
+import android.text.method.LinkMovementMethod
+import android.text.style.ClickableSpan
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import android.webkit.WebView
+import android.view.View
 import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -29,7 +34,7 @@ class BookReaderActivity : AppCompatActivity() {
     private lateinit var viewModel: BookReaderActivityViewModel
 
 
-    private var webViewBookContent: WebView? = null
+    private var textViewBookContent: TextView? = null
     private var bookTitleTV: TextView? = null
 
 
@@ -59,8 +64,11 @@ class BookReaderActivity : AppCompatActivity() {
         bookTitleTV = findViewById<TextView>(R.id.textViewBookTitle).apply {
             text = viewModel.getCurrentChapter().chapterTitle
         }
-        webViewBookContent = findViewById<WebView>(R.id.webViewBookContent).apply {
-            loadData(viewModel.getCurrentChapter().text, "text/html", "UTF-8")
+
+        textViewBookContent = findViewById<TextView>(R.id.textViewBookContent).apply {
+            val spannableString = highlightEntities(viewModel.getCurrentChapter().text)
+            text = spannableString
+            movementMethod = LinkMovementMethod.getInstance()
         }
 
         setUpActionBar(myBookInfo)
@@ -124,6 +132,44 @@ class BookReaderActivity : AppCompatActivity() {
         }
     }
 
+    private fun highlightEntities(
+        text: String,
+    ): SpannableString {
+        val str = SpannableString(text)
+        val (characters, locations) = viewModel.getCurrentChapterEntityMentionsSpans()
+        try {
+
+            characters.forEach { character ->
+                str.setSpan(object : ClickableSpan() {
+                    override fun onClick(widget: View) {
+                        ToastUtils.toast(application, "Clicked $character")
+                    }
+
+                    override fun updateDrawState(ds: TextPaint) {
+                        super.updateDrawState(ds)
+                        ds.color = Color.GREEN
+                    }
+                }, character.first, character.second, 0)
+            }
+            locations.forEach { location ->
+                str.setSpan(object : ClickableSpan() {
+                    override fun onClick(widget: View) {
+                        ToastUtils.toast(application, "Clicked $location")
+                    }
+
+                    override fun updateDrawState(ds: TextPaint) {
+                        super.updateDrawState(ds)
+                        ds.color = Color.RED
+                    }
+                }, location.first, location.second, 0)
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "$e")
+        }
+
+        return str
+    }
+
 
     /**
      * method to inflate the options menu when
@@ -163,7 +209,8 @@ class BookReaderActivity : AppCompatActivity() {
 
 
     private fun updatePage(chapters: Chapter) {
-        webViewBookContent?.loadData(chapters.text, "text/html", "UTF-8")
+        val spannableString = highlightEntities(chapters.text)
+        textViewBookContent?.text = spannableString
         bookTitleTV = findViewById<TextView>(R.id.textViewBookTitle).apply {
             text = chapters.chapterTitle
         }

@@ -64,6 +64,21 @@ class BookReaderActivityViewModel : BookViewModel {
         return currentBook.chapters[currentPage]
     }
 
+    fun getCurrentChapterEntityMentionsSpans(): Pair<ArrayList<Pair<Int, Int>>, ArrayList<Pair<Int, Int>>> {
+        val locations = arrayListOf<Pair<Int, Int>>()
+        val characters = arrayListOf<Pair<Int, Int>>()
+        currentBook.locations.forEach { location ->
+            locations.addAll(location.byChapterMentions[currentPage])
+        }
+
+        currentBook.characters.forEach { character ->
+            characters.addAll(character.byChapterMentions[currentPage])
+        }
+
+        return Pair(characters, locations)
+    }
+
+
     fun switchToEntityList(context: Context, entityType: EntityType) {
         val intent = Intent(context, EntityListActivity::class.java)
         intent.putExtra(EntityListActivity.EXTRA_MESSAGE, getBookID())
