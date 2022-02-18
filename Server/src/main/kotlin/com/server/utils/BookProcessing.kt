@@ -17,6 +17,17 @@ fun extractUsefulTags(title: String, author: String, requestContent: String, cha
     //TODO: LOGGING
     val (characters: ArrayList<Entity>, locations: ArrayList<Entity>) = getEntityMentions(requestContent)
 
+    sortByChapter(chapters, characters, locations)
+
+
+    return BookData(title, author, characters = characters, locations = locations)
+}
+
+private fun sortByChapter(
+    chapters: ArrayList<Chapter>,
+    characters: ArrayList<Entity>,
+    locations: ArrayList<Entity>
+) {
     // Calculate lower and upper bound word counts for each chapter
     var currentTotalWordCount = 0
     val chapterLimits = arrayListOf<Pair<Int, Int>>()
@@ -47,9 +58,6 @@ fun extractUsefulTags(title: String, author: String, requestContent: String, cha
             location.byChapterMentions.add(matchedMentions)
         }
     }
-
-
-    return BookData(title, author, characters = characters, locations = locations)
 }
 
 /**
