@@ -13,6 +13,7 @@ import io.ktor.response.*
 import io.ktor.routing.*
 import org.litote.kmongo.eq
 import org.litote.kmongo.json
+import java.util.concurrent.TimeUnit
 
 
 fun Application.configureRouting(dbRepo: DataBaseRepository, coreNLPCont: CoreNLPController) {
@@ -75,6 +76,8 @@ fun Application.configureRouting(dbRepo: DataBaseRepository, coreNLPCont: CoreNL
 
             call.respondText(RoutingResponses.RECEIVED.message)
 
+            val beginTimer = System.currentTimeMillis()
+
             val requestContent = coreNLPCont.sendBookToCoreNLP(this, bodyText)
             if (requestContent == "ERROR: CORENLP") {
                 //TODO: never seen this one actually fire
@@ -85,6 +88,10 @@ fun Application.configureRouting(dbRepo: DataBaseRepository, coreNLPCont: CoreNL
             //TODO: check if timed out enter error state for the given book
 
             val bookData = extractUsefulTags(title, author, requestContent, bookInfo.chapters)
+            val end = System.currentTimeMillis()
+            val minutesTaken = TimeUnit.MILLISECONDS.toMinutes(end-beginTimer)
+            val secondsTaken = TimeUnit.MILLISECONDS.toSeconds(end-beginTimer)%60
+            log.info("Time taken for $title: ${minutesTaken}m:${secondsTaken}s")
             dbRepo.insertOne(bookData)
         }
     }
