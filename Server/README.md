@@ -17,7 +17,7 @@ docker build -t server .
 To run the container
 
 ```
-docker run --network "fyp-api-network" --name AppServer -p 8080:8080 server
+docker run --network "fyp-api-network" --name AppServer -d -p 8080:8080 server
 ```
 
 To stop
@@ -102,7 +102,7 @@ docker run --network "fyp-api-network" --name CoreNLP -p 9000:9000 romanpod/core
 ```
 
 ```
-docker run --network "fyp-api-network" --name AppServer -p 8443:8443 romanpod/ktor-fyp-server
+docker run --network "fyp-api-network" --name AppServer -d -p 8443:8443 romanpod/ktor-fyp-server
 ```
 
 Or with one command
@@ -110,7 +110,7 @@ Or with one command
 ```
 docker run --network "fyp-api-network" --name CoreNLP -p 9000:9000 romanpod/corenlp &
 docker run --name mongodb -d -p 27017:27017 --network "fyp-api-network"  -v $HOME/db:/data/db mongo &
-docker run --network "fyp-api-network" --name AppServer -p 8443:8443 romanpod/ktor-fyp-server
+docker run --network "fyp-api-network" --name AppServer -d -p 8443:8443 romanpod/ktor-fyp-server
 ```
 
 # SSL
