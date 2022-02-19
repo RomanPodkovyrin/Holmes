@@ -3,6 +3,7 @@ package com.romanp.fyp.views
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
+import android.webkit.ConsoleMessage
 import android.webkit.WebChromeClient
 import android.webkit.WebView
 import android.webkit.WebViewClient
@@ -10,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.google.gson.Gson
 import com.romanp.fyp.R
+import com.romanp.fyp.models.book.BookInfo
 import com.romanp.fyp.models.book.Entity
 import com.romanp.fyp.utils.InjectorUtils
 import com.romanp.fyp.viewmodels.BookGraphActivityViewModel
@@ -17,6 +19,7 @@ import com.romanp.fyp.viewmodels.BookGraphActivityViewModel
 
 class BookGraphActivity : AppCompatActivity() {
     companion object {
+        val gson = Gson()
         private const val TAG = "BookGraphActivity"
     }
 
@@ -54,12 +57,16 @@ class BookGraphActivity : AppCompatActivity() {
                 url: String
             ) {
 
-                // after the HTML page loads,
-                // load the pie chart
-                loadPieChart(viewModel.getCharacters())
+                loadPieChart(viewModel.getCurrentBookInfo(), viewModel.getCharacters())
             }
         }
 
+        webView.webChromeClient = object : WebChromeClient() {
+            override fun onConsoleMessage(consoleMessage: ConsoleMessage): Boolean {
+                Log.d("WebView", consoleMessage.message() + "\n" + consoleMessage.lineNumber())
+                return true
+            }
+        }
         // note the mapping from  file:///android_asset
         webView.loadUrl(
             "file:///android_asset/" +
@@ -73,15 +80,15 @@ class BookGraphActivity : AppCompatActivity() {
     }
 
 
-    fun loadPieChart(data: ArrayList<Entity>) {
-        Log.i(TAG, "Loading Pie Chart")
-        val gson = Gson()
-        // the array as text
-        val text: String = gson.toJson(data).toString()
+    fun loadPieChart(book: BookInfo, data: ArrayList<Entity>) {
+        val chapterNumber = book.chapters.size
 
-        // pass the JSON to the JavaScript function
+        val dataJson: String = gson.toJson(data).toString()
+        val bookJson: String = gson.toJson(book).toString()
+
+        // pass the call JavaScript
         findViewById<WebView>(R.id.WebViewGraph).loadUrl(
-            "javascript:loadPieChart($text)"
+            "javascript:createButtons($bookJson,$chapterNumber, $dataJson)"
         )
     }
 }

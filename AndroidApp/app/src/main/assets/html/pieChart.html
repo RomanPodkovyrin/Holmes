@@ -1,14 +1,82 @@
 <html>
-<head>
-    <script type="text/javascript" src="file:///android_asset/js/d3.min.js"></script>
+  <head>
+    <style>
+      h1 {
+        text-align: center;
+      }
+      p {
+        text-align: center;
+      }
+      div {
+        text-align: center;
+      }
+    </style>
+    <script
+      type="text/javascript"
+      src="file:///android_asset/js/d3.min.js"
+    ></script>
 
-    <script type="text/javascript" src="file:///android_asset/js/pieChart.js">
+    <script
+      type="text/javascript"
+      src="file:///android_asset/js/pieChart.js"
+    ></script>
+  </head>
+  <body>
+    <h1 id="title">Pie Chart</h1>
+    <h2 id="chapter">Pick your chapter</h2>
 
+    <script>
+      let buttonWidth = "200px";
+      let buttonHeight = "80px";
+      let buttonFontSize = "xx-large";
+
+      function createButtons(book, chapterNumber, data) {
+        // Set Title
+        document.getElementById("title").innerHTML =
+          book.title + " - " + book.author;
+
+        // Bread down by chapter
+        for (let i = 0; i < chapterNumber; i++) {
+          let chapterData = [];
+          let btn = document.createElement("button");
+          btn.innerHTML = "Chapter " + (i + 1);
+          btn.style.width = buttonWidth;
+          btn.style.height = buttonHeight;
+          btn.style.fontSize = buttonFontSize;
+          btn.onclick = function () {
+            console.log("Clicked on button " + (i + 1));
+            loadPieChartByChapter(i, data);
+            document.getElementById("chapter").innerHTML = btn.innerHTML;
+          };
+          document.getElementById("buttons").appendChild(btn);
+        }
+
+        // Whole book breakdown
+        let btn = document.createElement("button");
+        btn.innerHTML = "Whole Book";
+        btn.style.width = buttonWidth;
+        btn.style.height = buttonHeight;
+        btn.style.fontSize = buttonFontSize;
+        btn.onclick = function () {
+          console.log("Clicked on button whole bool");
+          loadPieChart(data);
+          document.getElementById("chapter").innerHTML = btn.innerHTML;
+        };
+        document.getElementById("buttons").appendChild(btn);
+      }
     </script>
-
-</head>
-<body>
-<h1>D3.js Pie Chart</h1>
-<svg id="piechart" width="1000" height="1000"></svg>
-</body>
+    <br />
+    <h1 id="error"></h1>
+    <svg id="piechart" width="1000" height="1000"></svg>
+    <div id="buttons"></div>
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <h1></h1>
+  </body>
 </html>
