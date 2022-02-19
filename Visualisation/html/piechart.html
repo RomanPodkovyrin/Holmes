@@ -26,7 +26,37 @@
 </head>
 <body>
 <h2 class="title">D3.js Pie Chart</h2>
+<script>
+    function createButtons(data) {
+        data.forEach(element => {
+                console.log(element)
+                let btn = document.createElement("button");
+                btn.innerHTML = "Chapter " + element ;
+                btn.onclick = function () {
 
+
+                    loadPieChart(element)
+                }
+                document.body.appendChild(btn);
+            }
+        )
+    }
+
+    const DUMMY_DATA = [
+        {name: 'Chrome', value: 10},
+        {name: 'Edge', value: 1},
+        {name: 'Safari', value: 2},
+        {name: 'FireFox', value: 5}]
+
+    const DUMMY_DATA2 = [
+        {name: 'Russia', value: 103},
+        {name: 'Uk', value: 14},
+        {name: 'China', value: 90}]
+    createButtons([DUMMY_DATA, DUMMY_DATA2])
+</script>
+<br>
+
+<!--<svg id="piechart" width="1000" height="1000"></svg>-->
 <svg style="position: absolute" width="500" height="500"></svg>
 </body>
 </html>
