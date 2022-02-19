@@ -20,7 +20,7 @@ function loadPieChartByChapter(chapter, dataset) {
   } else {
     document.getElementById("message").innerHTML = "Chapter " + (chapter + 1);
   }
-  showPieChart(chapter, data, svg, textLabelSuffix);
+  showPieChart(data, svg, textLabelSuffix);
 }
 
 function loadPieChart(dataset) {
@@ -40,10 +40,10 @@ function loadPieChart(dataset) {
     });
 
   document.getElementById("message").innerHTML = "Whole Book";
-  showPieChart(chapter, data, svg, textLabelSuffix);
+  showPieChart(data, svg, textLabelSuffix);
 }
 
-function showPieChart(chapter, dataset, svg, textLabelSuffix) {
+function showPieChart(dataset, svg, textLabelSuffix) {
   // Clear Previous graph
   d3.selectAll("svg > *").remove();
   // d3.select("svg").remove();
