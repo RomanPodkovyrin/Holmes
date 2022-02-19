@@ -1,9 +1,9 @@
-const DUMMY_DATA = [
-    {name: 'Chrome', value: 10},
-    {name: 'Edge', value: 1},
-    {name: 'Safari', value: 2},
-    {name: 'FireFox', value: 5}]
-
+// const DUMMY_DATA = [
+//     {name: 'Chrome', value: 10},
+//     {name: 'Edge', value: 1},
+//     {name: 'Safari', value: 2},
+//     {name: 'FireFox', value: 5}]
+//
 // loadPieChart(DUMMY_DATA)
 function loadPieChart(dataset) {
     var svg = d3.select("#piechart");
@@ -29,6 +29,7 @@ function showPieChart(dataset, svg, height, width,
 
 // const colour = d3.scaleOrdinal(['red', 'blue', 'green', 'gray'])
     const pie = d3.pie()
+    })
         // .sort(null)
         .value(d => d.value)
 
