@@ -24,6 +24,9 @@ import com.romanp.fyp.models.book.NoMorePagesException
 import com.romanp.fyp.utils.InjectorUtils
 import com.romanp.fyp.utils.ToastUtils
 import com.romanp.fyp.viewmodels.BookReaderActivityViewModel
+import com.romanp.fyp.viewmodels.graph.GraphType
+import com.romanp.fyp.views.BookGraphActivity.Companion.BOOKID_GRAPH
+import com.romanp.fyp.views.BookGraphActivity.Companion.GRAPH_TYPE
 
 
 class BookReaderActivity : AppCompatActivity() {
@@ -198,7 +201,8 @@ class BookReaderActivity : AppCompatActivity() {
     private fun openPieChart() {
         ToastUtils.toast(this, "Pie Chart Clicked")
         val intent = Intent(this, BookGraphActivity::class.java)
-        intent.putExtra("ID", viewModel.getBookID())
+        intent.putExtra(BOOKID_GRAPH, viewModel.getBookID())
+        intent.putExtra(GRAPH_TYPE,GraphType.PIE_CHART)
         startActivity(intent)
     }
 

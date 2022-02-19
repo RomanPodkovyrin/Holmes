@@ -15,24 +15,35 @@ import com.romanp.fyp.models.book.BookInfo
 import com.romanp.fyp.models.book.Entity
 import com.romanp.fyp.utils.InjectorUtils
 import com.romanp.fyp.viewmodels.BookGraphActivityViewModel
+import com.romanp.fyp.viewmodels.graph.GraphType
 
 
 class BookGraphActivity : AppCompatActivity() {
     companion object {
         val gson = Gson()
         private const val TAG = "BookGraphActivity"
+        const val BOOKID_GRAPH = "ID_OF_BOOK"
+        const val GRAPH_TYPE = "GRAPH_TYPE"
     }
 
     private lateinit var viewModel: BookGraphActivityViewModel
+    private lateinit var type: GraphType
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_book_graph)
         //TODO: pass type of graph as an enum to display right graph
         val bookId = intent.getLongExtra(
-            "ID",
+            BOOKID_GRAPH,
             -1
         )
+
+        val extras = intent.extras
+        if ((extras != null) && (extras.containsKey(GRAPH_TYPE))) {
+            type = extras.getSerializable(GRAPH_TYPE) as GraphType
+        }
+
+
         initialiseViewModel(bookId)
 
         setUpWebView()
@@ -56,8 +67,12 @@ class BookGraphActivity : AppCompatActivity() {
                 view: WebView,
                 url: String
             ) {
-
-                loadPieChart(viewModel.getCurrentBookInfo(), viewModel.getCharacters())
+                when (type) {
+                    GraphType.PIE_CHART -> loadPieChart(
+                        viewModel.getCurrentBookInfo(),
+                        viewModel.getCharacters()
+                    )
+                }
             }
         }
 
@@ -67,10 +82,12 @@ class BookGraphActivity : AppCompatActivity() {
                 return true
             }
         }
-        // note the mapping from  file:///android_asset
+
         webView.loadUrl(
             "file:///android_asset/" +
-                    "html/pieChart.html"
+                    when (type) {
+                        GraphType.PIE_CHART -> "html/pieChart.html"
+                    }
         )
     }
 
