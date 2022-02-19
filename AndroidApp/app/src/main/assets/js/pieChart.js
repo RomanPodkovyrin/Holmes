@@ -16,9 +16,9 @@ function loadPieChartByChapter(chapter, dataset) {
 
   console.log("temp " + data.length + data);
   if (data.length == 0) {
-    document.getElementById("error").innerHTML = "NO DATA";
+    document.getElementById("message").innerHTML = "NO DATA";
   } else {
-    document.getElementById("error").innerHTML = "   ";
+    document.getElementById("message").innerHTML = "Chapter " + (chapter + 1);
   }
   showPieChart(chapter, data, svg, textLabelSuffix);
 }
@@ -39,6 +39,7 @@ function loadPieChart(dataset) {
       });
     });
 
+  document.getElementById("message").innerHTML = "Whole Book";
   showPieChart(chapter, data, svg, textLabelSuffix);
 }
 

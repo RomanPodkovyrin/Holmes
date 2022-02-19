@@ -23,7 +23,6 @@
   </head>
   <body>
     <h1 id="title">Pie Chart</h1>
-    <h2 id="chapter">Pick your chapter</h2>
 
     <script>
       let buttonWidth = "200px";
@@ -46,7 +45,6 @@
           btn.onclick = function () {
             console.log("Clicked on button " + (i + 1));
             loadPieChartByChapter(i, data);
-            document.getElementById("chapter").innerHTML = btn.innerHTML;
           };
           document.getElementById("buttons").appendChild(btn);
         }
@@ -60,13 +58,12 @@
         btn.onclick = function () {
           console.log("Clicked on button whole bool");
           loadPieChart(data);
-          document.getElementById("chapter").innerHTML = btn.innerHTML;
         };
         document.getElementById("buttons").appendChild(btn);
       }
     </script>
     <br />
-    <h1 id="error"></h1>
+    <h1 id="message">Pick your chapter</h1>
     <svg id="piechart" width="1000" height="1000"></svg>
     <div id="buttons"></div>
     <br />
