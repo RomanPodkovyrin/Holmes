@@ -1,11 +1,11 @@
 function loadPieChartByChapter(chapter, dataset) {
+// TODO: That's redundunt
   var svg = d3.select("#piechart");
   var textLabelSuffix = "%";
   var data = [];
   dataset
     .filter(function (el) {
-      print(el.byChapterMentions[chapter].length);
-      return !el.byChapterMentions[chapter].length == 0;
+      return el.byChapterMentions[chapter].length > 0;
     })
     .forEach((element) => {
       data.push({
@@ -15,7 +15,7 @@ function loadPieChartByChapter(chapter, dataset) {
     });
 
   console.log("temp " + data.length + data);
-  if (data.length == 0) {
+  if (data.length === 0) {
     document.getElementById("message").innerHTML = "NO DATA";
   } else {
     document.getElementById("message").innerHTML = "Chapter " + (chapter + 1);
@@ -30,7 +30,7 @@ function loadPieChart(dataset) {
   dataset
     .filter(function (el) {
       print(el.mentions.length);
-      return !el.mentions.length == 0;
+      return el.mentions.length > 0;
     })
     .forEach((element) => {
       data.push({
