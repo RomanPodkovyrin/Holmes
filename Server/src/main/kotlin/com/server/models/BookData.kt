@@ -6,6 +6,7 @@ data class BookData(
     val author: String,
     val characters: ArrayList<Entity>,
     val locations: ArrayList<Entity>,
+    val characterDistanceByChapter: ArrayList<HashMap<String, Distance>>,
 )
 
 data class Entity(
@@ -16,6 +17,21 @@ data class Entity(
     val number: String, //SINGULAR, UNKNOWN, PLURAL
     val gender: String,//FEMALE, UNKNOWN, NEUTRAL, MALE
     val animacy: String, //ANIMATE, INANIMATE TODO: should it be a boolean?
-    var mentions: ArrayList<Pair<Int, Int>>,
-    val byChapterMentions: ArrayList<ArrayList<Pair<Int, Int>>>
+    var mentions: ArrayList<Mention>,
+    val byChapterMentions: ArrayList<ArrayList<Mention>>
 )
+
+data class Mention(
+    var characterStart: Int,
+    var characterEnd: Int,
+    val tokenStart: Int,
+    val tokenEnd: Int,
+    val nerConfidences: Double
+)
+
+data class Distance(
+    val tokenAverage: Int,
+    val tokenMin: Int,
+    val tokenMax: Int,
+)
+
