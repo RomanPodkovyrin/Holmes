@@ -18,4 +18,5 @@
     <string name="service_offline">Offline</string>
     <string name="service_online">Online</string>
     <string name="pieChart">Pie Chart</string>
+    <string name="network">Character Network</string>
 </resources>
