@@ -152,7 +152,7 @@ class BookReaderActivity : AppCompatActivity() {
                         super.updateDrawState(ds)
                         ds.color = Color.GREEN
                     }
-                }, character.first, character.second, 0)
+                }, character.characterStart, character.characterEnd, 0)
             }
             locations.forEach { location ->
                 str.setSpan(object : ClickableSpan() {
@@ -164,7 +164,7 @@ class BookReaderActivity : AppCompatActivity() {
                         super.updateDrawState(ds)
                         ds.color = Color.RED
                     }
-                }, location.first, location.second, 0)
+                }, location.characterStart, location.characterEnd, 0)
             }
         } catch (e: Exception) {
             Log.e(TAG, "$e")
@@ -193,22 +193,29 @@ class BookReaderActivity : AppCompatActivity() {
             R.id.pieChart -> {
                 openPieChart()
             }
-            R.id.action_settings -> ToastUtils.toast(this, "IMPLEMENT")
+            R.id.network -> openCharacterNetwork()
         }
         return super.onOptionsItemSelected(item)
     }
 
-    private fun openPieChart() {
-        ToastUtils.toast(this, "Pie Chart Clicked")
+    private fun openCharacterNetwork() {
+//        ToastUtils.toast(this, "Pie Chart Clicked")
         val intent = Intent(this, BookGraphActivity::class.java)
         intent.putExtra(BOOKID_GRAPH, viewModel.getBookID())
-        intent.putExtra(GRAPH_TYPE,GraphType.PIE_CHART)
+        intent.putExtra(GRAPH_TYPE, GraphType.CHARACTER_NETWORK)
+        startActivity(intent)
+    }
+
+    private fun openPieChart() {
+        val intent = Intent(this, BookGraphActivity::class.java)
+        intent.putExtra(BOOKID_GRAPH, viewModel.getBookID())
+        intent.putExtra(GRAPH_TYPE, GraphType.PIE_CHART)
         startActivity(intent)
     }
 
     private fun initialiseViewModel(bookId: Long) {
         val factory = InjectorUtils.provideBookReaderActivityViewModelFactory(application, bookId)
-        viewModel = ViewModelProvider(this, factory).get(BookReaderActivityViewModel::class.java)
+        viewModel = ViewModelProvider(this, factory)[BookReaderActivityViewModel::class.java]
     }
 
 

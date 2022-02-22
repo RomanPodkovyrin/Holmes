@@ -91,6 +91,7 @@ class BookUtil {
                 author,
                 chapters,
                 ArrayList(),
+                ArrayList(),
                 ArrayList()
             )
         }

@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.romanp.fyp.models.book.AlreadyOnTheFirstPageException
 import com.romanp.fyp.models.book.Chapter
+import com.romanp.fyp.models.book.Mention
 import com.romanp.fyp.models.book.NoMorePagesException
 import com.romanp.fyp.repositories.BookRepository
 import com.romanp.fyp.views.EntityListActivity
@@ -64,9 +65,9 @@ class BookReaderActivityViewModel : BookViewModel {
         return currentBook.chapters[currentPage]
     }
 
-    fun getCurrentChapterEntityMentionsSpans(): Pair<ArrayList<Pair<Int, Int>>, ArrayList<Pair<Int, Int>>> {
-        val locations = arrayListOf<Pair<Int, Int>>()
-        val characters = arrayListOf<Pair<Int, Int>>()
+    fun getCurrentChapterEntityMentionsSpans(): Pair<ArrayList<Mention>, ArrayList<Mention>> {
+        val locations = arrayListOf<Mention>()
+        val characters = arrayListOf<Mention>()
         currentBook.locations.forEach { location ->
             locations.addAll(location.byChapterMentions[currentPage])
         }
