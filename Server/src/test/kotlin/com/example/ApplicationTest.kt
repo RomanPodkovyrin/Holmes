@@ -4,7 +4,9 @@ import com.example.TestUtils.Companion.getFileFromPath
 import com.google.gson.Gson
 import com.server.controllers.CoreNLPController
 import com.server.models.BookData
+import com.server.models.Distance
 import com.server.models.Entity
+import com.server.models.Mention
 import com.server.plugins.configureRouting
 import com.server.repository.DataBaseRepository
 import com.server.responses.RoutingResponses
@@ -43,12 +45,23 @@ class ApplicationTest {
                     "Julia",
                     aliases = arrayListOf<String>().toSet(),
                     "PERSON",
-                    "PROPER",
-                    "SINGULAR",
-                    "FEMALE",
-                    "ANIMATE",
-                    arrayListOf(Pair(1, 4)),
-                    arrayListOf()
+                    "",
+                    "",
+                    "",
+                    "",
+                    arrayListOf(Mention(1, 6, 1, 2, 0.9)),
+                    arrayListOf(arrayListOf(Mention(1, 6, 1, 2, 0.9)))
+                ),
+                Entity(
+                    "Winston",
+                    aliases = arrayListOf<String>().toSet(),
+                    "PERSON",
+                    "",
+                    "",
+                    "",
+                    "",
+                    arrayListOf(Mention(29, 35, 12, 13, 0.9)),
+                    arrayListOf(arrayListOf(Mention(29, 35, 12, 13, 0.9)))
                 )
             ), arrayListOf(
                 Entity(
@@ -59,10 +72,11 @@ class ApplicationTest {
                     "SINGULAR",
                     "NEUTRAL",
                     "INANIMATE",
-                    arrayListOf(Pair(5, 2)),
-                    arrayListOf()
+                    arrayListOf(Mention(10, 16, 4, 5, 0.99)),
+                    arrayListOf(arrayListOf(Mention(10, 16, 4, 5, 0.99)))
                 )
-            )
+            ),
+            arrayListOf(hashMapOf("Julia,Winston" to Distance(1, 2, 2)))
 
         )
     )
