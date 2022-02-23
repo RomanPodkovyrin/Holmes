@@ -25,7 +25,7 @@ fun Application.configureRouting(dbRepo: DataBaseRepository, coreNLPCont: CoreNL
         Root used to ping the server
          */
         get("/") {
-            log.info("'/' ping from ${call.request.local.remoteHost}")
+            log.debug("'/' ping from ${call.request.local.remoteHost}")
             call.respondText(RoutingResponses.PING.message)
         }
 
@@ -89,8 +89,8 @@ fun Application.configureRouting(dbRepo: DataBaseRepository, coreNLPCont: CoreNL
 
             val bookData = extractUsefulTags(title, author, requestContent, bookInfo.chapters)
             val end = System.currentTimeMillis()
-            val minutesTaken = TimeUnit.MILLISECONDS.toMinutes(end-beginTimer)
-            val secondsTaken = TimeUnit.MILLISECONDS.toSeconds(end-beginTimer)%60
+            val minutesTaken = TimeUnit.MILLISECONDS.toMinutes(end - beginTimer)
+            val secondsTaken = TimeUnit.MILLISECONDS.toSeconds(end - beginTimer) % 60
             log.info("Time taken for $title: ${minutesTaken}m:${secondsTaken}s")
             dbRepo.insertOne(bookData)
         }

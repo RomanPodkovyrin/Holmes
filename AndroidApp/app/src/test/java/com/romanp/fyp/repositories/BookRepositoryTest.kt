@@ -27,6 +27,7 @@ class BookRepositoryTest {
             Chapter("Chapter 3", "text 3")
         ),
         ArrayList(),
+        ArrayList(),
         ArrayList()
     )
 

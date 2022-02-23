@@ -92,6 +92,7 @@ class BookRepository {
                 ?: throw java.lang.Exception("Issue when getting a book by id: $id")
             book.characters.addAll(bookDataInfo.characters)
             book.locations.addAll(bookDataInfo.locations)
+            book.characterDistanceByChapter.addAll(bookDataInfo.characterDistanceByChapter)
             if (bookDBHelper.updateBook(id, book, true) == 0) {
                 throw java.lang.Exception("Issue when updating a book by id: $id")
             }

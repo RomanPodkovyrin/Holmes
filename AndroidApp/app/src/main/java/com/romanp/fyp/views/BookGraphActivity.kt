@@ -68,26 +68,35 @@ class BookGraphActivity : AppCompatActivity() {
                 url: String
             ) {
                 when (type) {
-                    GraphType.PIE_CHART -> loadPieChart(
-                        viewModel.getCurrentBookInfo(),
-                        viewModel.getCharacters()
-                    )
+                    GraphType.PIE_CHART -> {
+                        loadPieChart(viewModel.getCurrentBookInfo(), viewModel.getCharacters())
+
+                    }
+                    GraphType.CHARACTER_NETWORK -> {
+                        loadNetworkChart(viewModel.getCurrentBookInfo())
+                    }
                 }
             }
         }
 
         webView.webChromeClient = object : WebChromeClient() {
             override fun onConsoleMessage(consoleMessage: ConsoleMessage): Boolean {
-                Log.d("WebView", consoleMessage.message() + "\n" + consoleMessage.lineNumber())
+                Log.d(
+                    "WebView",
+                    "Line ${consoleMessage.lineNumber()}: ${consoleMessage.message()} \n" +
+                            "Source ID: ${consoleMessage.sourceId()}\n" +
+                            "Message Level: ${consoleMessage.messageLevel()}"
+                )
                 return true
             }
         }
 
         webView.loadUrl(
-            "file:///android_asset/" +
-                    when (type) {
-                        GraphType.PIE_CHART -> "html/pieChart.html"
-                    }
+            "file:///android_asset/" + "html/visualisation.html"
+//                    when (type) {
+//                        GraphType.PIE_CHART -> "html/visualisation.html"
+//                        GraphType.CHARACTER_NETWORK -> {"html/visualisation.html"}
+//                    }
         )
     }
 
@@ -106,6 +115,16 @@ class BookGraphActivity : AppCompatActivity() {
         // pass the call JavaScript
         findViewById<WebView>(R.id.WebViewGraph).loadUrl(
             "javascript:createButtons($bookJson,$chapterNumber, $dataJson)"
+        )
+    }
+
+    fun loadNetworkChart(book: BookInfo) {
+        val chapterNumber = book.chapters.size
+        val distances = book.characterDistanceByChapter
+        val distancesJson: String = gson.toJson(distances).toString()
+        val bookJson: String = gson.toJson(book).toString()
+        findViewById<WebView>(R.id.WebViewGraph).loadUrl(
+            "javascript:makeNetwork($bookJson, $chapterNumber, $distancesJson)"
         )
     }
 }

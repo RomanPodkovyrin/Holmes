@@ -3,8 +3,13 @@ package com.server.utils
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import com.server.models.BookData
+import com.server.models.Distance
 import com.server.models.Entity
+import com.server.models.Mention
 import com.server.plugins.Chapter
+import kotlin.math.abs
+import kotlin.math.max
+import kotlin.math.min
 import kotlin.streams.toList
 
 private val locationTAGS = arrayListOf("LOCATION", "CITY", "STATE_OR_PROVINCE", "COUNTRY")
@@ -19,8 +24,157 @@ fun extractUsefulTags(title: String, author: String, requestContent: String, cha
 
     sortByChapter(chapters, characters, locations)
 
+    // Check if there are duplicates in location and character and remove
+//    removeCharacterAndLocationDuplicates(characters, locations)
 
-    return BookData(title, author, characters = characters, locations = locations)
+    val characterDistanceByChapter = calculateDistancesBetweenCharacters(chapters, characters)
+
+
+//    println("Character distances")
+//    characterDistanceByChapter.forEach { chapter ->
+//        println("########")
+//        chapter.forEach { (t, u) ->
+//            println("$t: $u")
+//        }
+//    }
+
+
+    return BookData(
+        title,
+        author,
+        characters = characters,
+        locations = locations,
+        characterDistanceByChapter.toCollection(ArrayList())
+    )
+}
+
+private fun calculateDistancesBetweenCharacters(
+    chapters: ArrayList<Chapter>,
+    characters: ArrayList<Entity>
+): Array<HashMap<String, Distance>> {
+    // <source name>,< target name>
+    val characterDistanceByChapter = Array<HashMap<String, Distance>>(chapters.size) { HashMap() }
+
+    // Calculate character distances
+    for (i in characters.indices) {
+        val iCharacter = characters[i]
+        val iLocationsByChapter = arrayListOf<ArrayList<Int>>()
+        getTokenLocationByChapter(iCharacter, iLocationsByChapter)
+
+        // Starting from "i" as once before have already been processed
+        // +1 to not check characters against themselves
+        for (j in i + 1 until characters.size) {
+            val jCharacter = characters[j]
+            val jLocationsByChapter = arrayListOf<ArrayList<Int>>()
+            getTokenLocationByChapter(jCharacter, jLocationsByChapter)
+
+            // Calculate distance between i and j
+            // For each chapter and the whole book
+//            var bookTotal = 0
+//            var bookMinDistance = Int.MAX_VALUE
+//            var bookMaxDistance = 0
+            val numberOfChapters = min(iLocationsByChapter.size, jLocationsByChapter.size)
+            for (chapterIndex in 0 until numberOfChapters) {
+
+                var total = 0
+                var minDistance = Int.MAX_VALUE
+                var maxDistance = 0
+
+                val iChapter = iLocationsByChapter[chapterIndex]
+                val jChapter = jLocationsByChapter[chapterIndex]
+                if (iChapter.isEmpty() || jChapter.isEmpty()) continue
+                val (iChapterMeanLocation, iChapterMedianLocation) = getMeanAndMedianLocations(iChapter)
+
+                val (jChapterMeanLocation, jChapterMedianLocation) = getMeanAndMedianLocations(jChapter)
+
+
+                iChapter.forEach { iLocation ->
+                    jChapter.forEach { jLocation ->
+                        val distance = abs(iLocation - jLocation)
+                        total += distance
+                        minDistance = min(minDistance, distance)
+                        maxDistance = max(maxDistance, distance)
+                    }
+                }
+
+                val meanTokenDistance = abs(jChapterMeanLocation - iChapterMeanLocation)
+                val medianTokenDistance = abs(jChapterMedianLocation - iChapterMedianLocation)
+
+                val averageDistance = total / (iChapter.size * jChapter.size)
+                //TODO: also calculate number of punctuation between it
+                // Slice chapter between character end and start and calculate number of punctuation
+                //. , ? : ; !
+                characterDistanceByChapter[chapterIndex]["${iCharacter.name},${jCharacter.name}"] =
+                    Distance(averageDistance, minDistance, maxDistance, meanTokenDistance, medianTokenDistance)
+
+
+                // Whole Book
+//                bookTotal += averageDistance
+//                bookMinDistance = min(bookMinDistance, minDistance)
+//                bookMaxDistance = max(bookMaxDistance, maxDistance)
+            }
+            // TODO: Issues
+            //  Problem 1: Not every character appears in each chapter therefore dividing by chapters does not make sense
+            // Problem 2:
+//            characterDistance["wholeBook,${iCharacter.name},${jCharacter.name}"] =
+//                Distance(bookTotal/numberOfChapters, bookMinDistance, bookMaxDistance)
+
+
+        }
+    }
+    return characterDistanceByChapter
+}
+
+private fun getMeanAndMedianLocations(iChapter: ArrayList<Int>): Pair<Int, Int> {
+    val iChapterMeanLocation = iChapter.toIntArray().sum() / iChapter.size
+    val iChapterMedianLocation = (iChapter.toIntArray().sortedArray()).let {
+        val size = it.size
+        if (size % 2 == 1) {
+            it[size / 2]
+        } else {
+            (it[(size / 2) - 1] + it[size / 2]) / 2
+        }
+    }
+    return Pair(iChapterMeanLocation, iChapterMedianLocation)
+}
+
+private fun removeCharacterAndLocationDuplicates(
+    characters: ArrayList<Entity>,
+    locations: ArrayList<Entity>
+) {
+    for (c in characters.indices) {
+        val character = characters[c]
+        var temp = arrayListOf<String>()
+        character.mentions.forEach { temp.add(it.nerConfidences.toString()) }
+        val cConfidence = temp.toString()
+//        println("Checking character ${character.name}")
+        for (l in locations.indices) {
+            val location = locations[l]
+            temp = arrayListOf()
+            location.mentions.forEach { temp.add(it.nerConfidences.toString()) }
+            val lConfidence = temp.toString()
+            if (location.name == character.name) {
+                println("Match between l: ${location.name} with $lConfidence and c: ${character.name} with $cConfidence")
+            }
+
+        }
+    }
+}
+
+private fun getTokenLocationByChapter(
+    iCharacter: Entity,
+    iLocationsByChapter: ArrayList<ArrayList<Int>>
+) {
+
+    //TODO: can this be calculated when getting entities form JSON?
+    iCharacter.byChapterMentions.forEach { iChapter ->
+        val iLocations = arrayListOf<Int>()
+        iChapter.forEach { iMention ->
+            val location = (iMention.tokenStart + iMention.tokenEnd) / 2
+            iLocations.add(location)
+        }
+        iLocationsByChapter.add(iLocations)
+    }
 }
 
 private fun sortByChapter(
@@ -45,7 +199,7 @@ private fun sortByChapter(
 
         // Sort Characters by chapters
         characters.forEach { character ->
-            val matchedMentions: ArrayList<Pair<Int, Int>> = getMentionBetweenBounds(character, lowerBound, upperBound)
+            val matchedMentions: ArrayList<Mention> = getMentionBetweenBounds(character, lowerBound, upperBound)
             normalizeSpan(matchedMentions, lowerBound)
             character.byChapterMentions.add(matchedMentions)
 
@@ -53,7 +207,7 @@ private fun sortByChapter(
 
         // Sort Locations by chapters
         locations.forEach { location ->
-            val matchedMentions: ArrayList<Pair<Int, Int>> = getMentionBetweenBounds(location, lowerBound, upperBound)
+            val matchedMentions: ArrayList<Mention> = getMentionBetweenBounds(location, lowerBound, upperBound)
             normalizeSpan(matchedMentions, lowerBound)
             location.byChapterMentions.add(matchedMentions)
         }
@@ -64,14 +218,18 @@ private fun sortByChapter(
  * Normalise start and end of mentions so that they can be found withing each of the chapter
  */
 private fun normalizeSpan(
-    matchedMentions: ArrayList<Pair<Int, Int>>, lowerBound: Int
+    matchedMentions: ArrayList<Mention>, lowerBound: Int
 ) {
-    for (i in matchedMentions.indices) {
-        val mentionSpan = matchedMentions[i]
-        matchedMentions[i] = Pair(
-            mentionSpan.first - lowerBound, mentionSpan.second - lowerBound
-        )
+    matchedMentions.forEach { match ->
+        match.characterStart = match.characterStart - lowerBound
+        match.characterEnd = match.characterEnd - lowerBound
     }
+//    for (i in matchedMentions.indices) {
+//        val mentionSpan = matchedMentions[i]
+//        matchedMentions[i] = Pair(
+//            mentionSpan.characterStart - lowerBound, mentionSpan.characterEnd - lowerBound
+//        )
+//    }
 }
 
 /**
@@ -80,11 +238,11 @@ private fun normalizeSpan(
 private fun getMentionBetweenBounds(
     character: Entity, lowerBound: Int, upperBound: Int
 ) = ArrayList(character.mentions.stream().filter { mention ->
-    mention.first <= upperBound && mention.second <= upperBound && mention.first >= lowerBound && mention.second >= lowerBound
+    mention.characterStart <= upperBound && mention.characterEnd <= upperBound && mention.characterStart >= lowerBound && mention.characterEnd >= lowerBound
 }.toList())
 
 /**
- * Get entity mentions form corenlp
+ * Get entity mentions from corenlp
  */
 private fun getEntityMentions(requestContent: String): Pair<ArrayList<Entity>, ArrayList<Entity>> {
     val jsonObject = JsonParser.parseString(requestContent).asJsonObject
@@ -120,17 +278,23 @@ private fun saveEntity(
     characterHashMap: HashMap<String, Entity>,
     locationHashMap: HashMap<String, Entity>
 ) {
+    println("Object ${entity.toString()}")
     // Extract useful info
-    //TODO: ADD ner Confidence?
     val entityNER = entity.get("ner").asString
     val name = entity.get("text").asString
-    val start = entity.get("characterOffsetBegin").asInt
-    val end = entity.get("characterOffsetEnd").asInt
+    val characterStart = entity.get("characterOffsetBegin").asInt
+    val characterEnd = entity.get("characterOffsetEnd").asInt
+    val tokenStart = entity.get("docTokenBegin").asInt
+    val tokenEnd = entity.get("docTokenEnd").asInt
+    val nerConfidences =
+        entity.get("nerConfidences").asJsonObject.entrySet().stream().map { it.value.asDouble }.toList()[0]
 
     if (characterTAGS.contains(entityNER)) {
-        updateHM(characterHashMap, name, start, end, entityNER)
+//        val nerConfidences = entity.get("nerConfidences").asJsonObject.get(entityNER).asDouble
+        updateHM(characterHashMap, name, characterStart, characterEnd, tokenStart, tokenEnd, entityNER, nerConfidences)
     } else if (locationTAGS.contains(entityNER)) {
-        updateHM(locationHashMap, name, start, end, entityNER)
+//        val nerConfidences = entity.get("nerConfidences").asJsonObject.get("LOCATION").asDouble
+        updateHM(locationHashMap, name, characterStart, characterEnd, tokenStart, tokenEnd, entityNER, nerConfidences)
     }
 
 
@@ -139,12 +303,16 @@ private fun saveEntity(
 private fun updateHM(
     entityHashMap: HashMap<String, Entity>,
     name: String,
-    start: Int,
-    end: Int,
-    entityNER: String
+    characterStart: Int,
+    characterEnd: Int,
+    tokenStart: Int,
+    tokenEnd: Int,
+    entityNER: String,
+    nerConfidences: Double
 ) {
+    val mention = Mention(characterStart, characterEnd, tokenStart, tokenEnd, nerConfidences)
     if (entityHashMap.contains(name)) {
-        entityHashMap[name]?.mentions?.add(Pair(start, end))
+        entityHashMap[name]?.mentions?.add(mention)
     } else {
 
         val newEntity = Entity(
@@ -155,7 +323,7 @@ private fun updateHM(
             "",
             "",
             "",
-            arrayListOf(Pair(start, end)),
+            arrayListOf(mention),
             arrayListOf()
         )
         entityHashMap[name] = newEntity
@@ -179,7 +347,6 @@ private fun updateHM(
 //        val temp = corefs.asJsonArray.get(0).asJsonObject
 //        val ners: ArrayList<String> = arrayListOf()
 //
-//        //TODO: record others that are not proper
 //        if (temp.get("type").asString != "PROPER") return@forEach
 //
 //        corefs.asJsonArray.forEach { obj ->
@@ -220,9 +387,7 @@ private fun updateHM(
 //    val endIndex = obj.asJsonObject.get("endIndex").asInt - 2
 //    //Sentence number
 //    val index1 = position.asJsonArray.get(0).asInt - 1
-//    //TODO: what is this?
 //    val index2 = position.asJsonArray.get(1).asInt
-////TODO: also combine entity mentions with tokens before hand??? so i can get ner confidence
 //
 //    val token = sentences.get(index1).asJsonObject.get("tokens").asJsonArray
 //

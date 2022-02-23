@@ -7,8 +7,8 @@
         app:showAsAction="never" />
 
     <item
-        android:id="@+id/action_settings"
-        android:title="two"
+        android:id="@+id/network"
+        android:title="@string/network"
         app:showAsAction="never" />
 
 </menu>
