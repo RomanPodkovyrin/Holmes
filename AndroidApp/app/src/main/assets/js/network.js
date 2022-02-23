@@ -1,5 +1,5 @@
-let width = 1000;
-let height = 1500;
+let width = 2000;
+let height = 3000;
 
 const margin = {
     top: 50, bottom: 50, left: 50, right: 50,
@@ -23,7 +23,7 @@ function compare(a, b) {
 }
 
 
-function plotNetwork(chapter, distances, characters) {
+function plotNetwork(chapter, distances, characters, topMaxLinksPercentage) {
     console.log("Plotting network graph")
 
     // Clear Previous graph
@@ -50,7 +50,7 @@ function plotNetwork(chapter, distances, characters) {
     }
 
     let acceptedMin = maxValue - (maxValue - minValue) * 1;
-    let acceptedMax = minValue + (maxValue - minValue) * 0.5;
+    let acceptedMax = minValue + (maxValue - minValue) * topMaxLinksPercentage;
     console.log("Max: " + maxValue + " Min: " + minValue + " acceptMin: " + acceptedMin + " acceptMax: " + acceptedMax);
 
     // Filter out elements according to accepted min and max
