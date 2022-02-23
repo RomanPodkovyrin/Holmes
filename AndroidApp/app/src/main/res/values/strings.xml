@@ -19,4 +19,8 @@
     <string name="service_online">Online</string>
     <string name="pieChart">Pie Chart</string>
     <string name="network">Character Network</string>
+
+    <!--    Descriptions -->
+    <string name="delete_symbol">Delete Symbol</string>
+    <string name="book_cover_image">Book Cover Image</string>
 </resources>
