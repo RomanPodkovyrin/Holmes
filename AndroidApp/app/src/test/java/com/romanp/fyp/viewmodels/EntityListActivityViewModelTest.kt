@@ -36,7 +36,8 @@ class EntityListActivityViewModelTest {
         arrayListOf(
             Entity("Eastasia", setOf(),"","","","","", arrayListOf(),arrayListOf()),
             Entity("Oceania", setOf(),"","","","","", arrayListOf(),arrayListOf())
-        )
+        ),
+        arrayListOf()
     )
 
     private val expectedLocations =
