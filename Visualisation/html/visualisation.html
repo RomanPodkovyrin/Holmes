@@ -1,0 +1,150 @@
+<html>
+<head>
+    <style>
+        h1 {
+            text-align: center;
+        }
+
+        p {
+            text-align: center;
+        }
+
+        div {
+            text-align: center;
+        }
+    </style>
+<!--    <script-->
+<!--            type="text/javascript"-->
+<!--            src="../js/d3.min.js"-->
+<!--    ></script>-->
+
+    <script src="https://d3js.org/d3.v7.min.js" defer></script>
+    <!--    For scaling TODO: how to i import it or android-->
+    <script src="https://d3js.org/d3-scale.v4.min.js" defer></script>
+
+<!--    <script-->
+<!--            type="text/javascript"-->
+<!--            src="../js/pieChart.js"-->
+<!--    ></script>-->
+    <script
+            type="text/javascript"
+            src="../js/network.js"
+    ></script>
+</head>
+<body>
+<h1 id="title">Pie Chart</h1>
+
+<script>
+
+
+</script>
+<br/>
+<h1 id="message">Pick your chapter</h1>
+<svg id="piechart" width="2000" height="1200"></svg>
+<div id="buttons"></div>
+<br/>
+<div >
+    Max Top Links
+    <input id="slider" type="range" min="0" max="100" value="100" />
+    <p id="values">100</p>
+</div>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<h1></h1>
+</body>
+
+<script>
+    fetch("./duncanInfo.json")
+        .then(response => {
+            return response.json();
+        })
+        .then(jsondata => {
+            console.log(jsondata)
+            makeNetwork(jsondata, jsondata.chapters.length, jsondata.characterDistanceByChapter)
+        });
+
+
+
+    const slider = document.getElementById("slider")
+    const log = document.getElementById("values")
+    console.log("Slider " + slider + " value  " + log.textContent)
+
+    slider.addEventListener('input', updateValue);
+    function updateValue(e) {
+        log.textContent = e.target.value;
+    }
+
+
+    let buttonWidth = "200px";
+    let buttonHeight = "80px";
+    let buttonFontSize = "xx-large";
+
+    function setTitle(book) {
+        document.getElementById("title").innerHTML =
+            book.title + " - " + book.author;
+    }
+
+    function makeNetwork(book, chapterNumber, distances) {
+        console.log("Making Network Graphs " + JSON)
+
+        // Set Title
+        setTitle(book)
+
+        // Bread down by chapter
+        for (let i = 0; i < chapterNumber; i++) {
+            let btn = document.createElement("button");
+            btn.innerHTML = "Chapter " + (i + 1);
+            btn.style.width = buttonWidth;
+            btn.style.height = buttonHeight;
+            btn.style.fontSize = buttonFontSize;
+            btn.onclick = function () {
+                console.log("Clicked on button " + (i + 1));
+                plotNetwork(i, distances, book.characters, log.textContent/100);
+            };
+            document.getElementById("buttons").appendChild(btn);
+        }
+        //plotNetwork()
+    }
+
+    // function createButtons(book, chapterNumber, data) {
+    //     console.log("Making Pie Graphs")
+    //     // Set Title
+    //     setTitle(book)
+    //
+    //     // Bread down by chapter
+    //     for (let i = 0; i < chapterNumber; i++) {
+    //         let btn = document.createElement("button");
+    //         btn.innerHTML = "Chapter " + (i + 1);
+    //         btn.style.width = buttonWidth;
+    //         btn.style.height = buttonHeight;
+    //         btn.style.fontSize = buttonFontSize;
+    //         btn.onclick = function () {
+    //             console.log("Clicked on button " + (i + 1));
+    //             loadPieChartByChapter(i, data);
+    //         };
+    //         document.getElementById("buttons").appendChild(btn);
+    //     }
+    //
+    //     // Whole book breakdown
+    //     let btn = document.createElement("button");
+    //     btn.innerHTML = "Whole Book";
+    //     btn.style.width = buttonWidth;
+    //     btn.style.height = buttonHeight;
+    //     btn.style.fontSize = buttonFontSize;
+    //     btn.onclick = function () {
+    //         console.log("Clicked on button whole bool");
+    //         loadPieChart(data);
+    //     };
+    //     document.getElementById("buttons").appendChild(btn);
+    // }
+
+
+
+</script>
+</html>
