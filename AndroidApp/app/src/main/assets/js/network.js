@@ -1,5 +1,5 @@
-let width = 2000;
-let height = 3000;
+let width = 1000;
+let height = 1500;
 
 const margin = {
     top: 50, bottom: 50, left: 50, right: 50,
@@ -95,7 +95,7 @@ function plotNetwork(chapter, distances, characters, topMaxLinksPercentage) {
         .scaleLinear()
         .domain([acceptedMax, acceptedMin])
         //Controls the thickness of the link
-        .range([1, 20]);
+        .range([0.1, 10]);
     const linkStrengthScale = d3
         .scaleLinear()
         .domain([acceptedMax, acceptedMin])
@@ -104,7 +104,7 @@ function plotNetwork(chapter, distances, characters, topMaxLinksPercentage) {
     const nodeSizeScale = d3
         .scaleLinear()
         .domain([minMentions, maxMentions])
-        .range([20, 100])
+        .range([10, 100])
 
     const simulation = d3
         .forceSimulation()
