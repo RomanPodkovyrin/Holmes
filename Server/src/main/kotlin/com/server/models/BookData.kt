@@ -33,5 +33,7 @@ data class Distance(
     val tokenAverage: Int,
     val tokenMin: Int,
     val tokenMax: Int,
+    val meanTokenDistance: Int,
+    val medianTokenDistance: Int,
 )
 

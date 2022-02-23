@@ -76,7 +76,7 @@ class ApplicationTest {
                     arrayListOf(arrayListOf(Mention(10, 16, 4, 5, 0.99)))
                 )
             ),
-            arrayListOf(hashMapOf("Julia,Winston" to Distance(1, 2, 2)))
+            arrayListOf(hashMapOf("Julia,Winston" to Distance(1, 2, 2, 2, 2)))
 
         )
     )

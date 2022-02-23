@@ -24,27 +24,35 @@ fun extractUsefulTags(title: String, author: String, requestContent: String, cha
 
     sortByChapter(chapters, characters, locations)
 
-    // TODO: also get max number of tokens in each chapter ?
     // Check if there are duplicates in location and character and remove
-    for (c in characters.indices) {
-        val character = characters[c]
-        var temp = arrayListOf<String>()
-        character.mentions.forEach { temp.add(it.nerConfidences.toString()) }
-        val cConfidence = temp.toString()
-//        println("Checking character ${character.name}")
-        for (l in locations.indices) {
-            val location = locations[l]
-            temp = arrayListOf()
-            location.mentions.forEach { temp.add(it.nerConfidences.toString()) }
-            val lConfidence = temp.toString()
-            if (location.name == character.name) {
-                println("Match between l: ${location.name} with $lConfidence and c: ${character.name} with $cConfidence")
-            }
+//    removeCharacterAndLocationDuplicates(characters, locations)
 
-        }
-    }
+    val characterDistanceByChapter = calculateDistancesBetweenCharacters(chapters, characters)
 
-//    val characterDistance = HashMap<String, Distance>()// String is <chapter>,<name>,<name>
+
+//    println("Character distances")
+//    characterDistanceByChapter.forEach { chapter ->
+//        println("########")
+//        chapter.forEach { (t, u) ->
+//            println("$t: $u")
+//        }
+//    }
+
+
+    return BookData(
+        title,
+        author,
+        characters = characters,
+        locations = locations,
+        characterDistanceByChapter.toCollection(ArrayList())
+    )
+}
+
+private fun calculateDistancesBetweenCharacters(
+    chapters: ArrayList<Chapter>,
+    characters: ArrayList<Entity>
+): Array<HashMap<String, Distance>> {
+    // <source name>,< target name>
     val characterDistanceByChapter = Array<HashMap<String, Distance>>(chapters.size) { HashMap() }
 
     // Calculate character distances
@@ -75,6 +83,11 @@ fun extractUsefulTags(title: String, author: String, requestContent: String, cha
                 val iChapter = iLocationsByChapter[chapterIndex]
                 val jChapter = jLocationsByChapter[chapterIndex]
                 if (iChapter.isEmpty() || jChapter.isEmpty()) continue
+                val (iChapterMeanLocation, iChapterMedianLocation) = getMeanAndMedianLocations(iChapter)
+
+                val (jChapterMeanLocation, jChapterMedianLocation) = getMeanAndMedianLocations(jChapter)
+
+
                 iChapter.forEach { iLocation ->
                     jChapter.forEach { jLocation ->
                         val distance = abs(iLocation - jLocation)
@@ -84,12 +97,15 @@ fun extractUsefulTags(title: String, author: String, requestContent: String, cha
                     }
                 }
 
+                val meanTokenDistance = abs(jChapterMeanLocation - iChapterMeanLocation)
+                val medianTokenDistance = abs(jChapterMedianLocation - iChapterMedianLocation)
+
                 val averageDistance = total / (iChapter.size * jChapter.size)
                 //TODO: also calculate number of punctuation between it
                 // Slice chapter between character end and start and calculate number of punctuation
                 //. , ? : ; !
                 characterDistanceByChapter[chapterIndex]["${iCharacter.name},${jCharacter.name}"] =
-                    Distance(averageDistance, minDistance, maxDistance)
+                    Distance(averageDistance, minDistance, maxDistance, meanTokenDistance, medianTokenDistance)
 
 
                 // Whole Book
@@ -106,24 +122,43 @@ fun extractUsefulTags(title: String, author: String, requestContent: String, cha
 
         }
     }
+    return characterDistanceByChapter
+}
 
-    println("Character distances")
-    characterDistanceByChapter.forEach { chapter ->
-        println("########")
-        chapter.forEach { (t, u) ->
-            println("$t: $u")
+private fun getMeanAndMedianLocations(iChapter: ArrayList<Int>): Pair<Int, Int> {
+    val iChapterMeanLocation = iChapter.toIntArray().sum() / iChapter.size
+    val iChapterMedianLocation = (iChapter.toIntArray().sortedArray()).let {
+        val size = it.size
+        if (size % 2 == 1) {
+            it[size / 2]
+        } else {
+            (it[(size / 2) - 1] + it[size / 2]) / 2
         }
     }
+    return Pair(iChapterMeanLocation, iChapterMedianLocation)
+}
 
+private fun removeCharacterAndLocationDuplicates(
+    characters: ArrayList<Entity>,
+    locations: ArrayList<Entity>
+) {
+    for (c in characters.indices) {
+        val character = characters[c]
+        var temp = arrayListOf<String>()
+        character.mentions.forEach { temp.add(it.nerConfidences.toString()) }
+        val cConfidence = temp.toString()
+//        println("Checking character ${character.name}")
+        for (l in locations.indices) {
+            val location = locations[l]
+            temp = arrayListOf()
+            location.mentions.forEach { temp.add(it.nerConfidences.toString()) }
+            val lConfidence = temp.toString()
+            if (location.name == character.name) {
+                println("Match between l: ${location.name} with $lConfidence and c: ${character.name} with $cConfidence")
+            }
 
-
-    return BookData(
-        title,
-        author,
-        characters = characters,
-        locations = locations,
-        characterDistanceByChapter.toCollection(ArrayList())
-    )
+        }
+    }
 }
 
 private fun getTokenLocationByChapter(
