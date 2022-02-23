@@ -35,9 +35,9 @@
 <svg id="piechart" width="2000" height="3000"></svg>
 <div id="buttons"></div>
 <br/>
-<div >
+<div>
     Max Top Links
-    <input id="slider" type="range" min="0" max="100" value="100" />
+    <input id="slider" type="range" min="0" max="100" value="100"/>
     <p id="values">100</p>
 </div>
 <br/>
@@ -54,14 +54,16 @@
 
 <script>
 
- const slider = document.getElementById("slider")
+    const slider = document.getElementById("slider")
     const log = document.getElementById("values")
     console.log("Slider " + slider + " value  " + log.textContent)
 
     slider.addEventListener('input', updateValue);
+
     function updateValue(e) {
         log.textContent = e.target.value;
     }
+
     let buttonWidth = "200px";
     let buttonHeight = "80px";
     let buttonFontSize = "xx-large";
@@ -86,7 +88,7 @@
             btn.style.fontSize = buttonFontSize;
             btn.onclick = function () {
                 console.log("Clicked on button " + (i + 1));
-                plotNetwork(i, distances, book.characters, log.textContent/100);
+                plotNetwork(i, distances, book.characters, log.textContent / 100);
             };
             document.getElementById("buttons").appendChild(btn);
         }
@@ -124,7 +126,6 @@
         };
         document.getElementById("buttons").appendChild(btn);
     }
-
 
 
 </script>
