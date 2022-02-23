@@ -15,6 +15,7 @@ class BookInfoTest {
             Chapter("Chapter 3", "Body Text of chapter 3.")
         ),
         arrayListOf(),
+        arrayListOf(),
         arrayListOf()
     )
 
@@ -22,6 +23,7 @@ class BookInfoTest {
         0,
         "Test Title",
         "Test Author",
+        arrayListOf(),
         arrayListOf(),
         arrayListOf(),
         arrayListOf()
