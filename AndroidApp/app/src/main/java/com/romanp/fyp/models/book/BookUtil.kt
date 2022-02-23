@@ -119,7 +119,7 @@ class BookUtil {
 
             chapters.add(Chapter(chapterTitle,
                 subChapters.filter { part -> part != null || part == "" }
-                    .joinToString(separator = "<br><br><br>------<br><br><br>")
+                    .joinToString(separator = "\n\n\n\n\n")
             )
             )
         }
