@@ -37,7 +37,7 @@ fun Application.configureRouting(dbRepo: DataBaseRepository, coreNLPCont: CoreNL
             val author = call.parameters["bookAuthor"]
             log.info("'/check-book' Check book called for book $title - $author\"")
 
-            val failedList = dbRepo.findFailed(BookInfo::title eq title, BookInfo::author eq author)
+            val failedList = getFailedBooks(dbRepo, title, author)
             if (failedList.isNotEmpty()) {
                 log.info("$title - $author Book has failed processing")
                 call.respondText(RoutingResponses.FAILED.message)
@@ -76,9 +76,9 @@ fun Application.configureRouting(dbRepo: DataBaseRepository, coreNLPCont: CoreNL
                     return@post
                 }
 
-                val failedList = dbRepo.findFailed(BookInfo::title eq title, BookInfo::author eq author)
+                val failedList = getFailedBooks(dbRepo, title, author)
                 if (failedList.isNotEmpty()) {
-                    log.info("$title - $author Book has failed processed")
+                    log.info("$title - $author Book has failed processing")
                     call.respondText(RoutingResponses.FAILED.message)
                     return@post
                 }
@@ -105,7 +105,7 @@ fun Application.configureRouting(dbRepo: DataBaseRepository, coreNLPCont: CoreNL
                 log.info("Time taken for $title: ${minutesTaken}m:${secondsTaken}s")
                 dbRepo.insertOne(bookData)
             } catch (e: Exception) {
-                log.info("Failed to process the book $title - $author")
+                log.info("Failed to process the book $title - $author | Error: ${e.message}")
                 dbRepo.insertOneFailed(BookInfo(0, title, author, arrayListOf(), arrayListOf(), arrayListOf()))
 
                 return@post
@@ -113,4 +113,10 @@ fun Application.configureRouting(dbRepo: DataBaseRepository, coreNLPCont: CoreNL
         }
     }
 }
+
+private suspend fun getFailedBooks(
+    dbRepo: DataBaseRepository,
+    title: String?,
+    author: String?
+) = dbRepo.findFailed(BookInfo::title eq title, BookInfo::author eq author)
 
