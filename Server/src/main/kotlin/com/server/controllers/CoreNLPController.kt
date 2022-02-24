@@ -17,7 +17,6 @@ private val client = HttpClient(CIO) {
         requestTimeout = 0 // 0 to disable, or a millisecond value to fit your needs
     }
     install(HttpTimeout) {
-        //TODO: set the same timeout for corenlp docker
         requestTimeoutMillis = TIMEOUT
     }
 }
@@ -28,12 +27,10 @@ class CoreNLPController(private val coreNlpUrl: String, private val coreNlpPort:
     suspend fun sendBookToCoreNLP(
         pipelineContext: PipelineContext<Unit, ApplicationCall>, text: String
     ): String {
-        //TODO: LOGGING
         val response: Deferred<String> = pipelineContext.async {
             try {
                 client.post("http://$coreNlpUrl:$coreNlpPort/") {
                     timeout {
-                        //TODO: set the same timeout for corenlp docker
                         requestTimeoutMillis = TIMEOUT
                     }
                     val properties: Map<String, Any> = mapOf(
@@ -41,18 +38,16 @@ class CoreNLPController(private val coreNlpUrl: String, private val coreNlpPort:
                         "outputFormat" to "json",
 
                         )
+
                     parameter("properties", Gson().toJson(properties))
                     body = text
                 }
             } catch (e: Exception) {
                 println("When calling Corenlp server :$e")
-                //TODO: fix log not working outside of a request
-//            log.error("When calling Corenlp server :$e")
                 "ERROR: CORENLP"
             }
         }
 
-//    log.info("Calling CoreNLP server")
         return response.await()
     }
 }
