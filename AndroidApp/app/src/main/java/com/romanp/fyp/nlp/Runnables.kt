@@ -39,10 +39,11 @@ class Runnables {
         }
 
         override fun run() {
-            books.value?.filterNot { it.processed }?.forEach { it ->
-                Log.i(TAG, "Checking $it")
-                CoreNlpAPI.checkBook(context, it.title, it.author, it.id, books)
-            }
+            books.value?.filterNot { it.processed == BookRecyclerViewAdapter.ProcessedState.SUCCESSFULLY_PROCESSED || it.processed == BookRecyclerViewAdapter.ProcessedState.FAILED }
+                ?.forEach { it ->
+                    Log.i(TAG, "Checking $it")
+                    CoreNlpAPI.checkBook(context, it.title, it.author, it.id, books)
+                }
 
             mainHandler.postDelayed(this, delay)
         }
