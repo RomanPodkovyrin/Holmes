@@ -106,7 +106,12 @@ fun Application.configureRouting(dbRepo: DataBaseRepository, coreNLPCont: CoreNL
                 dbRepo.insertOne(bookData)
             } catch (e: Exception) {
                 log.info("Failed to process the book $title - $author | Error: ${e.message}")
-                dbRepo.insertOneFailed(BookInfo(0, title, author, arrayListOf(), arrayListOf(), arrayListOf()))
+                val failedList = getFailedBooks(dbRepo, title, author)
+                if (failedList.isEmpty()) {
+                    dbRepo.insertOneFailed(BookInfo(0, title, author, arrayListOf(), arrayListOf(), arrayListOf()))
+
+                }
+
 
                 return@post
             }
