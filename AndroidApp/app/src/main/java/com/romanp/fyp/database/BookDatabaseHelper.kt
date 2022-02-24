@@ -39,7 +39,7 @@ class BookDatabaseHelper(
                         "$COL_AUTHOR TEXT," +
                         "$COL_TITLE TEXT," +
                         "$COL_DATA BLOB," +
-                        "$COL_PROCESSED BOOLEAN NOT NULL CHECK ($COL_PROCESSED IN (0,1))," +
+                        "$COL_PROCESSED INTEGER NOT NULL CHECK ($COL_PROCESSED IN (0,1,2))," +
                         "UNIQUE($COL_AUTHOR, $COL_TITLE)" +
                         ")"
                 )
@@ -149,11 +149,28 @@ class BookDatabaseHelper(
      * @return error code
      * 0 failed
      */
-    fun updateBook(id: Long, book: BookInfo, processed: Boolean): Int {
+    fun updateBook(id: Long, book: BookInfo, processed: Int): Int {
         val contentValues = ContentValues()
-        contentValues.put(COL_AUTHOR, book.author)
-        contentValues.put(COL_TITLE, book.title)
         contentValues.put(COL_DATA, gson.toJson(book))
+        contentValues.put(COL_PROCESSED, processed)
+
+        val db: SQLiteDatabase = writableDatabase
+        val output = db.update(TABLE_NAME, contentValues, "$COL_ID=?", arrayOf(id.toString()))
+        if (output == 0) {
+            Log.e(TAG, "Failed to update book $id")
+        } else {
+            Log.i(TAG, "Updated book $id")
+        }
+        db.close() // Closing database connection
+        return output
+    }
+
+    /**
+     * @return error code
+     * 0 failed
+     */
+    fun updateBookProcessedStatus(id: Long,processed: Int): Int {
+        val contentValues = ContentValues()
         contentValues.put(COL_PROCESSED, processed)
 
         val db: SQLiteDatabase = writableDatabase

@@ -44,7 +44,7 @@ class MainViewActivityTest {
 
         booksLiveData = MutableLiveData(
             mutableListOf(
-                BookRecyclerViewAdapter.RecyclerBookInfo(1, "Orwell", "1984", 1L, false)
+                BookRecyclerViewAdapter.RecyclerBookInfo(1, "Orwell", "1984", 1L, 0)
             )
         )
         `when`(mockRepo.getRecyclerBookInfoList(org.mockito.kotlin.any())).thenReturn(booksLiveData)

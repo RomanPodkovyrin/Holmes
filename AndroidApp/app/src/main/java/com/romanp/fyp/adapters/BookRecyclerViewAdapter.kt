@@ -83,11 +83,22 @@ class BookRecyclerViewAdapter(
             /* TODO: need to find a way to observe the change
             might need to implement mvvm for adapter
             */
-            if (!itemsViewModel.processed) {
+            if (itemsViewModel.processed == 0) {
                 Log.i(TAG, "item in position $position is set to visible progress bar")
                 progressBarProcessing.visibility = View.VISIBLE
-            } else {
+                progressBarProcessing.indeterminateDrawable.setColorFilter(
+                    0xFF70A362.toInt(),
+                    android.graphics.PorterDuff.Mode.MULTIPLY
+                )
+            } else if (itemsViewModel.processed == 1) {
                 progressBarProcessing.visibility = View.INVISIBLE
+            } else if (itemsViewModel.processed == 2) {
+                // Failed
+                progressBarProcessing.visibility = View.VISIBLE
+                progressBarProcessing.indeterminateDrawable.setColorFilter(
+                    0xFFFF0000.toInt(),
+                    android.graphics.PorterDuff.Mode.MULTIPLY
+                )
             }
 
             // TODO: move to viewModel and repository
@@ -106,6 +117,6 @@ class BookRecyclerViewAdapter(
         val author: String,
         val title: String,
         val id: Long,
-        var processed: Boolean
+        var processed: Int // 0 - processing, 1 - processed, 2 - failed
     ) : Serializable
 }
