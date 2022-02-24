@@ -89,7 +89,7 @@ class BookRepositoryTest {
             Assert.assertEquals(
                 "",
                 recyclerBookInfo[0],
-                BookRecyclerViewAdapter.RecyclerBookInfo(2131165287, "1984", "Orwell", 1, 0)
+                BookRecyclerViewAdapter.RecyclerBookInfo(2131165287, "1984", "Orwell", 1, BookRecyclerViewAdapter.ProcessedState.PROCESSING)
             )
         } else {
             fail("Should contain BookInfo in the list")
