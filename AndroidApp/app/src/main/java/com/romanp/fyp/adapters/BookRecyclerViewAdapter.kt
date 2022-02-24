@@ -83,16 +83,16 @@ class BookRecyclerViewAdapter(
             /* TODO: need to find a way to observe the change
             might need to implement mvvm for adapter
             */
-            if (itemsViewModel.processed == 0) {
+            if (itemsViewModel.processed == ProcessedState.PROCESSING) {
                 Log.i(TAG, "item in position $position is set to visible progress bar")
                 progressBarProcessing.visibility = View.VISIBLE
                 progressBarProcessing.indeterminateDrawable.setColorFilter(
                     0xFF70A362.toInt(),
                     android.graphics.PorterDuff.Mode.MULTIPLY
                 )
-            } else if (itemsViewModel.processed == 1) {
+            } else if (itemsViewModel.processed == ProcessedState.SUCCESSFULLY_PROCESSED) {
                 progressBarProcessing.visibility = View.INVISIBLE
-            } else if (itemsViewModel.processed == 2) {
+            } else if (itemsViewModel.processed == ProcessedState.FAILED) {
                 // Failed
                 progressBarProcessing.visibility = View.VISIBLE
                 progressBarProcessing.indeterminateDrawable.setColorFilter(
@@ -117,6 +117,12 @@ class BookRecyclerViewAdapter(
         val author: String,
         val title: String,
         val id: Long,
-        var processed: Int // 0 - processing, 1 - processed, 2 - failed
+        var processed: ProcessedState // 0 - processing, 1 - processed, 2 - failed
     ) : Serializable
+
+    enum class ProcessedState(val message: Int) {
+        PROCESSING(0),
+        SUCCESSFULLY_PROCESSED(1),
+        FAILED(2),
+    }
 }

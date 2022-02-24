@@ -9,6 +9,7 @@ import android.database.sqlite.SQLiteOpenHelper
 import android.util.Log
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import com.romanp.fyp.adapters.BookRecyclerViewAdapter
 import com.romanp.fyp.models.book.BookInfo
 
 
@@ -149,10 +150,14 @@ class BookDatabaseHelper(
      * @return error code
      * 0 failed
      */
-    fun updateBook(id: Long, book: BookInfo, processed: Int): Int {
+    fun updateBook(
+        id: Long,
+        book: BookInfo,
+        processed: BookRecyclerViewAdapter.ProcessedState
+    ): Int {
         val contentValues = ContentValues()
         contentValues.put(COL_DATA, gson.toJson(book))
-        contentValues.put(COL_PROCESSED, processed)
+        contentValues.put(COL_PROCESSED, processed.message)
 
         val db: SQLiteDatabase = writableDatabase
         val output = db.update(TABLE_NAME, contentValues, "$COL_ID=?", arrayOf(id.toString()))
@@ -169,9 +174,12 @@ class BookDatabaseHelper(
      * @return error code
      * 0 failed
      */
-    fun updateBookProcessedStatus(id: Long,processed: Int): Int {
+    fun updateBookProcessedStatus(
+        id: Long,
+        processed: BookRecyclerViewAdapter.ProcessedState
+    ): Int {
         val contentValues = ContentValues()
-        contentValues.put(COL_PROCESSED, processed)
+        contentValues.put(COL_PROCESSED, processed.message)
 
         val db: SQLiteDatabase = writableDatabase
         val output = db.update(TABLE_NAME, contentValues, "$COL_ID=?", arrayOf(id.toString()))

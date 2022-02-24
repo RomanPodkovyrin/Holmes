@@ -168,29 +168,48 @@ class CoreNlpAPI {
                         if (response == ServerResponse.DOES_NOT_EXIST.message) {
                             return@Listener
                         }
-                        //TODO: if response == processing failed {send book again}
 
+                        var processed =
+                            BookRecyclerViewAdapter.ProcessedState.SUCCESSFULLY_PROCESSED
+                        when (response) {
+                            ServerResponse.DOES_NOT_EXIST.message -> return@Listener
+                            ServerResponse.FAILED.message -> {
 
-                        val bookDataInfo: BookData =
-                            gson.fromJson(response, BookData::class.java)
-                        if (bookRepository.updateBook(
-                                applicationContext,
-                                id,
-                                bookDataInfo
-                            ) == 0
-                        ) {
-                            // Update live data
-                            books.postValue(books.value!!.filter { x -> x.id == id }
-                                .map { bookInfo ->
-                                    BookRecyclerViewAdapter.RecyclerBookInfo(
-                                        bookInfo.image,
-                                        bookInfo.author,
-                                        bookInfo.title,
-                                        bookInfo.id,
-                                        true
+                                if (response == ServerResponse.FAILED.message) {
+                                    Log.i(TAG, "Failed to process the book $title - $author")
+                                    processed = BookRecyclerViewAdapter.ProcessedState.FAILED
+                                    bookRepository.updateBookProcessedStatus(
+                                        applicationContext,
+                                        id,
+                                        processed
                                     )
-                                }.toMutableList())
+                                }
+                            }
+                            else -> {
+                                val bookDataInfo: BookData =
+                                    gson.fromJson(response, BookData::class.java)
+                                bookRepository.updateBook(
+                                    applicationContext,
+                                    id,
+                                    bookDataInfo,
+                                    processed
+                                )
+                            }
                         }
+
+
+                        // Update live data
+                        books.postValue(books.value!!.filter { x -> x.id == id }
+                            .map { bookInfo ->
+                                BookRecyclerViewAdapter.RecyclerBookInfo(
+                                    bookInfo.image,
+                                    bookInfo.author,
+                                    bookInfo.title,
+                                    bookInfo.id,
+                                    processed
+                                )
+                            }.toMutableList())
+
 
                         Log.d(TAG, "Book $id: $title processed ")
 
@@ -206,9 +225,6 @@ class CoreNlpAPI {
 
                     }
                 ) {
-//                    override fun getBody(): ByteArray {
-//                        return text.toByteArray(Charset.defaultCharset())
-//                    }
                 }
 
 

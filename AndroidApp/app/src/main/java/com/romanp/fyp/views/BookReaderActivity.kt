@@ -48,7 +48,7 @@ class BookReaderActivity : AppCompatActivity() {
         val bookId = intent.getLongExtra(
             BookRecyclerViewAdapter.EXTRA_MESSAGE,
             -1
-        ) //TODO: do i need this default?
+        )
 
         initialiseViewModel(bookId)
         setContentView(R.layout.activity_book_reader)
