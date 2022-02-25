@@ -39,7 +39,6 @@ fun main() {
         certPassword = prop.getProperty("certPassword")
     } catch (e: Exception) {
         println("Error Loading properties: $e")
-//        log.error("Error while loading properties file $e")
         exitProcess(-1)
     }
 

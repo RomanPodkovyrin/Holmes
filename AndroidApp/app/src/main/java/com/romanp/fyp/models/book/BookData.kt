@@ -16,7 +16,7 @@ data class Entity(
     val type: String, // PRONOMINAL, PROPER, NOMINAL
     val number: String, //SINGULAR, UNKNOWN, PLURAL
     val gender: String,//FEMALE, UNKNOWN, NEUTRAL, MALE
-    val animacy: String, //ANIMATE, INANIMATE TODO: should it be a boolean?
+    val animacy: String, //ANIMATE, INANIMATE
     var mentions: ArrayList<Mention>,
     val byChapterMentions: ArrayList<ArrayList<Mention>>
 )

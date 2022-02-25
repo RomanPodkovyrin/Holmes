@@ -7,6 +7,7 @@ import com.server.models.BookData
 import com.server.models.Distance
 import com.server.models.Entity
 import com.server.models.Mention
+import com.server.plugins.BookInfo
 import com.server.plugins.configureRouting
 import com.server.repository.DataBaseRepository
 import com.server.responses.RoutingResponses
@@ -83,6 +84,8 @@ class ApplicationTest {
 
     private val processedText = getFileFromPath("testing/processedText.json")?.readText()
 
+    private val failedBook = BookInfo(1, "Failed Title", "Failed Author", arrayListOf(), arrayListOf(), arrayListOf())
+
     @Rule
     @JvmField
     val mockitoRule: MockitoRule = MockitoJUnit.rule()
@@ -91,9 +94,16 @@ class ApplicationTest {
     fun setUp() = runBlocking {
 
         Mockito.`when`(mockDBrepo.find(eq(BookData::title eq "1984"), any())).thenReturn(processedBooks)
+        Mockito.`when`(mockDBrepo.find(eq(BookData::title eq "Failed Title"), any())).thenReturn(listOf())
         Mockito.`when`(mockDBrepo.find(eq(BookData::title eq "Night Manager"), any())).thenReturn(listOf())
         Mockito.`when`(mockDBrepo.find(eq(BookData::title eq "Sherlock Holmes"), any())).thenReturn(listOf())
         Mockito.`when`(mockDBrepo.insertOne(any())).thenReturn(Unit)
+        Mockito.`when`(mockDBrepo.findFailed(eq(BookData::title eq "Failed Title"), any()))
+            .thenReturn(listOf(failedBook))
+        Mockito.`when`(mockDBrepo.findFailed(eq(BookData::title eq "Night Manager"), any())).thenReturn(listOf())
+        Mockito.`when`(mockDBrepo.findFailed(eq(BookData::title eq "1984"), any())).thenReturn(listOf())
+        Mockito.`when`(mockDBrepo.findFailed(eq(BookData::title eq "Sherlock Holmes"), any())).thenReturn(listOf())
+        Mockito.`when`(mockDBrepo.insertOneFailed(any())).thenReturn(Unit)
 
         Mockito.`when`(mockCoreNLPController.sendBookToCoreNLP(any(), any())).thenReturn(processedText)
         Mockito.clearInvocations(mockCoreNLPController)
@@ -147,6 +157,21 @@ class ApplicationTest {
     }
 
     @Test
+    fun `test failed book`() {
+        val bookTitle = "Failed Title"
+        val bookAuthor = "Failed Author"
+        withTestApplication({ configureRouting(mockDBrepo, mockCoreNLPController) }) {
+            handleRequest(HttpMethod.Get, "/check-book/$bookTitle/$bookAuthor").apply {
+                assertEquals(HttpStatusCode.OK, response.status())
+
+                assertEquals(
+                    RoutingResponses.FAILED.message, response.content, "Should say that the book failed processing"
+                )
+            }
+        }
+    }
+
+    @Test
     fun `test check-book with no params`() {
         withTestApplication({ configureRouting(mockDBrepo, mockCoreNLPController) }) {
             handleRequest(HttpMethod.Get, "/check-book/").apply {
@@ -192,6 +217,31 @@ class ApplicationTest {
                 )
 
                 verifyNoInteractions(mockCoreNLPController)
+            }
+        }
+    }
+
+    @Test
+    fun `test book failing processing`() {
+        val bookTitle = "Failed Title"
+        val bookAuthor = "Failed Author"
+        val body =
+            "{\"author\":\"$bookAuthor\",\"chapters\":[{\"chapterTitle\":\"Chapter 1\",\"text\":\"Whatever have you been doing with yourself, Watson? he asked in undisguised wonder, as we walked through London You are as thin as a lath and as brown as a nut.\"}],\"characters\":[],\"image\":1,\"locations\":[],\"title\":\"$bookTitle\"}"
+        withTestApplication({ configureRouting(mockDBrepo, mockCoreNLPController) }) {
+            handleRequest(HttpMethod.Post, "/process-book/$bookTitle/$bookAuthor") {
+                setBody(
+                    body
+                )
+            }.apply {
+                assertEquals(HttpStatusCode.OK, response.status())
+                assertEquals(
+                    RoutingResponses.FAILED.message,
+                    response.content,
+                    "Book Failed processing"
+                )
+
+                verifyNoInteractions(mockCoreNLPController)
+
             }
         }
     }

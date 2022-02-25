@@ -23,4 +23,5 @@
     <!--    Descriptions -->
     <string name="delete_symbol">Delete Symbol</string>
     <string name="book_cover_image">Book Cover Image</string>
+    <string name="failed_processing">Failed Processing</string>
 </resources>

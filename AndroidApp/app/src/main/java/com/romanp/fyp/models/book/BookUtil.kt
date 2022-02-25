@@ -7,7 +7,6 @@ import com.romanp.fyp.R
 import nl.siegmann.epublib.epub.EpubReader
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
-import org.jsoup.select.Elements
 import java.io.InputStream
 import nl.siegmann.epublib.domain.Book as EpubBook
 
@@ -63,10 +62,10 @@ class BookUtil {
             book.coverImage
 
             val chapters: ArrayList<Chapter> = ArrayList()
+
+            var index = 1
             book.contents.forEach { chapter ->
                 val doc: Document = Jsoup.parse(String(chapter.data))
-                // Select all possible titles in the text
-                val title: Elements? = doc.body().select("h1, h2, h3, h4, h5, h6")
 
                 val subChapters: ArrayList<String> = ArrayList()
 
@@ -79,9 +78,10 @@ class BookUtil {
                 if (subChapters.isNotEmpty()) {
                     Log.d(
                         TAG,
-                        "Book $bookTitle hash subchapters in chapter $title"
+                        "Book $bookTitle hash subchapters in chapter"
                     )
-                    joinSubChapters(title, chapters, subChapters)
+                    joinSubChapters("Chapter $index", chapters, subChapters)
+                    index++
                 }
             }
 
@@ -111,11 +111,10 @@ class BookUtil {
         }
 
         private fun joinSubChapters(
-            title: Elements?,
+            chapterTitle: String,
             chapters: ArrayList<Chapter>,
             subChapters: ArrayList<String>
         ) {
-            val chapterTitle = if (title == null) "" else title.text()
 
             chapters.add(Chapter(chapterTitle,
                 subChapters.filter { part -> part != null || part == "" }

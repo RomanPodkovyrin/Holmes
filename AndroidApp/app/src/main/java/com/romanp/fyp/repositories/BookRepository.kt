@@ -70,7 +70,12 @@ class BookRepository {
                         author = cursor.getString(1),
                         title = cursor.getString(2),
                         id = cursor.getLong(0), //cursor.getColumnIndex("id")
-                        processed = cursor.getInt(3) == 1
+                        processed = when (cursor.getInt(3)) {
+                            0 -> BookRecyclerViewAdapter.ProcessedState.PROCESSING
+                            1 -> BookRecyclerViewAdapter.ProcessedState.SUCCESSFULLY_PROCESSED
+                            else -> BookRecyclerViewAdapter.ProcessedState.FAILED
+
+                        }
                     )
                 )
             }
@@ -85,7 +90,12 @@ class BookRepository {
      * 0: no issues
      * -1: error
      */
-    fun updateBook(context: Context, id: Long, bookDataInfo: BookData): Int {
+    fun updateBook(
+        context: Context,
+        id: Long,
+        bookDataInfo: BookData,
+        processed: BookRecyclerViewAdapter.ProcessedState
+    ): Int {
         try {
             val bookDBHelper = BookDatabaseHelper(context)
             val book = bookDBHelper.getBook(id)
@@ -93,7 +103,24 @@ class BookRepository {
             book.characters.addAll(bookDataInfo.characters)
             book.locations.addAll(bookDataInfo.locations)
             book.characterDistanceByChapter.addAll(bookDataInfo.characterDistanceByChapter)
-            if (bookDBHelper.updateBook(id, book, true) == 0) {
+            if (bookDBHelper.updateBook(id, book, processed) == 0) {
+                throw java.lang.Exception("Issue when updating a book by id: $id")
+            }
+            return 0
+        } catch (e: Exception) {
+            Log.e(TAG, e.toString())
+        }
+        return -1
+    }
+
+    fun updateBookProcessedStatus(
+        context: Context,
+        id: Long,
+        processed: BookRecyclerViewAdapter.ProcessedState
+    ): Int {
+        try {
+            val bookDBHelper = BookDatabaseHelper(context)
+            if (bookDBHelper.updateBookProcessedStatus(id, processed) == 0) {
                 throw java.lang.Exception("Issue when updating a book by id: $id")
             }
             return 0

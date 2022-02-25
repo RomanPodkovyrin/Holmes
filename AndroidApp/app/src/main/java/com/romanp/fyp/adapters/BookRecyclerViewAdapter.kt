@@ -56,6 +56,7 @@ class BookRecyclerViewAdapter(
         private val titleTV: TextView = itemView.findViewById(R.id.titleTV)
         private val authorTV: TextView = itemView.findViewById(R.id.authorTV)
         private val deleteView: ImageView = itemView.findViewById(R.id.deleteButton)
+        private val failedImage: ImageView = itemView.findViewById(R.id.failedImage)
         private val progressBarProcessing: ProgressBar =
             itemView.findViewById(R.id.progressBarProcessing)
 
@@ -83,11 +84,21 @@ class BookRecyclerViewAdapter(
             /* TODO: need to find a way to observe the change
             might need to implement mvvm for adapter
             */
-            if (!itemsViewModel.processed) {
-                Log.i(TAG, "item in position $position is set to visible progress bar")
-                progressBarProcessing.visibility = View.VISIBLE
-            } else {
-                progressBarProcessing.visibility = View.INVISIBLE
+            when (itemsViewModel.processed) {
+                ProcessedState.PROCESSING -> {
+                    Log.i(TAG, "item in position $position is set to visible progress bar")
+                    progressBarProcessing.visibility = View.VISIBLE
+                    failedImage.visibility = View.INVISIBLE
+                }
+                ProcessedState.SUCCESSFULLY_PROCESSED -> {
+                    progressBarProcessing.visibility = View.INVISIBLE
+                    failedImage.visibility = View.INVISIBLE
+                }
+                ProcessedState.FAILED -> {
+                    // Failed
+                    failedImage.visibility = View.VISIBLE
+                    progressBarProcessing.visibility = View.INVISIBLE
+                }
             }
 
             // TODO: move to viewModel and repository
@@ -106,6 +117,12 @@ class BookRecyclerViewAdapter(
         val author: String,
         val title: String,
         val id: Long,
-        var processed: Boolean
+        var processed: ProcessedState // 0 - processing, 1 - processed, 2 - failed
     ) : Serializable
+
+    enum class ProcessedState(val message: Int) {
+        PROCESSING(0),
+        SUCCESSFULLY_PROCESSED(1),
+        FAILED(2),
+    }
 }

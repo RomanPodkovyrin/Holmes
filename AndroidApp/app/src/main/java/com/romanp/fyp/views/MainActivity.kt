@@ -65,7 +65,7 @@ class MainActivity : AppCompatActivity() {
         val factory = InjectorUtils.provideMainActivityViewModelFactory(application)
         viewModel = ViewModelProvider(this, factory).get(MainActivityViewModel::class.java)
         viewModel.startThreads()//TODO: is this a good idea?
-        viewModel.getBooks().observe(this, {
+        viewModel.getBooks().observe(this) {
             // Triggers when it's changed
             adapter.notifyDataSetChanged()
             Log.i(
@@ -73,15 +73,15 @@ class MainActivity : AppCompatActivity() {
                 "Book list got updated ${it as MutableList<BookRecyclerViewAdapter.RecyclerBookInfo>}"
             )
 
-        })
-        viewModel.getNLPServiceStatus().observe(this, {
+        }
+        viewModel.getNLPServiceStatus().observe(this) {
             val tvServiceStatus = findViewById<TextView>(R.id.tvServiceStatus)
             tvServiceStatus.text = when (it) {
                 true -> resources.getString(R.string.service_online)
                 false -> resources.getString(R.string.service_offline)
             }
             Log.i(TAG, "Service Status got Updated to: $it")
-        })
+        }
     }
 
     private fun initialiseRecyclerViewAdapter() {
