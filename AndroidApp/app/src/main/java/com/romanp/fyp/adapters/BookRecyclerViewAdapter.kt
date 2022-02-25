@@ -56,6 +56,7 @@ class BookRecyclerViewAdapter(
         private val titleTV: TextView = itemView.findViewById(R.id.titleTV)
         private val authorTV: TextView = itemView.findViewById(R.id.authorTV)
         private val deleteView: ImageView = itemView.findViewById(R.id.deleteButton)
+        private val failedImage: ImageView = itemView.findViewById(R.id.failedImage)
         private val progressBarProcessing: ProgressBar =
             itemView.findViewById(R.id.progressBarProcessing)
 
@@ -83,22 +84,21 @@ class BookRecyclerViewAdapter(
             /* TODO: need to find a way to observe the change
             might need to implement mvvm for adapter
             */
-            if (itemsViewModel.processed == ProcessedState.PROCESSING) {
-                Log.i(TAG, "item in position $position is set to visible progress bar")
-                progressBarProcessing.visibility = View.VISIBLE
-                progressBarProcessing.indeterminateDrawable.setColorFilter(
-                    0xFF70A362.toInt(),
-                    android.graphics.PorterDuff.Mode.MULTIPLY
-                )
-            } else if (itemsViewModel.processed == ProcessedState.SUCCESSFULLY_PROCESSED) {
-                progressBarProcessing.visibility = View.INVISIBLE
-            } else if (itemsViewModel.processed == ProcessedState.FAILED) {
-                // Failed
-                progressBarProcessing.visibility = View.VISIBLE
-                progressBarProcessing.indeterminateDrawable.setColorFilter(
-                    0xFFFF0000.toInt(),
-                    android.graphics.PorterDuff.Mode.MULTIPLY
-                )
+            when (itemsViewModel.processed) {
+                ProcessedState.PROCESSING -> {
+                    Log.i(TAG, "item in position $position is set to visible progress bar")
+                    progressBarProcessing.visibility = View.VISIBLE
+                    failedImage.visibility = View.INVISIBLE
+                }
+                ProcessedState.SUCCESSFULLY_PROCESSED -> {
+                    progressBarProcessing.visibility = View.INVISIBLE
+                    failedImage.visibility = View.INVISIBLE
+                }
+                ProcessedState.FAILED -> {
+                    // Failed
+                    failedImage.visibility = View.VISIBLE
+                    progressBarProcessing.visibility = View.INVISIBLE
+                }
             }
 
             // TODO: move to viewModel and repository
