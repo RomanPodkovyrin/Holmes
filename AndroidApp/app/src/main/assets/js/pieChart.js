@@ -1,5 +1,5 @@
 function loadPieChartByChapter(chapter, dataset) {
-// TODO: That's redundunt
+// TODO: That's redundant
     const svg = d3.select("#piechart");
     const textLabelSuffix = "%";
     const data = [];
@@ -15,11 +15,6 @@ function loadPieChartByChapter(chapter, dataset) {
         });
 
     console.log("temp " + data.length + data);
-    if (data.length === 0) {
-        document.getElementById("message").innerHTML = "NO DATA";
-    } else {
-        document.getElementById("message").innerHTML = "Chapter " + (chapter + 1);
-    }
     showPieChart(data, svg, textLabelSuffix);
 }
 
@@ -38,7 +33,6 @@ function loadPieChart(dataset) {
             });
         });
 
-    document.getElementById("message").innerHTML = "Whole Book";
     showPieChart(data, svg, textLabelSuffix);
 }
 

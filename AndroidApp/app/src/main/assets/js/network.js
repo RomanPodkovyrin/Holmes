@@ -64,7 +64,7 @@ function plotNetwork(chapter, distances, characters, topMaxLinksPercentage) {
     // Clear Previous graph
     d3.selectAll("svg > *").remove();
 
-    // create an svg to draw in
+    // create a svg to draw in
     const svg = d3
         .select("svg")
         .append("g")
@@ -241,7 +241,7 @@ function plotNetwork(chapter, distances, characters, topMaxLinksPercentage) {
             // Change to this when hovered
             link.style("stroke", function (o) {
                 // first colour is for focus colour
-                // second is for the unfocus colour
+                // second is to unfocus the colour
                 return o.source === d || o.target === d ?d3.interpolateReds(lineStrength(o.value)) : "#1bb916";
             });
         };
