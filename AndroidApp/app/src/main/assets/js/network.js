@@ -52,14 +52,12 @@ punctuationWeight.set(';', 1);
 punctuationWeight.set(',', 1)
 
 
-function plotNetwork(chapter, distances, characters, topMaxLinksPercentage) {
+function plotNetwork(chapter, distances, characters, topLinksPercentage, topCharactersByMentions) {
     console.log("Plotting network graph")
     updateSvgSize()
     const maxLinkStrength = 0.009
     const topMinLinksPercentage = 1
     const exponent = 2
-    const topCharactersByMentions = 0.8 //top 50%
-    const topLinksForEachCharacter = 0.5
 
     // Clear Previous graph
     d3.selectAll("svg > *").remove();
@@ -120,7 +118,7 @@ function plotNetwork(chapter, distances, characters, topMaxLinksPercentage) {
     }
 
     let acceptedMin = maxValue - (maxValue - minValue) * topMinLinksPercentage;
-    let acceptedMax = minValue + (maxValue - minValue) * topMaxLinksPercentage;
+    let acceptedMax = minValue + (maxValue - minValue) * topLinksPercentage;
     console.log("Max: " + maxValue + " Min: " + minValue + " acceptMin: " + acceptedMin + " acceptMax: " + acceptedMax);
 
     // Filter out elements according to accepted min and max
@@ -198,6 +196,7 @@ function plotNetwork(chapter, distances, characters, topMaxLinksPercentage) {
             return d3.interpolateRdYlGn(lineStrength(d.value));
         })
         .attr("stroke-width", function (d) {
+            console.log("Link " + d.source + " to " + d.target + " value: " + d.value + ", width: " + linkWidthScale(d.value))
             return linkWidthScale(d.value);
         });
 
