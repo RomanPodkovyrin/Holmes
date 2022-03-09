@@ -28,4 +28,13 @@
     <string name="entityName">Name</string>
     <string name="entityNer">NER</string>
     <string name="entityNerLabel">NER:</string>
+
+    <!--    Symbols-->
+    <string name="percentage">%</string>
+    <string name="defaultPercentage">100 %</string>
+    <string name="top_links_percentage">Top Links Percentage:</string>
+    <string name="top_characters_by_mentions">Top Characters By Mentions:</string>
+    <string name="distance_method">Distance Method</string>
+    <string name="choose_distance_method">Choose Distance Method</string>
+    <string name="choose_chapter">Choose chapter</string>
 </resources>
