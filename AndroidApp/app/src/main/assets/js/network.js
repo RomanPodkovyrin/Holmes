@@ -42,6 +42,7 @@ function compareNodes(a, b) {
     return 0;
 }
 
+// Weighting for each accepted punctuation
 const punctuationWeight = new Map();
 
 punctuationWeight.set('.', 10);
@@ -73,7 +74,7 @@ function plotNetwork(chapter, distances, characters, topLinksPercentage, topChar
     let maxMentions = 0
 
     let data = [];
-    // Filter out characters if they are in this chapter
+    // Filter out characters if they are not in this chapter
     characters
         .filter(function (element) {
             return element.byChapterMentions[chapter].length > 0;
