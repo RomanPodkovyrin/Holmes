@@ -14,7 +14,7 @@ import com.romanp.fyp.R
 import com.romanp.fyp.models.book.BookInfo
 import com.romanp.fyp.models.book.Entity
 import com.romanp.fyp.utils.InjectorUtils
-import com.romanp.fyp.viewmodels.BookGraphActivityViewModel
+import com.romanp.fyp.viewmodels.graph.BookGraphActivityViewModel
 import com.romanp.fyp.viewmodels.graph.GraphType
 
 
@@ -22,7 +22,7 @@ class BookGraphActivity : AppCompatActivity() {
     companion object {
         val gson = Gson()
         private const val TAG = "BookGraphActivity"
-        const val BOOKID_GRAPH = "ID_OF_BOOK"
+        const val BOOK_ID_GRAPH = "ID_OF_BOOK"
         const val GRAPH_TYPE = "GRAPH_TYPE"
     }
 
@@ -47,7 +47,7 @@ class BookGraphActivity : AppCompatActivity() {
         setContentView(R.layout.activity_book_graph)
         //TODO: pass type of graph as an enum to display right graph
         val bookId = intent.getLongExtra(
-            BOOKID_GRAPH,
+            BOOK_ID_GRAPH,
             -1
         )
 
@@ -77,9 +77,9 @@ class BookGraphActivity : AppCompatActivity() {
             maxMentionValueTV.visibility = View.GONE
             findViewById<TextView>(R.id.topLinksPercentageTV).visibility = View.GONE
             findViewById<TextView>(R.id.topCharactersByMentionsTV).visibility = View.GONE
-            findViewById<Spinner>(R.id.chapterSpinner).visibility= View.GONE
-            findViewById<Spinner>(R.id.chapterSpinner2).visibility= View.GONE
-            findViewById<TextView>(R.id.distanceMethodLabel).visibility= View.GONE
+            findViewById<Spinner>(R.id.chapterSpinner).visibility = View.GONE
+            findViewById<Spinner>(R.id.chapterSpinner2).visibility = View.GONE
+            findViewById<TextView>(R.id.distanceMethodLabel).visibility = View.GONE
             return
         }
         setupChapterSpinner()
@@ -173,7 +173,7 @@ class BookGraphActivity : AppCompatActivity() {
         val webView = findViewById<WebView>(R.id.WebViewGraph)
         val webSettings = webView.settings
         webSettings.blockNetworkLoads = true
-//        webSettings.forceDark = WebSettings.FORCE_DARK_ON
+        //if (applicationContext.resources.configuration.uiMode.and(Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES) webSettings.forceDark = WebSettings.FORCE_DARK_ON
         webSettings.javaScriptEnabled = true
         webSettings.builtInZoomControls = true
         webSettings.setSupportZoom(true)

@@ -25,7 +25,7 @@ import com.romanp.fyp.utils.InjectorUtils
 import com.romanp.fyp.utils.ToastUtils
 import com.romanp.fyp.viewmodels.BookReaderActivityViewModel
 import com.romanp.fyp.viewmodels.graph.GraphType
-import com.romanp.fyp.views.BookGraphActivity.Companion.BOOKID_GRAPH
+import com.romanp.fyp.views.BookGraphActivity.Companion.BOOK_ID_GRAPH
 import com.romanp.fyp.views.BookGraphActivity.Companion.GRAPH_TYPE
 import com.romanp.fyp.views.EntityProfileActivity.Companion.BOOK_ID
 import com.romanp.fyp.views.EntityProfileActivity.Companion.ENTITY_NAME
@@ -225,14 +225,14 @@ class BookReaderActivity : AppCompatActivity() {
 
     private fun openCharacterNetwork() {
         val intent = Intent(this, BookGraphActivity::class.java)
-        intent.putExtra(BOOKID_GRAPH, viewModel.getBookID())
+        intent.putExtra(BOOK_ID_GRAPH, viewModel.getBookID())
         intent.putExtra(GRAPH_TYPE, GraphType.CHARACTER_NETWORK)
         startActivity(intent)
     }
 
     private fun openPieChart() {
         val intent = Intent(this, BookGraphActivity::class.java)
-        intent.putExtra(BOOKID_GRAPH, viewModel.getBookID())
+        intent.putExtra(BOOK_ID_GRAPH, viewModel.getBookID())
         intent.putExtra(GRAPH_TYPE, GraphType.PIE_CHART)
         startActivity(intent)
     }
