@@ -77,6 +77,9 @@ class BookGraphActivity : AppCompatActivity() {
             maxMentionValueTV.visibility = View.GONE
             findViewById<TextView>(R.id.topLinksPercentageTV).visibility = View.GONE
             findViewById<TextView>(R.id.topCharactersByMentionsTV).visibility = View.GONE
+            findViewById<Spinner>(R.id.chapterSpinner).visibility= View.GONE
+            findViewById<Spinner>(R.id.chapterSpinner2).visibility= View.GONE
+            findViewById<TextView>(R.id.distanceMethodLabel).visibility= View.GONE
             return
         }
         setupChapterSpinner()
