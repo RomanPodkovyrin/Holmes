@@ -27,6 +27,9 @@ import com.romanp.fyp.viewmodels.BookReaderActivityViewModel
 import com.romanp.fyp.viewmodels.graph.GraphType
 import com.romanp.fyp.views.BookGraphActivity.Companion.BOOKID_GRAPH
 import com.romanp.fyp.views.BookGraphActivity.Companion.GRAPH_TYPE
+import com.romanp.fyp.views.EntityProfileActivity.Companion.BOOK_ID
+import com.romanp.fyp.views.EntityProfileActivity.Companion.ENTITY_NAME
+import com.romanp.fyp.views.EntityProfileActivity.Companion.ENTITY_TYPE
 
 
 class BookReaderActivity : AppCompatActivity() {
@@ -142,29 +145,51 @@ class BookReaderActivity : AppCompatActivity() {
         val (characters, locations) = viewModel.getCurrentChapterEntityMentionsSpans()
         try {
 
-            characters.forEach { character ->
-                str.setSpan(object : ClickableSpan() {
-                    override fun onClick(widget: View) {
-                        ToastUtils.toast(application, "Clicked $character")
-                    }
+            characters.forEach { (name, characterMentions) ->
+                characterMentions.forEach { characterMention ->
+                    str.setSpan(object : ClickableSpan() {
+                        override fun onClick(widget: View) {
+                            val intent =
+                                Intent(applicationContext, EntityProfileActivity::class.java)
+                            intent.putExtra(BOOK_ID, viewModel.getBookID())
+                            intent.putExtra(ENTITY_NAME, name)
+                            intent.putExtra(
+                                ENTITY_TYPE,
+                                EntityProfileActivity.EntityType.CHARACTER.message
+                            )
+                            startActivity(intent)
+                        }
 
-                    override fun updateDrawState(ds: TextPaint) {
-                        super.updateDrawState(ds)
-                        ds.color = Color.GREEN
-                    }
-                }, character.characterStart, character.characterEnd, 0)
+                        override fun updateDrawState(ds: TextPaint) {
+                            super.updateDrawState(ds)
+                            ds.color = Color.GREEN
+                        }
+                    }, characterMention.characterStart, characterMention.characterEnd, 0)
+                }
+
             }
-            locations.forEach { location ->
-                str.setSpan(object : ClickableSpan() {
-                    override fun onClick(widget: View) {
-                        ToastUtils.toast(application, "Clicked $location")
-                    }
+            locations.forEach { (name, locationMentions) ->
+                locationMentions.forEach { locationMention ->
+                    str.setSpan(object : ClickableSpan() {
+                        override fun onClick(widget: View) {
+                            val intent =
+                                Intent(applicationContext, EntityProfileActivity::class.java)
+                            intent.putExtra(BOOK_ID, viewModel.getBookID())
+                            intent.putExtra(ENTITY_NAME, name)
+                            intent.putExtra(
+                                ENTITY_TYPE,
+                                EntityProfileActivity.EntityType.LOCATION.message
+                            )
+                            startActivity(intent)
+                        }
 
-                    override fun updateDrawState(ds: TextPaint) {
-                        super.updateDrawState(ds)
-                        ds.color = Color.RED
-                    }
-                }, location.characterStart, location.characterEnd, 0)
+                        override fun updateDrawState(ds: TextPaint) {
+                            super.updateDrawState(ds)
+                            ds.color = Color.RED
+                        }
+                    }, locationMention.characterStart, locationMention.characterEnd, 0)
+                }
+
             }
         } catch (e: Exception) {
             Log.e(TAG, "$e")
@@ -199,7 +224,6 @@ class BookReaderActivity : AppCompatActivity() {
     }
 
     private fun openCharacterNetwork() {
-//        ToastUtils.toast(this, "Pie Chart Clicked")
         val intent = Intent(this, BookGraphActivity::class.java)
         intent.putExtra(BOOKID_GRAPH, viewModel.getBookID())
         intent.putExtra(GRAPH_TYPE, GraphType.CHARACTER_NETWORK)

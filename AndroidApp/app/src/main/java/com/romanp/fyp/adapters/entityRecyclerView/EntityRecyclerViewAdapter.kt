@@ -1,14 +1,15 @@
 package com.romanp.fyp.adapters.entityRecyclerView
 
 import android.content.Context
+import android.content.Intent
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.romanp.fyp.R
+import com.romanp.fyp.views.EntityProfileActivity
 import java.io.Serializable
 
 class EntityRecyclerViewAdapter(
@@ -53,11 +54,21 @@ class EntityRecyclerViewAdapter(
 
             // sets the text to the textview from our itemHolder class
             entityNameTV.text = itemsViewModel.name
-            entityNameTV.setOnClickListener {
-                Toast.makeText(context, "Clicked ${itemsViewModel.name}", Toast.LENGTH_SHORT)
-                    .show()
 
+            itemView.setOnClickListener {
                 Log.i(TAG, "Clicked ${itemsViewModel.name}")
+                val intent =
+                    Intent(context, EntityProfileActivity::class.java)
+                intent.putExtra(EntityProfileActivity.BOOK_ID, itemsViewModel.id)
+                intent.putExtra(EntityProfileActivity.ENTITY_NAME, itemsViewModel.name)
+                intent.putExtra(
+                    EntityProfileActivity.ENTITY_TYPE,
+                    when (itemsViewModel.listType) {
+                        true -> EntityProfileActivity.EntityType.CHARACTER.message
+                        false -> EntityProfileActivity.EntityType.LOCATION.message
+                    }
+                )
+                context.startActivity(intent)
             }
 
 
@@ -67,6 +78,8 @@ class EntityRecyclerViewAdapter(
     }
 
     data class RecyclerEntityInfo(
-        val name: String
+        val id: Long,
+        val name: String,
+        val listType: Boolean
     ) : Serializable
 }
