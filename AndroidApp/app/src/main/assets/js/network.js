@@ -294,7 +294,6 @@ function plotNetwork(chapter, distances, characters, topLinksPercentage, topChar
     // move the node based on physics
     function updateNodes(d) {
         // keep the elements within the boundaries
-        //TODO: get radius to calculate the dist
         if (d.x < 0) d.x = 0;
         if (d.y < 0) d.y = 0;
         if (d.x > width) d.x = width;
