@@ -65,6 +65,9 @@ class BookReaderActivityViewModel
         return currentBook.chapters[currentPage]
     }
 
+    /**
+     * For the currentPage, it will split up entities into location and character lists
+     */
     fun getCurrentChapterEntityMentionsSpans(): Pair<ArrayList<Pair<String, ArrayList<Mention>>>, ArrayList<Pair<String, ArrayList<Mention>>>> {
         val locations = arrayListOf<Pair<String, ArrayList<Mention>>>()
         val characters = arrayListOf<Pair<String, ArrayList<Mention>>>()
@@ -90,6 +93,7 @@ class BookReaderActivityViewModel
 
 }
 
+@Suppress("UNCHECKED_CAST")
 class BookReaderViewModelFactory(
     private val application: Application,
     private val repository: BookRepository,
