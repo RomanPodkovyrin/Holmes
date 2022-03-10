@@ -5,7 +5,6 @@ const margin = {
     top: 50, bottom: 50, left: 90, right: 90,
 };
 
-
 function updateSvgSize() {
     const container = d3.select("svg").classed("container", true);
     width = container.attr("width");
@@ -53,35 +52,18 @@ punctuationWeight.set(';', 1);
 punctuationWeight.set(',', 1)
 
 
-/*
-Checks if the link for the character exists
+/**
+ * Checks if the link for the character exists
  */
 function doesLinkExist(data, source, target) {
     return data.find(characters => characters.name === source) && data.find(characters => characters.name === target);
 }
 
-function plotNetwork(chapter, distances, characters, topLinksPercentage, topCharactersByMentions) {
-    console.log("Plotting network graph with parameters")
-    console.log("Chapter: " + chapter + " topLinksPercentage: " + topLinksPercentage + " topCharactersByMentions: " + topCharactersByMentions)
-    updateSvgSize()
-    const maxLinkStrength = 0.009
-    const topMinLinksPercentage = 1
-    const exponent = 2
+let minMentions = Number.MAX_VALUE;
+let maxMentions = 0
 
-    // Clear Previous graph
-    d3.selectAll("svg > *").remove();
+function getCharactersFromChapter(characters, chapter, nodeData) {
 
-    // create a svg to draw in
-    const svg = d3
-        .select("svg")
-        .append("g")
-        .attr("transform", "translate(" + margin.top + "," + margin.left + ")");
-
-
-    let minMentions = Number.MAX_VALUE;
-    let maxMentions = 0
-
-    let data = [];
     // Filter out characters if they are not in this chapter
     characters
         .filter(function (element) {
@@ -90,22 +72,23 @@ function plotNetwork(chapter, distances, characters, topLinksPercentage, topChar
         .forEach((element) => {
             maxMentions = Math.max(maxMentions, element.byChapterMentions[chapter].length)
             minMentions = Math.min(minMentions, element.byChapterMentions[chapter].length)
-            data.push({
+            nodeData.push({
                 name: element.name, id: element.name, mentions: element.byChapterMentions[chapter].length
             });
         });
+    return {maxMentions, minMentions};
+}
 
-    data.sort(compareNodes);
-    data = data.slice(0, data.length * topCharactersByMentions)
+let minDistanceValue = Number.MAX_VALUE;
+let maxDistanceValue = 0;
 
-    let minValue = Number.MAX_VALUE;
-    let maxValue = 0;
-    const linkData = [];
+function getLinkData(distances, chapter, nodeData, linkData) {
+
     // Get distance values, sources and targets
     let distance;
     for (const [key, value] of Object.entries(distances[chapter])) {
         const names = key.split(",");
-        if (data.find(characters => characters.name === names[0]) && data.find(characters => characters.name === names[1])) {
+        if (nodeData.find(characters => characters.name === names[0]) && nodeData.find(characters => characters.name === names[1])) {
 
 
             //TODO: make a getDistance function with choice parameter
@@ -117,24 +100,62 @@ function plotNetwork(chapter, distances, characters, topLinksPercentage, topChar
             console.log("Distance: " + distance)
             distance = Math.pow(distance, exponent)
             console.log("Exponent: " + distance)
-            maxValue = Math.max(maxValue, distance);
-            minValue = Math.min(minValue, distance);
+            maxDistanceValue = Math.max(maxDistanceValue, distance);
+            minDistanceValue = Math.min(minDistanceValue, distance);
 
             linkData.push({
                 value: distance, source: names[0], target: names[1],
             });
         }
     }
+    return {maxDistanceValue, minDistanceValue};
+}
 
-    let acceptedMin = (topMinLinksPercentage === 1) ? minValue : maxValue - (maxValue - minValue) * topMinLinksPercentage;
-    let acceptedMax = (topLinksPercentage === 1) ? maxValue : minValue + (maxValue - minValue) * topLinksPercentage;
-    console.log("Max: " + maxValue + " Min: " + minValue + " acceptMin: " + acceptedMin + " acceptMax: " + acceptedMax);
+// Controls how spread out the values are
+const exponent = 2
+const maxLinkStrength = 0.009
+
+function plotNetwork(chapter, distances, characters, topLinksPercentage, topCharactersByMentions) {
+    console.log("Plotting network graph with parameters")
+    console.log("Chapter: " + chapter + " topLinksPercentage: " + topLinksPercentage + " topCharactersByMentions: " + topCharactersByMentions)
+    updateSvgSize()
+
+    //const topMinLinksPercentage = 1
+
+
+    // Clear Previous graph
+    d3.selectAll("svg > *").remove();
+
+    // create a svg to draw in
+    const svg = d3
+        .select("svg")
+        .append("g")
+        .attr("transform", "translate(" + margin.top + "," + margin.left + ")");
+
+
+    let nodeData = [];
+    const maxAndMinMentions = getCharactersFromChapter(characters, chapter, nodeData);
+    maxMentions = maxAndMinMentions.maxMentions;
+    minMentions = maxAndMinMentions.minMentions;
+
+    nodeData.sort(compareNodes);
+    nodeData = nodeData.slice(0, nodeData.length * topCharactersByMentions)
+
+
+    const linkData = [];
+    const maxAndMinDistances = getLinkData(distances, chapter, nodeData, linkData);
+    maxDistanceValue = maxAndMinDistances.maxDistanceValue;
+    minDistanceValue = maxAndMinDistances.minDistanceValue;
+
+    let acceptedDistanceMin = minDistanceValue//(topMinLinksPercentage === 1) ? minDistanceValue : maxDistanceValue - (maxDistanceValue - minDistanceValue) * topMinLinksPercentage;
+    let acceptedDistanceMax = maxDistanceValue//(topLinksPercentage === 1) ? maxDistanceValue : minDistanceValue + (maxDistanceValue - minDistanceValue) * topLinksPercentage;
+    console.log("Max: " + maxDistanceValue + " Min: " + minDistanceValue + " acceptMin: " + acceptedDistanceMin + " acceptMax: " + acceptedDistanceMax);
 
     // Filter out elements according to accepted min and max
-    const filteredLinkData = [];
+    let filteredLinkData = [];
     linkData
         .filter(function (element) {
-            return element.value >= acceptedMin && element.value <= acceptedMax && doesLinkExist(data, element.source, element.target);
+            return element.value >= acceptedDistanceMin && element.value <= acceptedDistanceMax && doesLinkExist(nodeData, element.source, element.target);
         })
         .forEach((element) => {
             filteredLinkData.push(element);
@@ -142,24 +163,35 @@ function plotNetwork(chapter, distances, characters, topLinksPercentage, topChar
 
     // Sort links in acceding order
     filteredLinkData.sort(compareLinks);
+    // Remove links based on the control parameter topLinksPercentage
+    filteredLinkData = filteredLinkData.slice(0, filteredLinkData.length * topLinksPercentage)
 
+    // Update max an min values
+    maxDistanceValue = 0
+    minDistanceValue = Number.MAX_VALUE
+    filteredLinkData.forEach((element) => {
+        maxDistanceValue = Math.max(maxDistanceValue, element.value);
+        minDistanceValue = Math.min(minDistanceValue, element.value);
+    })
+    acceptedDistanceMax = maxDistanceValue
+    acceptedDistanceMin = minDistanceValue
 
     // Get the nodes and links
-    const nodes = data;
-    const links = filteredLinkData//.splice(0, filteredLinkData.length * 1); //linkData //data.links;
+    const nodes = nodeData;
+    const links = filteredLinkData
+    drawCharacterNetwork(acceptedDistanceMax, acceptedDistanceMin, svg, links, nodes);
+}
 
-    // linkColourScale.domain(d3.extent(links,function (d){
-    //     return d.value
-    // }))
 
+function drawCharacterNetwork(acceptedDistanceMax, acceptedDistanceMin, svg, links, nodes) {
     const linkWidthScale = d3
         .scaleLinear()
-        .domain([acceptedMax, acceptedMin])
+        .domain([acceptedDistanceMax, acceptedDistanceMin])
         //Controls the thickness of the link
         .range([0.5, 25]);
     const linkStrengthScale = d3
         .scaleLinear()
-        .domain([acceptedMax, acceptedMin])
+        .domain([acceptedDistanceMax, acceptedDistanceMin])
         .range([0, maxLinkStrength]);
 
     const nodeSizeScale = d3
@@ -191,7 +223,7 @@ function plotNetwork(chapter, distances, characters, topLinksPercentage, topChar
 
     let lineStrength = d3
         .scaleLinear()
-        .domain([acceptedMax, acceptedMin])
+        .domain([acceptedDistanceMax, acceptedDistanceMin])
         .range([0, 1]);
 
     // add the links
