@@ -14,12 +14,17 @@ import kotlin.streams.toList
 
 private val locationTAGS = arrayListOf("LOCATION", "CITY", "STATE_OR_PROVINCE", "COUNTRY")
 private val characterTAGS = arrayListOf("PERSON")
+private val punctuations = listOf('.', '!', '?', ':', ';', ',')
+// end of Sentence . ? !
+// within sentence , : ;
+//TODO: how about those ?
+// How about {}[]() ` " ' …
 
 /**
- * Extracts useful information from CoreNLP processed files
+ * Extracts useful information from CoreNLP processed files and returns it as a BookData
  */
 fun extractUsefulTags(title: String, author: String, requestContent: String, chapters: ArrayList<Chapter>): BookData {
-    //TODO: LOGGING
+
     val (characters: ArrayList<Entity>, locations: ArrayList<Entity>) = getEntityMentions(requestContent)
 
     sortByChapter(chapters, characters, locations)
@@ -47,64 +52,49 @@ private fun calculateDistancesBetweenCharacters(
     // Calculate character distances
     for (i in characters.indices) {
         val iCharacter = characters[i]
-        val iTokenLocationsByChapter = arrayListOf<ArrayList<Pair<Int, Int>>>()
-        getTokenLocationByChapter(iCharacter, iTokenLocationsByChapter)
+        val iLocationsByChapter = arrayListOf<ArrayList<Pair<Int, Int>>>()
+        getLocationsByChapter(iCharacter, iLocationsByChapter)
 
         // Starting from "i" as those before have already been processed
         // +1 to not check characters against themselves
         for (j in i + 1 until characters.size) {
             val jCharacter = characters[j]
-            val jTokenLocationsByChapter = arrayListOf<ArrayList<Pair<Int, Int>>>()
-            getTokenLocationByChapter(jCharacter, jTokenLocationsByChapter)
+            val jLocationsByChapter = arrayListOf<ArrayList<Pair<Int, Int>>>()
+            getLocationsByChapter(jCharacter, jLocationsByChapter)
 
-            // Calculate distance between i and j
-            // For each chapter and the whole book
-//            var bookTotal = 0
-//            var bookMinDistance = Int.MAX_VALUE
-//            var bookMaxDistance = 0
-            val numberOfChapters = min(iTokenLocationsByChapter.size, jTokenLocationsByChapter.size)
+            // Calculate distance between Entity i and j
+            val numberOfChapters = min(iLocationsByChapter.size, jLocationsByChapter.size)
             for (chapterIndex in 0 until numberOfChapters) {
-
-                var total = 0F
+                var totalTokenDistance = 0F
                 var minDistance = Int.MAX_VALUE
                 var maxDistance = 0
-                var totalDotDistance = 0
-//                var minDotDistance = Int.MAX_VALUE
-//                var maxDotDistance = 0
+
+                // Populate counts with initial values
                 val punctuationDistances = HashMap<Char, Float>()
-                val punctuations = listOf('.', '!', '?', ':', ';', ',')
                 punctuations.forEach { punctuationDistances[it] = 0F }
-                // end of Sentence . ? !
-                // within sentence , : ;
-                // How about {}[]() ` " ' …
 
-                val iTokenChapter = iTokenLocationsByChapter[chapterIndex]
-                val jTokenChapter = jTokenLocationsByChapter[chapterIndex]
-                if (iTokenChapter.isEmpty() || jTokenChapter.isEmpty()) continue
-                val (iChapterMeanLocation, iChapterMedianLocation) = getMeanAndMedianTokenLocations(iTokenChapter)
+                val iChapterLocations = iLocationsByChapter[chapterIndex]
+                val jChapterLocations = jLocationsByChapter[chapterIndex]
+                if (iChapterLocations.isEmpty() || jChapterLocations.isEmpty()) continue
 
-                val (jChapterMeanLocation, jChapterMedianLocation) = getMeanAndMedianTokenLocations(jTokenChapter)
+                val (iChapterMeanLocation, iChapterMedianLocation) = getMeanAndMedianTokenLocations(iChapterLocations)
+                val (jChapterMeanLocation, jChapterMedianLocation) = getMeanAndMedianTokenLocations(jChapterLocations)
 
 
-                iTokenChapter.forEach { iTokenLocation ->
-                    jTokenChapter.forEach { jTokenLocation ->
-                        val distance = abs(iTokenLocation.first - jTokenLocation.first)
-                        total += distance
-                        minDistance = min(minDistance, distance)
-                        maxDistance = max(maxDistance, distance)
-                        //TODO: use hashmap to record number total of all punctuation
-                        //. , ? : ; !
+                // Calculate Token and Punctuation distance for all locations for entity i and j
+                iChapterLocations.forEach { iLocations ->
+                    jChapterLocations.forEach { jLocations ->
+                        val tokenDistanceBetweenIandJ = abs(iLocations.first - jLocations.first)
+                        totalTokenDistance += tokenDistanceBetweenIandJ
+                        minDistance = min(minDistance, tokenDistanceBetweenIandJ)
+                        maxDistance = max(maxDistance, tokenDistanceBetweenIandJ)
                         var chapterText = chapters[chapterIndex].text
                         //TODO: there is something seriously wrong with those distances
-                        chapterText =
-                            chapterText.slice(iTokenLocation.second until jTokenLocation.second) + chapterText.slice(jTokenLocation.second until iTokenLocation.second)
+                        chapterText = getTextBetweenEntities(chapterText, iLocations, jLocations)
+
+                        // Update punctuation distance between i and j
                         punctuations.forEach { char ->
-                            //println("Char: $char distance: ${chapterText.count { it == char }} ")
-                            //println("Before Char: $char distance: ${punctuationDistances[char]}")
                             punctuationDistances[char] = chapterText.count { it == char } + punctuationDistances[char]!!
-//                            punctuationDistances[char]?.plus(1)//(Pair(char, chapterText.count { it == char }))
-//                            punctuationDistances[char] = punctuationDistances[char]?.plus((chapterText.count { it == char }))
-                            //println("After Char: $char distance: ${punctuationDistances[char]}")
                         }
                     }
                 }
@@ -112,22 +102,22 @@ private fun calculateDistancesBetweenCharacters(
                 val meanTokenDistance = abs(jChapterMeanLocation - iChapterMeanLocation)
                 val medianTokenDistance = abs(jChapterMedianLocation - iChapterMedianLocation)
 
-                val averageDistance: Float = total / (iTokenChapter.size * jTokenChapter.size)
-                //TODO is this always zero?
-                val averageDotDistance = totalDotDistance / (iTokenChapter.size * jTokenChapter.size)
-                //println("##########################################")
+                // Calculate the average
+
+                // Average token distance
+                val averageTokenDistance: Float = totalTokenDistance / (iChapterLocations.size * jChapterLocations.size)
+
+                // Average punctuation distance
                 punctuations.forEach { char ->
-                   //println("Before Char: $char distance: ${punctuationDistances[char]} : ${(iTokenChapter.size * jTokenChapter.size)} : ${(punctuationDistances[char] ?: 0F)}")
-//                    punctuationDistances[char]?.div((iChapter.size * jChapter.size))
-//                    val tempTotal = punctuationDistances[char]?
                     punctuationDistances[char] =
-                        (punctuationDistances[char] ?: 0F) / (iTokenChapter.size * jTokenChapter.size)
-                    //println("After Char: $char distance: ${punctuationDistances[char]}")
+                        (punctuationDistances[char] ?: 0F) / (iChapterLocations.size * jChapterLocations.size)
                 }
-                //. , ? : ; !
+
+
+                // Save distance
                 characterDistanceByChapter[chapterIndex]["${iCharacter.name},${jCharacter.name}"] =
                     Distance(
-                        averageDistance,
+                        averageTokenDistance,
                         minDistance,
                         maxDistance,
                         meanTokenDistance,
@@ -135,25 +125,22 @@ private fun calculateDistancesBetweenCharacters(
                         punctuationDistances
                     )
 
-
-                // Whole Book
-//                bookTotal += averageDistance
-//                bookMinDistance = min(bookMinDistance, minDistance)
-//                bookMaxDistance = max(bookMaxDistance, maxDistance)
             }
-            // TODO: Issues
-            //  Problem 1: Not every character appears in each chapter therefore dividing by chapters does not make sense
-            // Problem 2:
-//            characterDistance["wholeBook,${iCharacter.name},${jCharacter.name}"] =
-//                Distance(bookTotal/numberOfChapters, bookMinDistance, bookMaxDistance)
-
 
         }
     }
     return characterDistanceByChapter
 }
 
-//TODO: should dit be stored as float?
+private fun getTextBetweenEntities(
+    chapterText: String,
+    iTokenLocation: Pair<Int, Int>,
+    jTokenLocation: Pair<Int, Int>
+) = chapterText.slice(iTokenLocation.second until jTokenLocation.second) + chapterText.slice(
+    jTokenLocation.second until iTokenLocation.second
+)
+
+//TODO: should it be stored as float?
 private fun getMeanAndMedianTokenLocations(iChapter: ArrayList<Pair<Int, Int>>): Pair<Int, Int> {
     val iChapterMeanLocation = iChapter.map { it.first }.toIntArray().sum() / iChapter.size
     val iChapterMedianLocation = (iChapter.map { it.first }.toIntArray().sortedArray()).let {
@@ -194,12 +181,17 @@ private fun removeCharacterAndLocationDuplicates(
     }
 }
 
-private fun getTokenLocationByChapter(
+/**
+ * Returns
+ * Chapter
+ * -- Mentions withing this chapter
+ * ---- Pair of (Token Location, Character Location)
+ */
+private fun getLocationsByChapter(
     character: Entity,
     locationsByChapter: ArrayList<ArrayList<Pair<Int, Int>>>
 ) {
 
-    //TODO: can this be calculated when getting entities form JSON?
     character.byChapterMentions.forEach { iChapter ->
         val iLocations = arrayListOf<Pair<Int, Int>>()
         iChapter.forEach { iMention ->
