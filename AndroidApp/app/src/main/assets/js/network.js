@@ -53,8 +53,16 @@ punctuationWeight.set(';', 1);
 punctuationWeight.set(',', 1)
 
 
+/*
+Checks if the link for the character exists
+ */
+function doesLinkExist(data, source, target) {
+    return data.find(characters => characters.name === source) && data.find(characters => characters.name === target);
+}
+
 function plotNetwork(chapter, distances, characters, topLinksPercentage, topCharactersByMentions) {
-    console.log("Plotting network graph")
+    console.log("Plotting network graph with parameters")
+    console.log("Chapter: " + chapter + " topLinksPercentage: " + topLinksPercentage + " topCharactersByMentions: " + topCharactersByMentions)
     updateSvgSize()
     const maxLinkStrength = 0.009
     const topMinLinksPercentage = 1
@@ -118,15 +126,15 @@ function plotNetwork(chapter, distances, characters, topLinksPercentage, topChar
         }
     }
 
-    let acceptedMin = maxValue - (maxValue - minValue) * topMinLinksPercentage;
-    let acceptedMax = minValue + (maxValue - minValue) * topLinksPercentage;
+    let acceptedMin = (topMinLinksPercentage === 1) ? minValue : maxValue - (maxValue - minValue) * topMinLinksPercentage;
+    let acceptedMax = (topLinksPercentage === 1) ? maxValue : minValue + (maxValue - minValue) * topLinksPercentage;
     console.log("Max: " + maxValue + " Min: " + minValue + " acceptMin: " + acceptedMin + " acceptMax: " + acceptedMax);
 
     // Filter out elements according to accepted min and max
     const filteredLinkData = [];
     linkData
         .filter(function (element) {
-            return element.value >= acceptedMin && element.value <= acceptedMax && data.find(characters => characters.name === element.source) && data.find(characters => characters.name === element.target);
+            return element.value >= acceptedMin && element.value <= acceptedMax && doesLinkExist(data, element.source, element.target);
         })
         .forEach((element) => {
             filteredLinkData.push(element);
@@ -242,7 +250,7 @@ function plotNetwork(chapter, distances, characters, topLinksPercentage, topChar
             link.style("stroke", function (o) {
                 // first colour is for focus colour
                 // second is to unfocus the colour
-                return o.source === d || o.target === d ?d3.interpolateReds(lineStrength(o.value)) : "#1bb916";
+                return o.source === d || o.target === d ? d3.interpolateReds(lineStrength(o.value)) : "#1bb916";
             });
         };
     }
