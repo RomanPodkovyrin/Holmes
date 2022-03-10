@@ -68,7 +68,7 @@
 
     <Spinner
         android:id="@+id/chapterSpinner"
-        android:layout_width="137dp"
+        android:layout_width="170dp"
         android:layout_height="48dp"
         android:contentDescription="@string/choose_chapter"
         app:layout_constraintStart_toStartOf="parent"
