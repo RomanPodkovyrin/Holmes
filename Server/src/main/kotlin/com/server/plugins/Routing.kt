@@ -86,7 +86,7 @@ fun Application.configureRouting(dbRepo: DataBaseRepository, coreNLPCont: CoreNL
                 val receivedText = call.receiveText()
                 val bookInfo = gson.fromJson(receivedText, BookInfo::class.java)
                 val bodyText = bookInfo.getBodyText()
-                log.debug("Received Book of size ${bodyText.length}")
+                log.debug("Received Book of size ${bodyText.length} characters")
 
                 call.respondText(RoutingResponses.RECEIVED.message)
 

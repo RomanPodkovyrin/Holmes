@@ -24,20 +24,9 @@ fun extractUsefulTags(title: String, author: String, requestContent: String, cha
 
     sortByChapter(chapters, characters, locations)
 
-    // Check if there are duplicates in location and character and remove
 //    removeCharacterAndLocationDuplicates(characters, locations)
 
     val characterDistanceByChapter = calculateDistancesBetweenCharacters(chapters, characters)
-
-
-//    println("Character distances")
-//    characterDistanceByChapter.forEach { chapter ->
-//        println("########")
-//        chapter.forEach { (t, u) ->
-//            println("$t: $u")
-//        }
-//    }
-
 
     return BookData(
         title,
@@ -52,7 +41,7 @@ private fun calculateDistancesBetweenCharacters(
     chapters: ArrayList<Chapter>,
     characters: ArrayList<Entity>
 ): Array<HashMap<String, Distance>> {
-    // <source name>,< target name>
+    // String value consists of <source name>,< target name>
     val characterDistanceByChapter = Array<HashMap<String, Distance>>(chapters.size) { HashMap() }
 
     // Calculate character distances
@@ -61,7 +50,7 @@ private fun calculateDistancesBetweenCharacters(
         val iTokenLocationsByChapter = arrayListOf<ArrayList<Pair<Int, Int>>>()
         getTokenLocationByChapter(iCharacter, iTokenLocationsByChapter)
 
-        // Starting from "i" as once before have already been processed
+        // Starting from "i" as those before have already been processed
         // +1 to not check characters against themselves
         for (j in i + 1 until characters.size) {
             val jCharacter = characters[j]
@@ -165,7 +154,7 @@ private fun calculateDistancesBetweenCharacters(
 }
 
 //TODO: should dit be stored as float?
-private fun getMeanAndMedianTokenLocations(iChapter: ArrayList<Pair<Int,Int>>): Pair<Int, Int> {
+private fun getMeanAndMedianTokenLocations(iChapter: ArrayList<Pair<Int, Int>>): Pair<Int, Int> {
     val iChapterMeanLocation = iChapter.map { it.first }.toIntArray().sum() / iChapter.size
     val iChapterMedianLocation = (iChapter.map { it.first }.toIntArray().sortedArray()).let {
         val size = it.size
