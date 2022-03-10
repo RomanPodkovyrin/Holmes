@@ -3,6 +3,7 @@ package com.romanp.fyp.viewmodels
 import com.romanp.fyp.models.book.BookInfo
 import com.romanp.fyp.models.book.Chapter
 import com.romanp.fyp.repositories.BookRepository
+import com.romanp.fyp.viewmodels.graph.BookGraphActivityViewModel
 import kotlinx.coroutines.runBlocking
 import org.junit.*
 import org.junit.runner.RunWith
