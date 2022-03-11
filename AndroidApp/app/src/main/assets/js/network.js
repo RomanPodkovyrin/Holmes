@@ -2,7 +2,7 @@ let width = 1000;
 let height = 1200;
 
 const margin = {
-    top: 50, bottom: 50, left: 90, right: 90,
+    top: 50, bottom: 90, left: 90, right: 90,
 };
 
 function updateSvgSize() {
@@ -269,7 +269,7 @@ function drawCharacterNetwork(acceptedDistanceMax, acceptedDistanceMin, svg, lin
         })
         .attr("fill", function (d) {
             // Color of the node inside
-            return "#15c092"; //d.colour;
+            return "#15c092";
         })
         //When overing over the node
         .on("mouseover", mouseOver(0.1))
@@ -324,7 +324,7 @@ function drawCharacterNetwork(acceptedDistanceMax, acceptedDistanceMin, svg, lin
         .style("stroke-width", 0.4)
         .style("fill", function (d) {
             // set text colour here
-            return "#022e49"; //d.colour;
+            return "#022e49";
         });
 
     // Add nodes to simulation and give instructions for each tick
