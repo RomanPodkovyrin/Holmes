@@ -255,7 +255,7 @@ class BookGraphActivity : AppCompatActivity() {
 
     private fun initialiseViewModel(bookId: Long) {
         val factory = InjectorUtils.provideBookGraphActivityViewModelFactory(application, bookId)
-        viewModel = ViewModelProvider(this, factory).get(BookGraphActivityViewModel::class.java)
+        viewModel = ViewModelProvider(this, factory)[BookGraphActivityViewModel::class.java]
     }
 
 
@@ -281,10 +281,10 @@ class BookGraphActivity : AppCompatActivity() {
         val chapterNumber = book.chapters.size
         val distances = book.characterDistanceByChapter
         val distancesJson: String = gson.toJson(distances).toString()
-        val bookJson: String = gson.toJson(book.characters).toString()
-        Log.i(TAG, "book: $bookJson \nchapters: $chapterNumber\ndistances: $distancesJson")
+        val charactersJson: String = gson.toJson(book.characters).toString()
+        Log.i(TAG, "book: $charactersJson \nchapters: $chapterNumber\ndistances: $distancesJson")
         findViewById<WebView>(R.id.WebViewGraph).loadUrl(
-            "javascript:plotNetwork($chapter, $distancesJson, $bookJson, $maxLink, $maxMention, $distanceMethod)"
+            "javascript:plotNetwork($chapter, $distancesJson, $charactersJson, $maxLink, $maxMention, $distanceMethod)"
         )
     }
 
@@ -294,10 +294,10 @@ class BookGraphActivity : AppCompatActivity() {
         val chapterNumber = book.chapters.size
         val distances = book.characterDistanceByChapter
         val distancesJson: String = gson.toJson(distances).toString()
-        val bookJson: String = gson.toJson(book.characters).toString()
-        Log.i(TAG, "book: $bookJson \nchapters: $chapterNumber\ndistances: $distancesJson")
+        val charactersJson: String = gson.toJson(book.characters).toString()
+        Log.i(TAG, "book: $charactersJson \nchapters: $chapterNumber\ndistances: $distancesJson")
         findViewById<WebView>(R.id.WebViewGraph).loadUrl(
-            "javascript:makeNetwork($bookJson, $chapterNumber, $distancesJson)"
+            "javascript:makeNetwork($charactersJson, $chapterNumber, $distancesJson)"
         )
     }
 }
