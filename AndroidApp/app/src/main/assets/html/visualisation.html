@@ -98,7 +98,7 @@
             btn.style.fontSize = buttonFontSize;
             btn.onclick = function () {
                 console.log("Clicked on button " + (i + 1));
-                plotNetwork(i, distances, characters, log.textContent / 100, 1.0);
+                plotNetwork(i, distances, characters, log.textContent / 100, 1.0, 1);
             };
             document.getElementById("buttons").appendChild(btn);
         }
