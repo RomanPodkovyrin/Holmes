@@ -17,6 +17,16 @@ function updateSvgSize() {
 
 const spreadForce = -1050;
 const spaceBetweenNodesMultiplier = 1;
+// Controls how spread out the values are
+const exponent = 2
+const maxLinkStrength = 0.009
+
+let minDistanceValue = Number.MAX_VALUE;
+let maxDistanceValue = 0;
+
+
+let minMentions = Number.MAX_VALUE;
+let maxMentions = 0
 
 // Sorts Smallest to Larges
 function compareLinks(a, b) {
@@ -59,8 +69,6 @@ function doesLinkExist(data, source, target) {
     return data.find(characters => characters.name === source) && data.find(characters => characters.name === target);
 }
 
-let minMentions = Number.MAX_VALUE;
-let maxMentions = 0
 
 function getCharactersFromChapter(characters, chapter, nodeData) {
 
@@ -79,27 +87,37 @@ function getCharactersFromChapter(characters, chapter, nodeData) {
     return {maxMentions, minMentions};
 }
 
-let minDistanceValue = Number.MAX_VALUE;
-let maxDistanceValue = 0;
 
-function getLinkData(distances, chapter, nodeData, linkData) {
+function getLinkData(distances, chapter, nodeData, linkData, distanceMethod) {
 
     // Get distance values, sources and targets
     let distance;
     for (const [key, value] of Object.entries(distances[chapter])) {
         const names = key.split(",");
         if (nodeData.find(characters => characters.name === names[0]) && nodeData.find(characters => characters.name === names[1])) {
+            distance = 0
+            switch(distanceMethod) {
+                case 0:
+                    distance = value.tokenAverage
+                    break;
+                case 1:
+                    Object.entries(value.averagePunctuationDistance).forEach(([key, value]) => {
+                        distance += punctuationWeight.get(key) * value
+                    })
+                    break;
+                case 2:
+                    distance = value.meanTokenDistance
+                    break;
+                case 3:
+                    distance = value.medianTokenDistance
+                    break;
+                default:
+                // code block
+            }
 
-
-            //TODO: make a getDistance function with choice parameter
-            distance = 0//value.tokenAverage
-            Object.entries(value.averagePunctuationDistance).forEach(([key, value]) => {
-                // console.log("each " + key + " v:" + value)
-                distance += punctuationWeight.get(key) * value
-            })
-            console.log("Distance: " + distance)
+            // console.log("Distance: " + distance)
             distance = Math.pow(distance, exponent)
-            console.log("Exponent: " + distance)
+            // console.log("Exponent: " + distance)
             maxDistanceValue = Math.max(maxDistanceValue, distance);
             minDistanceValue = Math.min(minDistanceValue, distance);
 
@@ -111,17 +129,11 @@ function getLinkData(distances, chapter, nodeData, linkData) {
     return {maxDistanceValue, minDistanceValue};
 }
 
-// Controls how spread out the values are
-const exponent = 2
-const maxLinkStrength = 0.009
 
-function plotNetwork(chapter, distances, characters, topLinksPercentage, topCharactersByMentions) {
+function plotNetwork(chapter, distances, characters, topLinksPercentage, topCharactersByMentions, distanceMethod) {
     console.log("Plotting network graph with parameters")
-    console.log("Chapter: " + chapter + " topLinksPercentage: " + topLinksPercentage + " topCharactersByMentions: " + topCharactersByMentions)
+    console.log("Chapter: " + chapter + " topLinksPercentage: " + topLinksPercentage + " topCharactersByMentions: " + topCharactersByMentions + " DistanceMethod: " +distanceMethod)
     updateSvgSize()
-
-    //const topMinLinksPercentage = 1
-
 
     // Clear Previous graph
     d3.selectAll("svg > *").remove();
@@ -143,7 +155,7 @@ function plotNetwork(chapter, distances, characters, topLinksPercentage, topChar
 
 
     const linkData = [];
-    const maxAndMinDistances = getLinkData(distances, chapter, nodeData, linkData);
+    const maxAndMinDistances = getLinkData(distances, chapter, nodeData, linkData, distanceMethod);
     maxDistanceValue = maxAndMinDistances.maxDistanceValue;
     minDistanceValue = maxAndMinDistances.minDistanceValue;
 

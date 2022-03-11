@@ -1,11 +1,13 @@
 package com.romanp.fyp.views
 
 import android.annotation.SuppressLint
-import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.webkit.*
+import android.webkit.ConsoleMessage
+import android.webkit.WebChromeClient
+import android.webkit.WebView
+import android.webkit.WebViewClient
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
@@ -29,6 +31,7 @@ class BookGraphActivity : AppCompatActivity() {
     private lateinit var viewModel: BookGraphActivityViewModel
     private lateinit var type: GraphType
     private lateinit var chapterSpinner: Spinner
+    private lateinit var distanceMethodSpinner: Spinner
     private lateinit var topLinksPercentageSeekBar: SeekBar
     private lateinit var topCharactersByMentionsSeekBar: SeekBar
     private lateinit var maxLinkValueTV: TextView
@@ -40,6 +43,7 @@ class BookGraphActivity : AppCompatActivity() {
     // Network values
     private var topLinksPercentageValue: Float = 1F
     private var topCharacterByMentionsValue: Float = 1F
+    private var selectedDistanceMethod: Int = 1
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -78,12 +82,45 @@ class BookGraphActivity : AppCompatActivity() {
             findViewById<TextView>(R.id.topLinksPercentageTV).visibility = View.GONE
             findViewById<TextView>(R.id.topCharactersByMentionsTV).visibility = View.GONE
             findViewById<Spinner>(R.id.chapterSpinner).visibility = View.GONE
-            findViewById<Spinner>(R.id.chapterSpinner2).visibility = View.GONE
-            findViewById<TextView>(R.id.distanceMethodLabel).visibility = View.GONE
+            findViewById<Spinner>(R.id.distanceMethodSpinner).visibility = View.GONE
             return
         }
         setupChapterSpinner()
+        setUpDistanceMethodSpinner()
         setupNetworkControls()
+    }
+
+    private fun setUpDistanceMethodSpinner() {
+        // Setting up Distance Method spinner
+        val distanceOptions = arrayListOf(
+            "Token Average",       // 0
+            "Punctuation Average", // 1
+            "Mean Token",          // 2
+            "Median Token"         // 3
+        ).toList()
+
+        distanceMethodSpinner = findViewById(R.id.distanceMethodSpinner)
+        val spinnerArrayAdapter = ArrayAdapter<Any?>(
+            this,
+            android.R.layout.simple_spinner_dropdown_item, distanceOptions
+        )
+        distanceMethodSpinner.adapter = spinnerArrayAdapter
+        distanceMethodSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+                Log.i(TAG, "DistanceSpinner: Nothing selected")
+            }
+
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+                Log.i(TAG, "DistanceSpinner: Clicked item $position")
+                selectedDistanceMethod = position
+                updateGraph()
+            }
+        }
     }
 
     private fun setupNetworkControls() {
@@ -161,7 +198,8 @@ class BookGraphActivity : AppCompatActivity() {
                     viewModel.getCurrentBookInfo(),
                     selectedChapter,
                     topLinksPercentageValue,
-                    topCharacterByMentionsValue
+                    topCharacterByMentionsValue,
+                    selectedDistanceMethod
                 )
             }
         }
@@ -237,7 +275,8 @@ class BookGraphActivity : AppCompatActivity() {
         book: BookInfo,
         chapter: Int,
         maxLink: Float,
-        maxMention: Float
+        maxMention: Float,
+        distanceMethod: Int
     ) {
         val chapterNumber = book.chapters.size
         val distances = book.characterDistanceByChapter
@@ -245,7 +284,7 @@ class BookGraphActivity : AppCompatActivity() {
         val bookJson: String = gson.toJson(book.characters).toString()
         Log.i(TAG, "book: $bookJson \nchapters: $chapterNumber\ndistances: $distancesJson")
         findViewById<WebView>(R.id.WebViewGraph).loadUrl(
-            "javascript:plotNetwork($chapter, $distancesJson, $bookJson, $maxLink, $maxMention)"
+            "javascript:plotNetwork($chapter, $distancesJson, $bookJson, $maxLink, $maxMention, $distanceMethod)"
         )
     }
 
