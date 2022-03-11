@@ -6,16 +6,102 @@
     android:layout_height="match_parent"
     tools:context=".views.BookGraphActivity">
 
+    <SeekBar
+        android:id="@+id/topCharactersByMentionsSeekBar"
+        android:layout_width="0dp"
+        android:layout_height="39dp"
+        android:layout_marginTop="8dp"
+        android:max="100"
+        android:min="0"
+        android:progress="100"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/topCharactersByMentionsTV" />
+
+    <TextView
+        android:id="@+id/topCharactersByMentionsTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:text="@string/top_characters_by_mentions"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/topLinksPercentageSeekBar" />
+
+    <TextView
+        android:id="@+id/topCharactersByMentionsValueTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/defaultPercentage"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/topCharactersByMentionsTV"
+        app:layout_constraintTop_toTopOf="@+id/topCharactersByMentionsTV" />
+
     <WebView
         android:id="@+id/WebViewGraph"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="1dp"
-        android:layout_marginTop="1dp"
         android:layout_marginEnd="1dp"
-        android:layout_marginBottom="1dp"
+        android:layout_marginBottom="200dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.18"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <SeekBar
+        android:id="@+id/topLinksPercentageSeekBar"
+        android:layout_width="0dp"
+        android:layout_height="39dp"
+        android:layout_marginTop="8dp"
+        android:max="100"
+        android:min="0"
+        android:progress="100"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/topLinksPercentageTV" />
+
+    <Spinner
+        android:id="@+id/chapterSpinner"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:contentDescription="@string/choose_chapter"
+        app:layout_constraintEnd_toStartOf="@+id/distanceMethodSpinner"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/WebViewGraph" />
+
+    <Spinner
+        android:id="@+id/distanceMethodSpinner"
+        android:layout_width="200dp"
+        android:layout_height="48dp"
+        android:contentDescription="@string/choose_distance_method"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/chapterSpinner" />
+
+    <TextView
+        android:id="@+id/topLinksPercentageTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="4dp"
+        android:text="@string/top_links_percentage"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/chapterSpinner" />
+
+    <TextView
+        android:id="@+id/topLinksPercentageValueTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/defaultPercentage"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/topLinksPercentageTV"
+        app:layout_constraintTop_toTopOf="@+id/topLinksPercentageTV" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

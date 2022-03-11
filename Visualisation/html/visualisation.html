@@ -12,6 +12,20 @@
         div {
             text-align: center;
         }
+
+        .slider {
+            display: block;
+            /*min and max changes size of slider?*/
+            height: 80px;
+            width: 1000px;
+            margin-right: 50px;
+            margin-left: 50px;
+            position: center;
+        }
+
+        .values{
+            font-size: xx-large;
+        }
     </style>
 <!--    <script-->
 <!--            type="text/javascript"-->
@@ -32,21 +46,17 @@
     ></script>
 </head>
 <body>
-<h1 id="title">Pie Chart</h1>
+<!--<h1 id="title">Pie Chart</h1>-->
 
-<script>
-
-
-</script>
-<br/>
-<h1 id="message">Pick your chapter</h1>
+<!--<br/>-->
+<!--<h1 id="message">Pick your chapter</h1>-->
 <svg id="piechart" width="2000" height="1200"></svg>
 <div id="buttons"></div>
 <br/>
 <div >
     Max Top Links
-    <input id="slider" type="range" min="0" max="100" value="100" />
-    <p id="values">100</p>
+    <input id="slider"  class="slider" type="range" min="0" max="100" value="100" />
+    <p id="values" class="values">100</p>
 </div>
 <br/>
 <br/>
@@ -94,7 +104,7 @@
         console.log("Making Network Graphs " + JSON)
 
         // Set Title
-        setTitle(book)
+        // setTitle(book)
 
         // Bread down by chapter
         for (let i = 0; i < chapterNumber; i++) {

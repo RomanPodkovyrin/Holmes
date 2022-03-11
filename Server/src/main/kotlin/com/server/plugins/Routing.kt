@@ -86,7 +86,7 @@ fun Application.configureRouting(dbRepo: DataBaseRepository, coreNLPCont: CoreNL
                 val receivedText = call.receiveText()
                 val bookInfo = gson.fromJson(receivedText, BookInfo::class.java)
                 val bodyText = bookInfo.getBodyText()
-                log.debug("Received Book of size ${bodyText.length}")
+                log.debug("Received Book of size ${bodyText.length} characters")
 
                 call.respondText(RoutingResponses.RECEIVED.message)
 
@@ -105,7 +105,7 @@ fun Application.configureRouting(dbRepo: DataBaseRepository, coreNLPCont: CoreNL
                 log.info("Time taken for $title: ${minutesTaken}m:${secondsTaken}s")
                 dbRepo.insertOne(bookData)
             } catch (e: Exception) {
-                log.info("Failed to process the book $title - $author | Error: ${e.message}")
+                log.info("Failed to process the book $title - $author | Error: ${e.printStackTrace()}")
                 val failedList = getFailedBooks(dbRepo, title, author)
                 if (failedList.isEmpty()) {
                     dbRepo.insertOneFailed(BookInfo(0, title, author, arrayListOf(), arrayListOf(), arrayListOf()))

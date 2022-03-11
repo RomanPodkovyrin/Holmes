@@ -6,30 +6,25 @@ import androidx.lifecycle.ViewModelProvider
 import com.romanp.fyp.adapters.entityRecyclerView.EntityRecyclerViewAdapter
 import com.romanp.fyp.repositories.BookRepository
 
-class EntityListActivityViewModel : BookViewModel {
+class EntityListActivityViewModel
+/**
+ * @param application
+ * @param repository
+ * @param bookId id of the book to be loaded from repository
+ * @param listType - true for character, false for locations
+ */(application: Application, repository: BookRepository, bookId: Long, listType: Boolean) :
+    BookViewModel(
+        application, repository, bookId
+    ) {
 
     companion object {
         private const val TAG = "EntityListActivityViewModel"
     }
 
-    private var bookListType: Boolean
+    private var bookListType: Boolean = listType
 
 
-    /**
-     * @param application
-     * @param repository
-     * @param bookId id of the book to be loaded from repository
-     * @param listType - true for character, false for locations
-     */
-    constructor(
-        application: Application,
-        repository: BookRepository,
-        bookId: Long,
-        listType: Boolean
-    ) : super(
-        application, repository, bookId
-    ) {
-        bookListType = listType
+    init {
         getBookInfo(bookId)
     }
 
@@ -45,7 +40,7 @@ class EntityListActivityViewModel : BookViewModel {
         val recyclerList = when (listType()) {
             true -> getCharacters()
             false -> getLocations()
-        }.map { entity -> EntityRecyclerViewAdapter.RecyclerEntityInfo(entity.name) }
+        }.map { entity -> EntityRecyclerViewAdapter.RecyclerEntityInfo(getBookID(), entity.name, listType()) }
 
         return ArrayList(recyclerList)
     }

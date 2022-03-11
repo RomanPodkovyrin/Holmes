@@ -1,7 +1,4 @@
 function loadPieChartByChapter(chapter, dataset) {
-// TODO: That's redundunt
-    const svg = d3.select("#piechart");
-    const textLabelSuffix = "%";
     const data = [];
     dataset
         .filter(function (el) {
@@ -14,18 +11,10 @@ function loadPieChartByChapter(chapter, dataset) {
             });
         });
 
-    console.log("temp " + data.length + data);
-    if (data.length === 0) {
-        document.getElementById("message").innerHTML = "NO DATA";
-    } else {
-        document.getElementById("message").innerHTML = "Chapter " + (chapter + 1);
-    }
-    showPieChart(data, svg, textLabelSuffix);
+    showPieChart(data);
 }
 
 function loadPieChart(dataset) {
-    const svg = d3.select("#piechart");
-    const textLabelSuffix = "%";
     const data = [];
     dataset
         .filter(function (el) {
@@ -38,17 +27,14 @@ function loadPieChart(dataset) {
             });
         });
 
-    document.getElementById("message").innerHTML = "Whole Book";
-    showPieChart(data, svg, textLabelSuffix);
+    showPieChart(data);
 }
 
-function showPieChart(dataset, svg, textLabelSuffix) {
+function showPieChart(dataset) {
     // Clear Previous graph
     d3.selectAll("svg > *").remove();
-    // d3.select("svg").remove();
 
     const container = d3.select("svg").classed("container", true);
-    // .style('border', '1px solid red');
     const width = container.attr("width");
     const height = container.attr("height");
 
@@ -57,10 +43,8 @@ function showPieChart(dataset, svg, textLabelSuffix) {
         .append("g")
         .attr("transform", `translate(${width / 2}, ${height / 2})`);
 
-    // const colour = d3.scaleOrdinal(['red', 'blue', 'green', 'gray'])
     const pie = d3
         .pie()
-        // .sort(null)
         .value((d) => d.mentions.length);
 
     const path = d3.arc().outerRadius(radius).innerRadius(100);

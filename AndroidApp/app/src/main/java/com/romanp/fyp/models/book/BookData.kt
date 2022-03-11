@@ -13,10 +13,6 @@ data class Entity(
     val name: String,
     val aliases: Set<String>,
     val ner: String,
-    val type: String, // PRONOMINAL, PROPER, NOMINAL
-    val number: String, //SINGULAR, UNKNOWN, PLURAL
-    val gender: String,//FEMALE, UNKNOWN, NEUTRAL, MALE
-    val animacy: String, //ANIMATE, INANIMATE
     var mentions: ArrayList<Mention>,
     val byChapterMentions: ArrayList<ArrayList<Mention>>
 )
@@ -30,10 +26,10 @@ data class Mention(
 )
 
 data class Distance(
-    val tokenAverage: Int,
+    val tokenAverage: Float,
     val tokenMin: Int,
     val tokenMax: Int,
     val meanTokenDistance: Int,
     val medianTokenDistance: Int,
+    val averagePunctuationDistance: HashMap<Char, Float>
 )
-

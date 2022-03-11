@@ -12,6 +12,20 @@
         div {
             text-align: center;
         }
+
+        .slider {
+            display: block;
+            /*min and max changes size of slider?*/
+            height: 50px;
+            width: 900px;
+            margin-right: 50px;
+            margin-left: 50px;
+            position: relative;
+        }
+
+        .values {
+            font-size: xx-large;
+        }
     </style>
     <script
             type="text/javascript"
@@ -28,17 +42,15 @@
     ></script>
 </head>
 <body>
-<h1 id="title">Pie Chart</h1>
-
+<svg id="piechart" width="1000" height="1300"></svg>
 <br/>
-<h1 id="message">Pick your chapter</h1>
-<svg id="piechart" width="1000" height="1500"></svg>
+<br/>
 <div id="buttons"></div>
 <br/>
-<div>
+<div class="slide-box">
     Max Top Links
-    <input id="slider" type="range" min="0" max="100" value="100"/>
-    <p id="values">100</p>
+    <input id="slider" class="slider" type="range" min="0" max="100" value="100"/>
+    <p id="values" class="values">100</p>
 </div>
 <br/>
 <br/>
@@ -69,15 +81,15 @@
     let buttonFontSize = "xx-large";
 
     function setTitle(book) {
-        document.getElementById("title").innerHTML =
-            book.title + " - " + book.author;
+        //document.getElementById("title").innerHTML = book.title + " - " + book.author;
     }
 
-    function makeNetwork(book, chapterNumber, distances) {
+    function makeNetwork(characters, chapterNumber, distances) {
         console.log("Making Network Graphs")
+        console.log("Making " + chapterNumber + " chapter buttons")
 
         // Set Title
-        setTitle(book)
+        //setTitle(book)
 
         // Bread down by chapter
         for (let i = 0; i < chapterNumber; i++) {
@@ -88,7 +100,7 @@
             btn.style.fontSize = buttonFontSize;
             btn.onclick = function () {
                 console.log("Clicked on button " + (i + 1));
-                plotNetwork(i, distances, book.characters, log.textContent / 100);
+                plotNetwork(i, distances, characters, log.textContent / 100, 1.0, 1);
             };
             document.getElementById("buttons").appendChild(btn);
         }

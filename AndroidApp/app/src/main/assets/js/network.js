@@ -1,18 +1,35 @@
 let width = 1000;
-let height = 1500;
+let height = 1200;
 
 const margin = {
-    top: 50, bottom: 50, left: 50, right: 50,
+    top: 50, bottom: 90, left: 90, right: 90,
 };
 
-width = width - margin.right - margin.left;
-height = height - margin.top - margin.bottom;
+function updateSvgSize() {
+    const container = d3.select("svg").classed("container", true);
+    width = container.attr("width");
+    height = container.attr("height");
+    console.log("Width: " + width + " height: " + height)
+    width = width - margin.right - margin.left;
+    height = height - margin.top - margin.bottom;
+    console.log("With margin, Width: " + width + " height: " + height)
+}
 
 const spreadForce = -1050;
-const spaceBetweenNodes = 40;
+const spaceBetweenNodesMultiplier = 1;
+// Controls how spread out the values are
+const exponent = 2
+const maxLinkStrength = 0.009
+
+let minDistanceValue = Number.MAX_VALUE;
+let maxDistanceValue = 0;
+
+
+let minMentions = Number.MAX_VALUE;
+let maxMentions = 0
 
 // Sorts Smallest to Larges
-function compare(a, b) {
+function compareLinks(a, b) {
     if (a.value < b.value) {
         return -1;
     }
@@ -23,54 +40,39 @@ function compare(a, b) {
 }
 
 
-function plotNetwork(chapter, distances, characters, topMaxLinksPercentage) {
-    console.log("Plotting network graph")
-
-    // Clear Previous graph
-    d3.selectAll("svg > *").remove();
-
-    // create an svg to draw in
-    const svg = d3
-        .select("svg")
-        .append("g")
-        .attr("transform", "translate(" + margin.top + "," + margin.left + ")");
-
-
-    let minValue = Number.MAX_VALUE;
-    let maxValue = 0;
-    const linkData = [];
-    // Get distance values, sources and targets
-    for (const [key, value] of Object.entries(distances[chapter])) {
-        maxValue = Math.max(maxValue, value.tokenAverage);
-        minValue = Math.min(minValue, value.tokenAverage);
-        const names = key.split(",");
-        linkData.push({
-            value: value.tokenAverage, source: names[0], target: names[1],
-        });
+// Sorts Largest to Smallest
+function compareNodes(a, b) {
+    if (a.mentions < b.mentions) {
+        return 1;
     }
+    if (a.mentions > b.mentions) {
+        return -1;
+    }
+    return 0;
+}
 
-    let acceptedMin = maxValue - (maxValue - minValue) * 1;
-    let acceptedMax = minValue + (maxValue - minValue) * topMaxLinksPercentage;
-    console.log("Max: " + maxValue + " Min: " + minValue + " acceptMin: " + acceptedMin + " acceptMax: " + acceptedMax);
+// Weighting for each accepted punctuation
+const punctuationWeight = new Map();
 
-    // Filter out elements according to accepted min and max
-    const filteredLinkData = [];
-    linkData
-        .filter(function (element) {
-            return element.value >= acceptedMin && element.value <= acceptedMax;
-        })
-        .forEach((element) => {
-            filteredLinkData.push(element);
-        });
+punctuationWeight.set('.', 10);
+punctuationWeight.set('?', 10);
+punctuationWeight.set('!', 10);
+punctuationWeight.set(':', 1);
+punctuationWeight.set(';', 1);
+punctuationWeight.set(',', 1)
 
-    // Sort links in acceding order
-    filteredLinkData.sort(compare);
 
-    let minMentions = Number.MAX_VALUE;
-    let maxMentions = 0
+/**
+ * Checks if the link for the character exists
+ */
+function doesLinkExist(data, source, target) {
+    return data.find(characters => characters.name === source) && data.find(characters => characters.name === target);
+}
 
-    const data = [];
-    // Filter out characters if they are in this chapter
+
+function getCharactersFromChapter(characters, chapter, nodeData) {
+
+    // Filter out characters if they are not in this chapter
     characters
         .filter(function (element) {
             return element.byChapterMentions[chapter].length > 0;
@@ -78,28 +80,131 @@ function plotNetwork(chapter, distances, characters, topMaxLinksPercentage) {
         .forEach((element) => {
             maxMentions = Math.max(maxMentions, element.byChapterMentions[chapter].length)
             minMentions = Math.min(minMentions, element.byChapterMentions[chapter].length)
-            data.push({
+            nodeData.push({
                 name: element.name, id: element.name, mentions: element.byChapterMentions[chapter].length
             });
         });
+    return {maxMentions, minMentions};
+}
+
+
+function getLinkData(distances, chapter, nodeData, linkData, distanceMethod) {
+
+    // Get distance values, sources and targets
+    let distance;
+    for (const [key, value] of Object.entries(distances[chapter])) {
+        const names = key.split(",");
+        if (nodeData.find(characters => characters.name === names[0]) && nodeData.find(characters => characters.name === names[1])) {
+            distance = 0
+            switch(distanceMethod) {
+                case 0:
+                    distance = value.tokenAverage
+                    break;
+                case 1:
+                    Object.entries(value.averagePunctuationDistance).forEach(([key, value]) => {
+                        distance += punctuationWeight.get(key) * value
+                    })
+                    break;
+                case 2:
+                    distance = value.meanTokenDistance
+                    break;
+                case 3:
+                    distance = value.medianTokenDistance
+                    break;
+                default:
+                // code block
+            }
+
+            // console.log("Distance: " + distance)
+            distance = Math.pow(distance, exponent)
+            // console.log("Exponent: " + distance)
+            maxDistanceValue = Math.max(maxDistanceValue, distance);
+            minDistanceValue = Math.min(minDistanceValue, distance);
+
+            linkData.push({
+                value: distance, source: names[0], target: names[1],
+            });
+        }
+    }
+    return {maxDistanceValue, minDistanceValue};
+}
+
+
+function plotNetwork(chapter, distances, characters, topLinksPercentage, topCharactersByMentions, distanceMethod) {
+    console.log("Plotting network graph with parameters")
+    console.log("Chapter: " + chapter + " topLinksPercentage: " + topLinksPercentage + " topCharactersByMentions: " + topCharactersByMentions + " DistanceMethod: " +distanceMethod)
+    updateSvgSize()
+
+    // Clear Previous graph
+    d3.selectAll("svg > *").remove();
+
+    // create a svg to draw in
+    const svg = d3
+        .select("svg")
+        .append("g")
+        .attr("transform", "translate(" + margin.top + "," + margin.left + ")");
+
+
+    let nodeData = [];
+    const maxAndMinMentions = getCharactersFromChapter(characters, chapter, nodeData);
+    maxMentions = maxAndMinMentions.maxMentions;
+    minMentions = maxAndMinMentions.minMentions;
+
+    nodeData.sort(compareNodes);
+    nodeData = nodeData.slice(0, nodeData.length * topCharactersByMentions)
+
+
+    const linkData = [];
+    const maxAndMinDistances = getLinkData(distances, chapter, nodeData, linkData, distanceMethod);
+    maxDistanceValue = maxAndMinDistances.maxDistanceValue;
+    minDistanceValue = maxAndMinDistances.minDistanceValue;
+
+    let acceptedDistanceMin = minDistanceValue//(topMinLinksPercentage === 1) ? minDistanceValue : maxDistanceValue - (maxDistanceValue - minDistanceValue) * topMinLinksPercentage;
+    let acceptedDistanceMax = maxDistanceValue//(topLinksPercentage === 1) ? maxDistanceValue : minDistanceValue + (maxDistanceValue - minDistanceValue) * topLinksPercentage;
+    console.log("Max: " + maxDistanceValue + " Min: " + minDistanceValue + " acceptMin: " + acceptedDistanceMin + " acceptMax: " + acceptedDistanceMax);
+
+    // Filter out elements according to accepted min and max
+    let filteredLinkData = [];
+    linkData
+        .filter(function (element) {
+            return element.value >= acceptedDistanceMin && element.value <= acceptedDistanceMax && doesLinkExist(nodeData, element.source, element.target);
+        })
+        .forEach((element) => {
+            filteredLinkData.push(element);
+        });
+
+    // Sort links in acceding order
+    filteredLinkData.sort(compareLinks);
+    // Remove links based on the control parameter topLinksPercentage
+    filteredLinkData = filteredLinkData.slice(0, filteredLinkData.length * topLinksPercentage)
+
+    // Update max an min values
+    maxDistanceValue = 0
+    minDistanceValue = Number.MAX_VALUE
+    filteredLinkData.forEach((element) => {
+        maxDistanceValue = Math.max(maxDistanceValue, element.value);
+        minDistanceValue = Math.min(minDistanceValue, element.value);
+    })
+    acceptedDistanceMax = maxDistanceValue
+    acceptedDistanceMin = minDistanceValue
 
     // Get the nodes and links
-    const nodes = data; //.nodes;
-    const links = filteredLinkData//.splice(0, filteredLinkData.length * 1); //linkData //data.links;
+    const nodes = nodeData;
+    const links = filteredLinkData
+    drawCharacterNetwork(acceptedDistanceMax, acceptedDistanceMin, svg, links, nodes);
+}
 
-    // linkColourScale.domain(d3.extent(links,function (d){
-    //     return d.value
-    // }))
 
+function drawCharacterNetwork(acceptedDistanceMax, acceptedDistanceMin, svg, links, nodes) {
     const linkWidthScale = d3
         .scaleLinear()
-        .domain([acceptedMax, acceptedMin])
+        .domain([acceptedDistanceMax, acceptedDistanceMin])
         //Controls the thickness of the link
-        .range([0.1, 10]);
+        .range([0.5, 25]);
     const linkStrengthScale = d3
         .scaleLinear()
-        .domain([acceptedMax, acceptedMin])
-        .range([0, 0.009]);
+        .domain([acceptedDistanceMax, acceptedDistanceMin])
+        .range([0, maxLinkStrength]);
 
     const nodeSizeScale = d3
         .scaleLinear()
@@ -122,17 +227,16 @@ function plotNetwork(chapter, distances, characters, topMaxLinksPercentage) {
         .force("charge", d3.forceManyBody().strength(spreadForce))
         // Collision detection
         .force("collide", function (d) {
-            d3.forceCollide().radius(d.mentions * 2)//spaceBetweenNodes
+            d3.forceCollide().radius(nodeSizeScale(d.mentions) * spaceBetweenNodesMultiplier)
         })
         // draw them in the middle of the screen
         .force("center", d3.forceCenter(width / 2, height / 2));
 
 
-    const color = d3.scaleOrdinal(d3.schemeGreens[9]);
     let lineStrength = d3
         .scaleLinear()
-        .domain([acceptedMax, acceptedMin])
-        .range([1, 10]);
+        .domain([acceptedDistanceMax, acceptedDistanceMin])
+        .range([0, 1]);
 
     // add the links
     const link = svg
@@ -142,21 +246,10 @@ function plotNetwork(chapter, distances, characters, topMaxLinksPercentage) {
         .append("path")
         .attr("class", "link")
         .attr("stroke", function (d) {
-            return color(lineStrength(d.value));
+            return d3.interpolateRdYlGn(lineStrength(d.value));
         })
         .attr("stroke-width", function (d) {
-            //   console.log(
-            //     "s: " +
-            //       d.source +
-            //       " d: " +
-            //       d.target +
-            //       " Width Value: " +
-            //       linkWidthScale(d.value) +
-            //       " d: " +
-            //       d.value +
-            //       " color: " +
-            //       color(lineStrength(d.value))
-            //   );
+            console.log("Link " + d.source + " to " + d.target + " value: " + d.value + ", width: " + linkWidthScale(d.value))
             return linkWidthScale(d.value);
         });
 
@@ -172,19 +265,11 @@ function plotNetwork(chapter, distances, characters, topMaxLinksPercentage) {
         .append("circle")
         .attr("class", "node")
         .attr("r", function (d) {
-            // console.log(
-            //     "Name: " +
-            //       d.name +
-            //       " Node Value: " +
-            //       nodeSizeScale(d.mentions) +
-            //       " mentions: " +
-            //       d.mentions
-            //   );
-            return nodeSizeScale(d.mentions)//20
+            return nodeSizeScale(d.mentions)
         })
         .attr("fill", function (d) {
             // Color of the node inside
-            return "#15c092"; //d.colour;
+            return "#15c092";
         })
         //When overing over the node
         .on("mouseover", mouseOver(0.1))
@@ -208,8 +293,8 @@ function plotNetwork(chapter, distances, characters, topMaxLinksPercentage) {
             // Change to this when hovered
             link.style("stroke", function (o) {
                 // first colour is for focus colour
-                // second is for the unfocus colour
-                return o.source === d || o.target === d ? "#da0000" : "#1bb916";
+                // second is to unfocus the colour
+                return o.source === d || o.target === d ? d3.interpolateReds(lineStrength(o.value)) : "#1bb916";
             });
         };
     }
@@ -217,7 +302,9 @@ function plotNetwork(chapter, distances, characters, topMaxLinksPercentage) {
     function mouseOut() {
         // Reset back this when not
         link.style("stroke-opacity", 1);
-        link.style("stroke", "#b6561a");
+        link.style("stroke", function (d) {
+            return d3.interpolateRdYlGn(lineStrength(d.value));
+        });
         node.style("fill-opacity", 1);
         node.style("stroke-opacity", 1);
 
@@ -237,7 +324,7 @@ function plotNetwork(chapter, distances, characters, topMaxLinksPercentage) {
         .style("stroke-width", 0.4)
         .style("fill", function (d) {
             // set text colour here
-            return "#022e49"; //d.colour;
+            return "#022e49";
         });
 
     // Add nodes to simulation and give instructions for each tick
@@ -260,7 +347,6 @@ function plotNetwork(chapter, distances, characters, topMaxLinksPercentage) {
     // move the node based on physics
     function updateNodes(d) {
         // keep the elements within the boundaries
-        //TODO: get radius to calucate the dist
         if (d.x < 0) d.x = 0;
         if (d.y < 0) d.y = 0;
         if (d.x > width) d.x = width;

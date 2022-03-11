@@ -1,11 +1,18 @@
-package com.romanp.fyp.viewmodels
+package com.romanp.fyp.viewmodels.graph
 
 import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.romanp.fyp.repositories.BookRepository
+import com.romanp.fyp.viewmodels.BookViewModel
 
-class BookGraphActivityViewModel : BookViewModel {
+class BookGraphActivityViewModel(
+    application: Application,
+    repository: BookRepository,
+    bookId: Long
+) : BookViewModel(
+    application, repository, bookId
+) {
 
 
     companion object {
@@ -13,13 +20,12 @@ class BookGraphActivityViewModel : BookViewModel {
     }
 
 
-    constructor(application: Application, repository: BookRepository, bookId: Long) : super(
-        application, repository, bookId
-    ) {
+    init {
         getBookInfo(bookId)
     }
 }
 
+@Suppress("UNCHECKED_CAST")
 class BookGraphActivityViewModelFactory(
     private val application: Application,
     private val repository: BookRepository,
@@ -27,8 +33,7 @@ class BookGraphActivityViewModelFactory(
 ) :
     ViewModelProvider.NewInstanceFactory() {
 
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        return BookGraphActivityViewModel(application, repository, bookId) as T
-    }
+    override fun <T : ViewModel> create(modelClass: Class<T>): T =
+        BookGraphActivityViewModel(application, repository, bookId) as T
 
 }

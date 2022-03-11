@@ -46,10 +46,6 @@ class ApplicationTest {
                     "Julia",
                     aliases = arrayListOf<String>().toSet(),
                     "PERSON",
-                    "",
-                    "",
-                    "",
-                    "",
                     arrayListOf(Mention(1, 6, 1, 2, 0.9)),
                     arrayListOf(arrayListOf(Mention(1, 6, 1, 2, 0.9)))
                 ),
@@ -57,10 +53,6 @@ class ApplicationTest {
                     "Winston",
                     aliases = arrayListOf<String>().toSet(),
                     "PERSON",
-                    "",
-                    "",
-                    "",
-                    "",
                     arrayListOf(Mention(29, 35, 12, 13, 0.9)),
                     arrayListOf(arrayListOf(Mention(29, 35, 12, 13, 0.9)))
                 )
@@ -69,15 +61,11 @@ class ApplicationTest {
                     "London",
                     aliases = arrayListOf<String>().toSet(),
                     "CITY",
-                    "PROPER",
-                    "SINGULAR",
-                    "NEUTRAL",
-                    "INANIMATE",
                     arrayListOf(Mention(10, 16, 4, 5, 0.99)),
                     arrayListOf(arrayListOf(Mention(10, 16, 4, 5, 0.99)))
                 )
             ),
-            arrayListOf(hashMapOf("Julia,Winston" to Distance(1, 2, 2, 2, 2)))
+            arrayListOf(hashMapOf("Julia,Winston" to Distance(1f, 2, 2, 2, 2,hashMapOf('!' to 1f, '.' to 1f))))
 
         )
     )

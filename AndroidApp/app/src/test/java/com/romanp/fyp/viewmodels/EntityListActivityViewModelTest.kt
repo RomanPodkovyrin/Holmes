@@ -1,7 +1,9 @@
 package com.romanp.fyp.viewmodels
 
 import com.romanp.fyp.adapters.entityRecyclerView.EntityRecyclerViewAdapter
-import com.romanp.fyp.models.book.*
+import com.romanp.fyp.models.book.BookInfo
+import com.romanp.fyp.models.book.Chapter
+import com.romanp.fyp.models.book.Entity
 import com.romanp.fyp.repositories.BookRepository
 import kotlinx.coroutines.runBlocking
 import org.junit.*
@@ -30,25 +32,41 @@ class EntityListActivityViewModelTest {
             Chapter("Chapter 3", "text 3")
         ),
         arrayListOf(
-            Entity("Julia", setOf(),"","","","","", arrayListOf(),arrayListOf()),
-            Entity("Winston", setOf(),"","","","","", arrayListOf(),arrayListOf())
+            Entity("Julia", setOf(), "",  arrayListOf(), arrayListOf()),
+            Entity("Winston", setOf(),  "", arrayListOf(), arrayListOf())
         ),
         arrayListOf(
-            Entity("Eastasia", setOf(),"","","","","", arrayListOf(),arrayListOf()),
-            Entity("Oceania", setOf(),"","","","","", arrayListOf(),arrayListOf())
+            Entity("Eastasia", setOf(),  "", arrayListOf(), arrayListOf()),
+            Entity("Oceania", setOf(),  "", arrayListOf(), arrayListOf())
         ),
         arrayListOf()
     )
 
     private val expectedLocations =
         arrayListOf(
-            EntityRecyclerViewAdapter.RecyclerEntityInfo(currentBookExpected.locations[0].name),
-            EntityRecyclerViewAdapter.RecyclerEntityInfo(currentBookExpected.locations[1].name)
+            EntityRecyclerViewAdapter.RecyclerEntityInfo(
+                1L,
+                currentBookExpected.locations[0].name,
+                false
+            ),
+            EntityRecyclerViewAdapter.RecyclerEntityInfo(
+                1L,
+                currentBookExpected.locations[1].name,
+                false
+            )
         )
     private val expectedCharacters =
         arrayListOf(
-            EntityRecyclerViewAdapter.RecyclerEntityInfo(currentBookExpected.characters[0].name),
-            EntityRecyclerViewAdapter.RecyclerEntityInfo(currentBookExpected.characters[1].name)
+            EntityRecyclerViewAdapter.RecyclerEntityInfo(
+                1L,
+                currentBookExpected.characters[0].name,
+                true
+            ),
+            EntityRecyclerViewAdapter.RecyclerEntityInfo(
+                1L,
+                currentBookExpected.characters[1].name,
+                true
+            )
         )
 
     @Mock

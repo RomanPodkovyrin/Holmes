@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".views.EntityProfileActivity">
+
+    <TextView
+        android:id="@+id/entityName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:text="@string/entityName"
+        android:textSize="20sp"
+        app:layout_constraintStart_toEndOf="@+id/entityNameTVLabel"
+        app:layout_constraintTop_toTopOf="@+id/entityNameTVLabel" />
+
+    <TextView
+        android:id="@+id/entityNameTVLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="88dp"
+        android:text="@string/EntityNameTvLabel"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.25"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/entityNer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/entityNer"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="@+id/entityName"
+        app:layout_constraintTop_toBottomOf="@+id/entityName" />
+
+    <TextView
+        android:id="@+id/entityNerTVLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/entityNerLabel"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="@+id/entityNameTVLabel"
+        app:layout_constraintTop_toBottomOf="@+id/entityNameTVLabel" />
+
+    <TextView
+        android:id="@+id/chapterMentionsTV"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:text=""
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/entityNerTVLabel" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

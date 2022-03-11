@@ -14,7 +14,14 @@ import com.romanp.fyp.repositories.BookRepository
 import com.romanp.fyp.views.EntityListActivity
 import com.romanp.fyp.views.EntityType
 
-class BookReaderActivityViewModel : BookViewModel {
+class BookReaderActivityViewModel
+/**
+ * @param application
+ * @param repository
+ * @param bookId id of the book to be loaded from repository
+ */(application: Application, repository: BookRepository, bookId: Long) : BookViewModel(
+    application, repository, bookId
+) {
 
     companion object {
         private const val TAG = "BookReaderActivityViewModel"
@@ -23,14 +30,7 @@ class BookReaderActivityViewModel : BookViewModel {
 
     private var currentPage: Int = 0
 
-    /**
-     * @param application
-     * @param repository
-     * @param bookId id of the book to be loaded from repository
-     */
-    constructor(application: Application, repository: BookRepository, bookId: Long) : super(
-        application, repository, bookId
-    ) {
+    init {
         getBookInfo(bookId)
     }
 
@@ -65,15 +65,18 @@ class BookReaderActivityViewModel : BookViewModel {
         return currentBook.chapters[currentPage]
     }
 
-    fun getCurrentChapterEntityMentionsSpans(): Pair<ArrayList<Mention>, ArrayList<Mention>> {
-        val locations = arrayListOf<Mention>()
-        val characters = arrayListOf<Mention>()
+    /**
+     * For the currentPage, it will split up entities into location and character lists
+     */
+    fun getCurrentChapterEntityMentionsSpans(): Pair<ArrayList<Pair<String, ArrayList<Mention>>>, ArrayList<Pair<String, ArrayList<Mention>>>> {
+        val locations = arrayListOf<Pair<String, ArrayList<Mention>>>()
+        val characters = arrayListOf<Pair<String, ArrayList<Mention>>>()
         currentBook.locations.forEach { location ->
-            locations.addAll(location.byChapterMentions[currentPage])
+            locations.add(Pair(location.name, location.byChapterMentions[currentPage]))
         }
 
         currentBook.characters.forEach { character ->
-            characters.addAll(character.byChapterMentions[currentPage])
+            characters.add(Pair(character.name, character.byChapterMentions[currentPage]))
         }
 
         return Pair(characters, locations)
@@ -90,6 +93,7 @@ class BookReaderActivityViewModel : BookViewModel {
 
 }
 
+@Suppress("UNCHECKED_CAST")
 class BookReaderViewModelFactory(
     private val application: Application,
     private val repository: BookRepository,

@@ -9,7 +9,6 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
-import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.romanp.fyp.R
 import com.romanp.fyp.database.BookDatabaseHelper
@@ -72,9 +71,6 @@ class BookRecyclerViewAdapter(
             titleTV.text = itemsViewModel.title
             authorTV.text = itemsViewModel.author
             itemView.setOnClickListener {
-                Toast.makeText(context, "Clicked ${itemsViewModel.title}", Toast.LENGTH_SHORT)
-                    .show()
-
                 Log.i(TAG, "Clicked ${itemsViewModel.title}")
 
                 val intent = Intent(context, BookReaderActivity::class.java)

@@ -2,10 +2,10 @@ package com.romanp.fyp.utils
 
 import android.app.Application
 import com.romanp.fyp.repositories.BookRepository
-import com.romanp.fyp.viewmodels.BookGraphActivityViewModelFactory
 import com.romanp.fyp.viewmodels.BookReaderViewModelFactory
 import com.romanp.fyp.viewmodels.EntityListActivityViewModelFactory
 import com.romanp.fyp.viewmodels.MainViewModelFactory
+import com.romanp.fyp.viewmodels.graph.BookGraphActivityViewModelFactory
 
 /**
  * Used to help with injecting dependencies to help with testing and refactoring
