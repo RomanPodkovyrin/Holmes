@@ -69,7 +69,20 @@ class BookGraphActivity : AppCompatActivity() {
         setUpWebView()
 
         setupControls()
+        setUpActionBar()
 
+    }
+
+    private fun setUpActionBar() {
+        val myBookInfo: BookInfo = viewModel.getCurrentBookInfo()
+
+        val actionBar = supportActionBar
+
+        // providing title for the ActionBar
+        actionBar!!.title = myBookInfo.author
+
+        // providing subtitle for the ActionBar
+        actionBar.subtitle = myBookInfo.title
     }
 
     private fun setupControls() {

@@ -77,28 +77,20 @@ class BookReaderActivity : AppCompatActivity() {
             movementMethod = LinkMovementMethod.getInstance()
         }
 
-        setUpActionBar(myBookInfo)
+        setUpActionBar()
         setUpListeners()
     }
 
-    private fun setUpActionBar(myBookInfo: BookInfo) {
-        // calling this activity's function to
-        // use ActionBar utility methods
+    private fun setUpActionBar() {
+        val myBookInfo: BookInfo = viewModel.getCurrentBookInfo()
+
         val actionBar = supportActionBar
 
         // providing title for the ActionBar
-        //TODO: change title size make sure it doesn't overflow
         actionBar!!.title = myBookInfo.author
 
         // providing subtitle for the ActionBar
         actionBar.subtitle = myBookInfo.title
-
-//                // adding icon in the ActionBar
-//                actionBar.setIcon(R.drawable.app_logo)
-
-        // methods to display the icon in the ActionBar
-        actionBar.setDisplayUseLogoEnabled(true)
-        actionBar.setDisplayShowHomeEnabled(true)
     }
 
     private fun setUpListeners() {

@@ -6,6 +6,7 @@ import android.util.Log
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.romanp.fyp.R
+import com.romanp.fyp.models.book.BookInfo
 import com.romanp.fyp.repositories.BookRepository
 import com.romanp.fyp.utils.ToastUtils
 
@@ -44,13 +45,24 @@ class EntityProfileActivity : AppCompatActivity() {
         return
     }
 
+    private fun setUpActionBar(bookInfo: BookInfo) {
+
+        val actionBar = supportActionBar
+
+        // providing title for the ActionBar
+        actionBar!!.title = bookInfo.author
+
+        // providing subtitle for the ActionBar
+        actionBar.subtitle = bookInfo.title
+    }
+
     private fun setupEntityInformationViews(
         bookId: Long,
         entityType: Int,
         entityNameID: String?
     ) {
         val bookInfo = BookRepository.getInstance().getBookInfo(applicationContext, bookId)
-
+        setUpActionBar(bookInfo)
         // Get appropriate entity
         val entity = when (EntityType.values()[entityType]) {
             EntityType.CHARACTER -> bookInfo.characters

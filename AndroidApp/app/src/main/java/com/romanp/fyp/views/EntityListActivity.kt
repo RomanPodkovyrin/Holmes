@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.romanp.fyp.R
 import com.romanp.fyp.adapters.entityRecyclerView.EntityRecyclerViewAdapter
+import com.romanp.fyp.models.book.BookInfo
 import com.romanp.fyp.utils.InjectorUtils
 import com.romanp.fyp.viewmodels.EntityListActivityViewModel
 
@@ -39,6 +40,19 @@ class EntityListActivity : AppCompatActivity() {
 
         initialiseViewMode(bookId, listType)
         initialiseRecyclerViewAdapter()
+        setUpActionBar()
+    }
+
+    private fun setUpActionBar() {
+        val myBookInfo: BookInfo = viewModel.getCurrentBookInfo()
+
+        val actionBar = supportActionBar
+
+        // providing title for the ActionBar
+        actionBar!!.title = myBookInfo.author
+
+        // providing subtitle for the ActionBar
+        actionBar.subtitle = myBookInfo.title
     }
 
     private fun initialiseRecyclerViewAdapter() {
@@ -58,6 +72,7 @@ class EntityListActivity : AppCompatActivity() {
             InjectorUtils.provideEntityListActivityViewModelFactory(application, bookId, listType)
         viewModel = ViewModelProvider(this, factory).get(EntityListActivityViewModel::class.java)
     }
+
 }
 
 enum class EntityType(val message: String) {
