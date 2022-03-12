@@ -38,4 +38,5 @@
     <string name="choose_distance_method">Choose Distance Method</string>
     <string name="choose_chapter">Choose chapter</string>
     <string name="item">Item</string>
+    <string name="lollipop_chart">Lollipop Chart</string>
 </resources>

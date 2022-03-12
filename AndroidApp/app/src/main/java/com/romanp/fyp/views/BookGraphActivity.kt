@@ -177,7 +177,7 @@ class BookGraphActivity : AppCompatActivity() {
     private fun setupChapterSpinner() {
         // Setting up chapter spinner
         var chapterTitlesArray = viewModel.getCurrentBookInfo().chapters.map { it.chapterTitle }
-        if (type == GraphType.PIE_CHART) chapterTitlesArray =
+        if (type == GraphType.PIE_CHART || type == GraphType.LOLLIPOP_CHART) chapterTitlesArray =
             listOf("Whole Book") + chapterTitlesArray
         chapterSpinner = findViewById(R.id.chapterSpinner)
         val spinnerArrayAdapter = ArrayAdapter<Any?>(
@@ -217,6 +217,10 @@ class BookGraphActivity : AppCompatActivity() {
                     selectedDistanceMethod
                 )
             }
+            GraphType.LOLLIPOP_CHART -> loadLollipopChartDirectly(
+                selectedChapter,
+                viewModel.getCharacters()
+            )
         }
     }
 
@@ -247,6 +251,9 @@ class BookGraphActivity : AppCompatActivity() {
                     GraphType.CHARACTER_NETWORK -> {
                         loadNetworkChart(viewModel.getCurrentBookInfo())
                     }
+                    GraphType.LOLLIPOP_CHART -> {
+//                        loadLollipopChartDirectly()
+                    }
                 }
             }
         }
@@ -271,6 +278,19 @@ class BookGraphActivity : AppCompatActivity() {
     private fun initialiseViewModel(bookId: Long) {
         val factory = InjectorUtils.provideBookGraphActivityViewModelFactory(application, bookId)
         viewModel = ViewModelProvider(this, factory)[BookGraphActivityViewModel::class.java]
+    }
+
+    private fun loadLollipopChartDirectly(chapter: Int, data: ArrayList<Entity>) {
+        val dataJson: String = gson.toJson(data).toString()
+
+        // pass the call JavaScript
+        findViewById<WebView>(R.id.WebViewGraph).loadUrl(
+            when (chapter) {
+                0 -> "javascript:loadLollipop($dataJson)"
+                else ->
+                    "javascript:loadLollipopByChapter(${chapter - 1}, $dataJson)"
+            }
+        )
     }
 
     private fun loadPieChartDirectly(chapter: Int, data: ArrayList<Entity>) {

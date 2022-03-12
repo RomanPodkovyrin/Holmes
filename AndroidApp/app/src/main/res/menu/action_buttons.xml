@@ -5,6 +5,10 @@
         android:id="@+id/pieChart"
         android:title="@string/pieChart"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/lollipop"
+        android:title="@string/lollipop_chart"
+        app:showAsAction="never" />
 
     <item
         android:id="@+id/network"

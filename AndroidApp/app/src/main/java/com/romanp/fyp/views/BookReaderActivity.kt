@@ -211,8 +211,18 @@ class BookReaderActivity : AppCompatActivity() {
                 openPieChart()
             }
             R.id.network -> openCharacterNetwork()
+            R.id.lollipop -> {
+                openLollipopChart()
+            }
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun openLollipopChart() {
+        val intent = Intent(this, BookGraphActivity::class.java)
+        intent.putExtra(BOOK_ID_GRAPH, viewModel.getBookID())
+        intent.putExtra(GRAPH_TYPE, GraphType.LOLLIPOP_CHART)
+        startActivity(intent)
     }
 
     private fun openCharacterNetwork() {
