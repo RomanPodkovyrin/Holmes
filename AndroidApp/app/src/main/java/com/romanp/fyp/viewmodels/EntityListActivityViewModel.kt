@@ -1,6 +1,7 @@
 package com.romanp.fyp.viewmodels
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.romanp.fyp.adapters.entityRecyclerView.EntityRecyclerViewAdapter
@@ -40,12 +41,19 @@ class EntityListActivityViewModel
         val recyclerList = when (listType()) {
             true -> getCharacters()
             false -> getLocations()
-        }.map { entity -> EntityRecyclerViewAdapter.RecyclerEntityInfo(getBookID(), entity.name, listType()) }
-
+        }.map { entity ->
+            EntityRecyclerViewAdapter.RecyclerEntityInfo(
+                getBookID(),
+                entity.name,
+                listType()
+            )
+        }
+        Log.i(TAG, "Getting Current List for type ${listType()}")
         return ArrayList(recyclerList)
     }
 }
 
+@Suppress("UNCHECKED_CAST")
 class EntityListActivityViewModelFactory(
     private val application: Application,
     private val repository: BookRepository,

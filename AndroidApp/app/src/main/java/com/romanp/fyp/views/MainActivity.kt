@@ -63,7 +63,7 @@ class MainActivity : AppCompatActivity() {
     private fun initialiseViewModel() {
         Log.i(TAG, "Initialising view model")
         val factory = InjectorUtils.provideMainActivityViewModelFactory(application)
-        viewModel = ViewModelProvider(this, factory).get(MainActivityViewModel::class.java)
+        viewModel = ViewModelProvider(this, factory)[MainActivityViewModel::class.java]
         viewModel.startThreads()//TODO: is this a good idea?
         viewModel.getBooks().observe(this) {
             // Triggers when it's changed

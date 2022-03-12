@@ -70,7 +70,7 @@ class EntityListActivity : AppCompatActivity() {
     private fun initialiseViewMode(bookId: Long, listType: Boolean) {
         val factory =
             InjectorUtils.provideEntityListActivityViewModelFactory(application, bookId, listType)
-        viewModel = ViewModelProvider(this, factory).get(EntityListActivityViewModel::class.java)
+        viewModel = ViewModelProvider(this, factory)[EntityListActivityViewModel::class.java]
     }
 
 }

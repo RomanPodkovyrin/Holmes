@@ -42,7 +42,7 @@ class MainActivityTest {
 
 
     //    lateinit var scenario: ActivityScenario<MainActivity>
-    val intent = Intent(ApplicationProvider.getApplicationContext(), MainActivity::class.java)
+    private val intent = Intent(ApplicationProvider.getApplicationContext(), MainActivity::class.java)
 
     @get:Rule
     val activityRule = ActivityScenarioRule<MainActivity>(intent)

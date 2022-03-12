@@ -273,7 +273,7 @@ class BookGraphActivity : AppCompatActivity() {
         viewModel = ViewModelProvider(this, factory)[BookGraphActivityViewModel::class.java]
     }
 
-    fun loadPieChartDirectly(chapter: Int, data: ArrayList<Entity>) {
+    private fun loadPieChartDirectly(chapter: Int, data: ArrayList<Entity>) {
         val dataJson: String = gson.toJson(data).toString()
 
         // pass the call JavaScript

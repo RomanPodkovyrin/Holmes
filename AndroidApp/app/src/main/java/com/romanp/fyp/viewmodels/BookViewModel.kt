@@ -8,23 +8,20 @@ import com.romanp.fyp.models.book.Entity
 import com.romanp.fyp.models.book.getBookInfoErrorState
 import com.romanp.fyp.repositories.BookRepository
 
-abstract class BookViewModel : AndroidViewModel {
+abstract class BookViewModel(
+    application: Application,
+    protected var repository: BookRepository,
+    protected val bookId: Long
+) : AndroidViewModel(
+    application
+) {
 
 
     companion object {
         private const val TAG = "BookViewModel"
     }
 
-    protected var repository: BookRepository
-    protected val bookId: Long
     protected lateinit var currentBook: BookInfo
-
-    constructor(application: Application, repository: BookRepository, bookId: Long) : super(
-        application
-    ) {
-        this.repository = repository
-        this.bookId = bookId
-    }
 
     fun getBookID() = bookId
 

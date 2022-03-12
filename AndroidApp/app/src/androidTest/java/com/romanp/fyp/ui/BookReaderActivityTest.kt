@@ -16,7 +16,7 @@ import org.junit.runner.RunWith
 @LargeTest
 class BookReaderActivityTest {
 
-    val intent = Intent(
+    private val intent = Intent(
         ApplicationProvider.getApplicationContext(),
         BookReaderActivity::class.java
     ).putExtra("BookId", 1)

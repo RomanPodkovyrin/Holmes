@@ -18,12 +18,12 @@ import com.romanp.fyp.utils.ToastUtils
 import kotlinx.coroutines.launch
 
 
-class MainActivityViewModel : AndroidViewModel {
+class MainActivityViewModel
+    (application: Application, private var repository: BookRepository) :
+    AndroidViewModel(application) {
     companion object {
         private const val TAG = "MainActivityViewModel"
     }
-
-    private var repository: BookRepository
 
     // Live Data
     private var books: MutableLiveData<MutableList<BookRecyclerViewAdapter.RecyclerBookInfo>> =
@@ -50,14 +50,9 @@ class MainActivityViewModel : AndroidViewModel {
         mainHandler.removeCallbacks(checkRunnable)
     }
 
-    constructor(
-        application: Application,
-        repository: BookRepository
-    ) : super(application) {
-        //TODO: pass thread handler for easy testability
+    init {
         Log.i(TAG, "View created")
-        this.repository = repository
-
+        //TODO: pass thread handler for easy testability
         setupThreads()
     }
 
@@ -122,6 +117,7 @@ class MainActivityViewModel : AndroidViewModel {
 
 }
 
+@Suppress("UNCHECKED_CAST")
 class MainViewModelFactory(
     private val application: Application,
     private val repository: BookRepository
