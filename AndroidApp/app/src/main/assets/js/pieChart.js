@@ -8,7 +8,7 @@ function loadPieChartByChapter(chapter, dataset) {
         .forEach((element) => {
             data.push({
                 name: element.name,
-                mentions: element.byChapterMentions[chapter],
+                mentions: element.byChapterMentions[chapter].length,
             });
         });
 
@@ -25,7 +25,7 @@ function loadPieChart(dataset) {
         .forEach((element) => {
             data.push({
                 name: element.name,
-                mentions: element.mentions,
+                mentions: element.mentions.length,
             });
         });
 
@@ -33,6 +33,7 @@ function loadPieChart(dataset) {
 }
 
 function showPieChart(dataset) {
+    console.log("Showing Pie Chart")
     // Clear Previous graph
     d3.selectAll("svg > *").remove();
 
@@ -47,7 +48,7 @@ function showPieChart(dataset) {
 
     const pie = d3
         .pie()
-        .value((d) => d.mentions.length);
+        .value((d) => d.mentions);
 
     const path = d3.arc().outerRadius(radius).innerRadius(100);
 
@@ -73,6 +74,6 @@ function showPieChart(dataset) {
 
     pies
         .append("text")
-        .text((d) => d.data.name + "(" + d.data.mentions.length + ")")
+        .text((d) => d.data.name + "(" + d.data.mentions + ")")
         .attr("transform", (d) => `translate(${label.centroid(d)})`);
 }
