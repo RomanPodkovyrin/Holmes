@@ -94,9 +94,7 @@ class BookGraphActivity : AppCompatActivity() {
             maxMentionValueTV.visibility = View.GONE
             findViewById<TextView>(R.id.topLinksPercentageTV).visibility = View.GONE
             findViewById<TextView>(R.id.topCharactersByMentionsTV).visibility = View.GONE
-            findViewById<Spinner>(R.id.chapterSpinner).visibility = View.GONE
             findViewById<Spinner>(R.id.distanceMethodSpinner).visibility = View.GONE
-            return
         }
         setupChapterSpinner()
         setUpDistanceMethodSpinner()
@@ -178,7 +176,9 @@ class BookGraphActivity : AppCompatActivity() {
 
     private fun setupChapterSpinner() {
         // Setting up chapter spinner
-        val chapterTitlesArray = viewModel.getCurrentBookInfo().chapters.map { it.chapterTitle }
+        var chapterTitlesArray = viewModel.getCurrentBookInfo().chapters.map { it.chapterTitle }
+        if (type == GraphType.PIE_CHART) chapterTitlesArray =
+            listOf("Whole Book") + chapterTitlesArray
         chapterSpinner = findViewById(R.id.chapterSpinner)
         val spinnerArrayAdapter = ArrayAdapter<Any?>(
             this,
@@ -205,7 +205,9 @@ class BookGraphActivity : AppCompatActivity() {
 
     private fun updateGraph() {
         when (type) {
-            GraphType.PIE_CHART -> {}
+            GraphType.PIE_CHART -> {
+                loadPieChartDirectly(selectedChapter, viewModel.getCharacters())
+            }
             GraphType.CHARACTER_NETWORK -> {
                 loadNetworkChartDirectly(
                     viewModel.getCurrentBookInfo(),
@@ -271,6 +273,17 @@ class BookGraphActivity : AppCompatActivity() {
         viewModel = ViewModelProvider(this, factory)[BookGraphActivityViewModel::class.java]
     }
 
+    fun loadPieChartDirectly(chapter: Int, data: ArrayList<Entity>) {
+        val dataJson: String = gson.toJson(data).toString()
+
+        // pass the call JavaScript
+        findViewById<WebView>(R.id.WebViewGraph).loadUrl(
+            when (chapter) {
+                0 -> "javascript:loadPieChart($dataJson)"
+                else -> "javascript:loadPieChartByChapter(${chapter - 1}, $dataJson)"
+            }
+        )
+    }
 
     fun loadPieChart(book: BookInfo, data: ArrayList<Entity>) {
         val chapterNumber = book.chapters.size

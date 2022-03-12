@@ -1,4 +1,5 @@
 function loadPieChartByChapter(chapter, dataset) {
+    console.log("Loading Pie Chart for Chapter: " + chapter)
     const data = [];
     dataset
         .filter(function (el) {
@@ -15,6 +16,7 @@ function loadPieChartByChapter(chapter, dataset) {
 }
 
 function loadPieChart(dataset) {
+    console.log("Loading Pie Chart for the whole book")
     const data = [];
     dataset
         .filter(function (el) {
