@@ -110,7 +110,7 @@ private fun calculateDistanceBetweenEntityIandJ(
                 minDistance = min(minDistance, tokenDistanceBetweenIandJ)
                 maxDistance = max(maxDistance, tokenDistanceBetweenIandJ)
                 var chapterText = chapters[chapterIndex].text
-                //TODO: there is something seriously wrong with those distances
+
                 chapterText = getTextBetweenEntities(chapterText, iLocations, jLocations)
 
                 // Update punctuation distance between i and j

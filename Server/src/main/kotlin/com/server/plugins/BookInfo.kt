@@ -14,7 +14,6 @@ data class BookInfo(
     val title: String,
     val author: String,
     val chapters: ArrayList<Chapter>,
-// TODO:   val chapters: another object consisting of chapter titles and text. What if it book doesn't have chapters
     val locations: ArrayList<Entity>,
     val characters: ArrayList<Entity>
 
