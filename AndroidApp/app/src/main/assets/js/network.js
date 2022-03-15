@@ -88,15 +88,15 @@ function getCharactersFromChapter(characters, chapter, nodeData) {
 }
 
 
-function getLinkData(distances, chapter, nodeData, linkData, distanceMethod) {
+function getLinkData(distances, nodeData, linkData, distanceMethod) {
 
     // Get distance values, sources and targets
     let distance;
-    for (const [key, value] of Object.entries(distances[chapter])) {
+    for (const [key, value] of Object.entries(distances)) {
         const names = key.split(",");
         if (nodeData.find(characters => characters.name === names[0]) && nodeData.find(characters => characters.name === names[1])) {
             distance = 0
-            switch(distanceMethod) {
+            switch (distanceMethod) {
                 case 0:
                     distance = value.tokenAverage
                     break;
@@ -132,7 +132,7 @@ function getLinkData(distances, chapter, nodeData, linkData, distanceMethod) {
 
 function plotNetwork(chapter, distances, characters, topLinksPercentage, topCharactersByMentions, distanceMethod) {
     console.log("Plotting network graph with parameters")
-    console.log("Chapter: " + chapter + " topLinksPercentage: " + topLinksPercentage + " topCharactersByMentions: " + topCharactersByMentions + " DistanceMethod: " +distanceMethod)
+    console.log("Chapter: " + chapter + " topLinksPercentage: " + topLinksPercentage + " topCharactersByMentions: " + topCharactersByMentions + " DistanceMethod: " + distanceMethod)
     updateSvgSize()
 
     // Clear Previous graph
@@ -155,7 +155,7 @@ function plotNetwork(chapter, distances, characters, topLinksPercentage, topChar
 
 
     const linkData = [];
-    const maxAndMinDistances = getLinkData(distances, chapter, nodeData, linkData, distanceMethod);
+    const maxAndMinDistances = getLinkData(distances, nodeData, linkData, distanceMethod);
     maxDistanceValue = maxAndMinDistances.maxDistanceValue;
     minDistanceValue = maxAndMinDistances.minDistanceValue;
 

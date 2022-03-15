@@ -341,11 +341,11 @@ class BookGraphActivity : AppCompatActivity() {
         maxMention: Float,
         distanceMethod: Int
     ) {
-        val chapterNumber = book.chapters.size
-        val distances = book.characterDistanceByChapter
+        Log.i(TAG, "Loading Network Chart Directly from Android UI")
+        val distances = book.characterDistanceByChapter[chapter]
         val distancesJson: String = gson.toJson(distances).toString()
         val charactersJson: String = gson.toJson(book.characters).toString()
-        Log.i(TAG, "book: $charactersJson \nchapters: $chapterNumber\ndistances: $distancesJson")
+
         findViewById<WebView>(R.id.WebViewGraph).loadUrl(
             "javascript:plotNetwork($chapter, $distancesJson, $charactersJson, $maxLink, $maxMention, $distanceMethod)"
         )
