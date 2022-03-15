@@ -8,7 +8,6 @@ import com.server.models.Entity
 import com.server.models.Mention
 import com.server.plugins.Chapter
 import kotlin.math.abs
-import kotlin.math.max
 import kotlin.math.min
 import kotlin.streams.toList
 
@@ -87,8 +86,6 @@ private fun calculateDistanceBetweenEntityIandJ(
     val numberOfChapters = min(iLocationsByChapter.size, jLocationsByChapter.size)
     for (chapterIndex in 0 until numberOfChapters) {
         var totalTokenDistance = 0F
-        var minDistance = Int.MAX_VALUE
-        var maxDistance = 0
 
         // Populate counts with initial values
         val punctuationDistances = HashMap<Char, Float>()
@@ -107,8 +104,6 @@ private fun calculateDistanceBetweenEntityIandJ(
             jChapterLocations.forEach { jLocations ->
                 val tokenDistanceBetweenIandJ = abs(iLocations.first - jLocations.first)
                 totalTokenDistance += tokenDistanceBetweenIandJ
-                minDistance = min(minDistance, tokenDistanceBetweenIandJ)
-                maxDistance = max(maxDistance, tokenDistanceBetweenIandJ)
                 var chapterText = chapters[chapterIndex].text
 
                 chapterText = getTextBetweenEntities(chapterText, iLocations, jLocations)
@@ -138,8 +133,6 @@ private fun calculateDistanceBetweenEntityIandJ(
         // Save distance
         characterDistanceByChapter[chapterIndex]["${iCharacter.name},${jCharacter.name}"] = Distance(
             averageTokenDistance,
-            minDistance,
-            maxDistance,
             meanTokenDistance,
             medianTokenDistance,
             punctuationDistances

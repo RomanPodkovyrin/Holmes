@@ -27,8 +27,6 @@ data class Mention(
 
 data class Distance(
     val tokenAverage: Float,
-    val tokenMin: Int,
-    val tokenMax: Int,
     val meanTokenDistance: Int,
     val medianTokenDistance: Int,
     val averagePunctuationDistance: HashMap<Char, Float>
