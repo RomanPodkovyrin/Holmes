@@ -11,12 +11,16 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.romanp.fyp.adapters.BookRecyclerViewAdapter
 import com.romanp.fyp.models.book.BookInfo
+import com.romanp.fyp.utils.Compression.Companion.compress
+import com.romanp.fyp.utils.Compression.Companion.uncompress
 
 
 class BookDatabaseHelper(
     context: Context
 ) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
-
+    private val gson: Gson = GsonBuilder()
+        .setLenient()
+        .create()
 
     companion object {
         val gson = Gson()
@@ -65,7 +69,7 @@ class BookDatabaseHelper(
         val contentValues = ContentValues()
         contentValues.put(COL_AUTHOR, book.author)
         contentValues.put(COL_TITLE, book.title)
-        contentValues.put(COL_DATA, gson.toJson(book))
+        contentValues.put(COL_DATA, compress(gson.toJson(book)))
         contentValues.put(COL_PROCESSED, processed)
 
         // Inserting Row
@@ -100,16 +104,8 @@ class BookDatabaseHelper(
             if (cursor != null) {
                 if (cursor.moveToFirst()) {
                     val blob = cursor.getBlob(0)
-//                    val temp = blob.filter { e -> e != null }.toByteArray()
-//                println(blob.toList().subList(0, blob.size - 1).reversed())
-//                println("Getting ${String(blob).dropLast(1).reversed().filter { e -> e != null }}")
-                    val gson = GsonBuilder()
-                        .setLenient()
-                        .create()
 
-                    //TODO: figure out why null is being added at the end
-                    val book: BookInfo =
-                        gson.fromJson(String(blob).dropLast(1), BookInfo::class.java)
+                    val book: BookInfo = gson.fromJson(uncompress(blob), BookInfo::class.java)
                     Log.i(TAG, "Success")
                     db.close() // Closing database connection
                     return book
@@ -156,7 +152,7 @@ class BookDatabaseHelper(
         processed: BookRecyclerViewAdapter.ProcessedState
     ): Int {
         val contentValues = ContentValues()
-        contentValues.put(COL_DATA, gson.toJson(book))
+        contentValues.put(COL_DATA, compress(gson.toJson(book)))
         contentValues.put(COL_PROCESSED, processed.message)
 
         val db: SQLiteDatabase = writableDatabase
@@ -191,5 +187,6 @@ class BookDatabaseHelper(
         db.close() // Closing database connection
         return output
     }
+
 
 }

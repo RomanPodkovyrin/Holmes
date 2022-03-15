@@ -13,9 +13,12 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.google.gson.Gson
 import com.romanp.fyp.R
+import com.romanp.fyp.adapters.BookRecyclerViewAdapter
 import com.romanp.fyp.models.book.BookInfo
 import com.romanp.fyp.models.book.Entity
+import com.romanp.fyp.repositories.BookRepository
 import com.romanp.fyp.utils.InjectorUtils
+import com.romanp.fyp.utils.ToastUtils
 import com.romanp.fyp.viewmodels.graph.BookGraphActivityViewModel
 import com.romanp.fyp.viewmodels.graph.GraphType
 
@@ -60,6 +63,21 @@ class BookGraphActivity : AppCompatActivity() {
             type = extras.getSerializable(GRAPH_TYPE) as GraphType
         }
 
+        // Check if book the data for visualisation
+        BookRepository.getInstance()
+            .getRecyclerBookInfoList(applicationContext).value?.find { it.id == bookId }
+            ?.let {
+                // Not Null but check if the book has been processed
+                if (it.processed != BookRecyclerViewAdapter.ProcessedState.SUCCESSFULLY_PROCESSED) {
+                    ToastUtils.toast(applicationContext, "Book hasn't been processed")
+                    finish()
+                }
+            } ?: run {
+            // Null
+            ToastUtils.toast(applicationContext, "Book hasn't been processed")
+            finish()
+        }
+
         topLinksPercentageSeekBar = findViewById(R.id.topLinksPercentageSeekBar)
         topCharactersByMentionsSeekBar = findViewById(R.id.topCharactersByMentionsSeekBar)
         maxLinkValueTV = findViewById(R.id.topLinksPercentageValueTV)
@@ -67,7 +85,6 @@ class BookGraphActivity : AppCompatActivity() {
 
         initialiseViewModel(bookId)
         setUpWebView()
-
         setupControls()
         setUpActionBar()
 
