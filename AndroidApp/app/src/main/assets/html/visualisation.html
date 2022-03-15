@@ -28,35 +28,19 @@
         }
 
     </style>
-    <script
-            type="text/javascript"
-            src="file:///android_asset/js/d3.min.js"
-    ></script>
 
-    <script
-            type="text/javascript"
-            src="file:///android_asset/js/pieChart.js"
-    ></script>
-    <script
-            type="text/javascript"
-            src="file:///android_asset/js/network.js"
-    ></script>
-    <script
-            type="text/javascript"
-            src="file:///android_asset/js/lollipopChart.js"
-    ></script>
 </head>
 <body>
 <svg id="piechart" width="1000" height="1300"></svg>
 <br/>
 <br/>
-<div id="buttons"></div>
-<br/>
-<div class="slide-box">
-    Max Top Links
-    <input id="slider" class="slider" type="range" min="0" max="100" value="100"/>
-    <p id="values" class="values">100</p>
-</div>
+<!--<div id="buttons"></div>-->
+<!--<br/>-->
+<!--<div class="slide-box">-->
+<!--    Max Top Links-->
+<!--    <input id="slider" class="slider" type="range" min="0" max="100" value="100"/>-->
+<!--    <p id="values" class="values">100</p>-->
+<!--</div>-->
 <br/>
 <br/>
 <br/>
@@ -71,80 +55,97 @@
 
 <script>
 
-    const slider = document.getElementById("slider")
-    const log = document.getElementById("values")
-    console.log("Slider " + slider + " value  " + log.textContent)
-
-    slider.addEventListener('input', updateValue);
-
-    function updateValue(e) {
-        log.textContent = e.target.value;
-    }
-
-    let buttonWidth = "200px";
-    let buttonHeight = "80px";
-    let buttonFontSize = "xx-large";
-
-    function setTitle(book) {
-        //document.getElementById("title").innerHTML = book.title + " - " + book.author;
-    }
-
-    function makeNetwork(characters, chapterNumber, distances) {
-        console.log("Making Network Graphs")
-        console.log("Making " + chapterNumber + " chapter buttons")
-
-        // Set Title
-        //setTitle(book)
-
-        // Bread down by chapter
-        for (let i = 0; i < chapterNumber; i++) {
-            let btn = document.createElement("button");
-            btn.innerHTML = "Chapter " + (i + 1);
-            btn.style.width = buttonWidth;
-            btn.style.height = buttonHeight;
-            btn.style.fontSize = buttonFontSize;
-            btn.onclick = function () {
-                console.log("Clicked on button " + (i + 1));
-                plotNetwork(i, distances, characters, log.textContent / 100, 1.0, 1);
-            };
-            document.getElementById("buttons").appendChild(btn);
-        }
-        //plotNetwork()
-    }
-
-    function createButtons(book, chapterNumber, data) {
-        console.log("Making Pie Graphs")
-        // Set Title
-        setTitle(book)
-
-        // Bread down by chapter
-        for (let i = 0; i < chapterNumber; i++) {
-            let btn = document.createElement("button");
-            btn.innerHTML = "Chapter " + (i + 1);
-            btn.style.width = buttonWidth;
-            btn.style.height = buttonHeight;
-            btn.style.fontSize = buttonFontSize;
-            btn.onclick = function () {
-                console.log("Clicked on button " + (i + 1));
-                loadPieChartByChapter(i, data);
-            };
-            document.getElementById("buttons").appendChild(btn);
-        }
-
-        // Whole book breakdown
-        let btn = document.createElement("button");
-        btn.innerHTML = "Whole Book";
-        btn.style.width = buttonWidth;
-        btn.style.height = buttonHeight;
-        btn.style.fontSize = buttonFontSize;
-        btn.onclick = function () {
-            console.log("Clicked on button whole bool");
-            loadPieChart(data);
-        };
-        document.getElementById("buttons").appendChild(btn);
-    }
-
+    //    const slider = document.getElementById("slider")
+    //    const log = document.getElementById("values")
+    //    console.log("Slider " + slider + " value  " + log.textContent)
+    //
+    //    slider.addEventListener('input', updateValue);
+    //
+    //    function updateValue(e) {
+    //        log.textContent = e.target.value;
+    //    }
+    //
+    //    let buttonWidth = "200px";
+    //    let buttonHeight = "80px";
+    //    let buttonFontSize = "xx-large";
+    //
+    //    function setTitle(book) {
+    //        //document.getElementById("title").innerHTML = book.title + " - " + book.author;
+    //    }
+    //
+    //    function makeNetwork(characters, chapterNumber, distances) {
+    //        console.log("Making Network Graphs")
+    //        console.log("Making " + chapterNumber + " chapter buttons")
+    //
+    //        // Set Title
+    //        //setTitle(book)
+    //
+    //        // Bread down by chapter
+    //        for (let i = 0; i < chapterNumber; i++) {
+    //            let btn = document.createElement("button");
+    //            btn.innerHTML = "Chapter " + (i + 1);
+    //            btn.style.width = buttonWidth;
+    //            btn.style.height = buttonHeight;
+    //            btn.style.fontSize = buttonFontSize;
+    //            btn.onclick = function () {
+    //                console.log("Clicked on button " + (i + 1));
+    //                plotNetwork(i, distances, characters, log.textContent / 100, 1.0, 1);
+    //            };
+    //            document.getElementById("buttons").appendChild(btn);
+    //        }
+    //        //plotNetwork()
+    //    }
+    //
+    //    function createButtons(book, chapterNumber, data) {
+    //        console.log("Making Pie Graphs")
+    //        // Set Title
+    //        setTitle(book)
+    //
+    //        // Bread down by chapter
+    //        for (let i = 0; i < chapterNumber; i++) {
+    //            let btn = document.createElement("button");
+    //            btn.innerHTML = "Chapter " + (i + 1);
+    //            btn.style.width = buttonWidth;
+    //            btn.style.height = buttonHeight;
+    //            btn.style.fontSize = buttonFontSize;
+    //            btn.onclick = function () {
+    //                console.log("Clicked on button " + (i + 1));
+    //                loadPieChartByChapter(i, data);
+    //            };
+    //            document.getElementById("buttons").appendChild(btn);
+    //        }
+    //
+    //        // Whole book breakdown
+    //        let btn = document.createElement("button");
+    //        btn.innerHTML = "Whole Book";
+    //        btn.style.width = buttonWidth;
+    //        btn.style.height = buttonHeight;
+    //        btn.style.fontSize = buttonFontSize;
+    //        btn.onclick = function () {
+    //            console.log("Clicked on button whole bool");
+    //            loadPieChart(data);
+    //        };
+    //        document.getElementById("buttons").appendChild(btn);
+    //    }
+    //
 
 
 </script>
+<script
+        type="text/javascript"
+        src="file:///android_asset/js/d3.min.js"
+></script>
+
+<script
+        type="text/javascript"
+        src="file:///android_asset/js/pieChart.js"
+></script>
+<script
+        type="text/javascript"
+        src="file:///android_asset/js/network.js"
+></script>
+<script
+        type="text/javascript"
+        src="file:///android_asset/js/lollipopChart.js"
+></script>
 </html>

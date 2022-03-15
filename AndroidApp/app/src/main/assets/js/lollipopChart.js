@@ -1,6 +1,7 @@
 width = 1000 - margin.left - margin.right;
 height = 1300 - margin.top - margin.bottom;
 
+
 const animationDuration = 1000
 
 function loadLollipop(dataset) {
@@ -40,6 +41,7 @@ function loadLollipopByChapter(chapter, dataset) {
 function plotLollipop(dataset) {
     console.log("Plotting Lollipop Graph")
 
+    console.log("Plotting Lollipop on width: " + width + " and height: " + height)
     // Clear Previous graph
     d3.selectAll("svg > *").remove();
 
@@ -110,9 +112,9 @@ function plotLollipop(dataset) {
         .attr("cy", function (d) {
             return y(d.name);
         })
-        .attr("r", 15)
+        .attr("r", 6)
         .style("fill", "#ffffff")
-        .attr("stroke-width", 10)
+        .attr("stroke-width", 5)
         .attr("stroke", "#19c4a0")
 
 

@@ -7,7 +7,6 @@ import android.view.View
 import android.webkit.ConsoleMessage
 import android.webkit.WebChromeClient
 import android.webkit.WebView
-import android.webkit.WebViewClient
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
@@ -85,6 +84,9 @@ class BookGraphActivity : AppCompatActivity() {
 
         initialiseViewModel(bookId)
         setUpWebView()
+        // So that there is enough time for the page to load before calling the functions
+        // otherwise will get function not defined error
+        Thread.sleep(500)
         setupControls()
         setUpActionBar()
 
@@ -255,25 +257,26 @@ class BookGraphActivity : AppCompatActivity() {
         webView.webChromeClient = WebChromeClient()
         webView.setInitialScale(1)
 
-        webView.webViewClient = object : WebViewClient() {
-            override fun onPageFinished(
-                view: WebView,
-                url: String
-            ) {
-                when (type) {
-                    GraphType.PIE_CHART -> {
-                        loadPieChart(viewModel.getCurrentBookInfo(), viewModel.getCharacters())
 
-                    }
-                    GraphType.CHARACTER_NETWORK -> {
-                        loadNetworkChart(viewModel.getCurrentBookInfo())
-                    }
-                    GraphType.LOLLIPOP_CHART -> {
-//                        loadLollipopChartDirectly()
-                    }
-                }
-            }
-        }
+//        webView.webViewClient = object : WebViewClient() {
+//            override fun onPageFinished(
+//                view: WebView,
+//                url: String
+//            ) {
+//                when (type) {
+//                    GraphType.PIE_CHART -> {
+//                        loadPieChart(viewModel.getCurrentBookInfo(), viewModel.getCharacters())
+//
+//                    }
+//                    GraphType.CHARACTER_NETWORK -> {
+//                        loadNetworkChart(viewModel.getCurrentBookInfo())
+//                    }
+//                    GraphType.LOLLIPOP_CHART -> {
+////                        loadLollipopChartDirectly()
+//                    }
+//                }
+//            }
+//        }
 
         webView.webChromeClient = object : WebChromeClient() {
             override fun onConsoleMessage(consoleMessage: ConsoleMessage): Boolean {
