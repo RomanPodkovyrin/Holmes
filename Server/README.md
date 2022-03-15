@@ -38,7 +38,10 @@ On the server load the image into docker
 ```
 docker load -i <path to image tar file>
 ```
-
+## Pushing to Docker Hub
+```
+docker push romanpod/ktor-fyp-server:latest
+```
 ## Docker network
 
 for security
