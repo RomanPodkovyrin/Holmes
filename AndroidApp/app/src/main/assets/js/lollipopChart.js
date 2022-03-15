@@ -78,7 +78,7 @@ function plotLollipop(dataset) {
         .domain(dataset.map(function (d) {
             return d.name;
         }))
-        .padding(0.5);
+        .padding(1);
 
     // Add Y axis to the left side
     svg.append("g")
