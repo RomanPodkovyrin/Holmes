@@ -15,6 +15,8 @@ import kotlin.system.exitProcess
 
 
 fun main() {
+    val version = "1.0"
+    println("########## Starting AppServer version: $version ##########")
     val mongodbUrl: String
     val mongodbPort: String
     val coreNlpUrl: String
@@ -45,7 +47,6 @@ fun main() {
     // Setup KMongo DB
     val dbRepo = DataBaseRepository("mongodb://$mongodbUrl:$mongodbPort", "Book")
     val coreNLPCont = CoreNLPController(coreNlpUrl, coreNlpPort)
-
     val keyStoreFile = {}.javaClass.getResourceAsStream(certPath)
     val keystore = KeyStore.getInstance(KeyStore.getDefaultType())
 

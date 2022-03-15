@@ -39,6 +39,11 @@ On the server load the image into docker
 docker load -i <path to image tar file>
 ```
 ## Pushing to Docker Hub
+Rename newly build image
+```
+docker image tag <IMAGE_ID> romanpod/ktor-fyp-server:latest
+```
+
 ```
 docker push romanpod/ktor-fyp-server:latest
 ```
