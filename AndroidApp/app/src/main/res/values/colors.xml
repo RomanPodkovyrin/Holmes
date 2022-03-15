@@ -10,4 +10,11 @@
     <color name="gunmetal">#292F36</color>
     <color name="laurel_green">#ACAD94</color>
     <color name="chestnut">#994636</color>
+    <color name="characterColour">#26D9D2</color>
+    <color name="locationColour">#D9262D</color>
+
+    <color name="Gray">#9e96a1</color>
+
+    <!--    Dark colour Palette-->
+    <color name="accent">#FF4C29</color>
 </resources>

@@ -154,7 +154,7 @@ class BookReaderActivity : AppCompatActivity() {
 
                         override fun updateDrawState(ds: TextPaint) {
                             super.updateDrawState(ds)
-                            ds.color = Color.GREEN
+                            ds.color = Color.parseColor("#26D9D2")
                         }
                     }, characterMention.characterStart, characterMention.characterEnd, 0)
                 }
@@ -177,7 +177,7 @@ class BookReaderActivity : AppCompatActivity() {
 
                         override fun updateDrawState(ds: TextPaint) {
                             super.updateDrawState(ds)
-                            ds.color = Color.RED
+                            ds.color = Color.parseColor("#D9262D")
                         }
                     }, locationMention.characterStart, locationMention.characterEnd, 0)
                 }
