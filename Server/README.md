@@ -102,7 +102,8 @@ docker network create fyp-api-network
 Start services
 
 ```
-docker run --name mongodb -d -p 27017:27017 --network "fyp-api-network"  -v $HOME/db:/data/db mongo
+docker run --name mongodb -d -p 27017:27017 --network "fyp-api-network" \
+    -v $HOME/db:/data/db mongo --noscripting 
 ```
 
 ```
@@ -117,7 +118,7 @@ Or with one command
 
 ```
 docker run --network "fyp-api-network" --name CoreNLP -p 9000:9000 romanpod/corenlp &
-docker run --name mongodb -d -p 27017:27017 --network "fyp-api-network"  -v $HOME/db:/data/db mongo &
+docker run --name mongodb -d -p 27017:27017 --network "fyp-api-network"  -v $HOME/db:/data/db mongo --noscripting  &
 docker run --network "fyp-api-network" --name AppServer -d -p 8443:8443 romanpod/ktor-fyp-server
 ```
 
