@@ -233,4 +233,132 @@ class ApplicationTest {
             }
         }
     }
+
+    @Test
+    fun `test for process book parameter input size limit`() {
+        var bookTitle = "aaaaaaaaaabbbbbbbbbbccccccccccdddddddddde" // 41
+        var bookAuthor = "Author"
+        val body =
+            "{\"author\":\"$bookAuthor\",\"chapters\":[{\"chapterTitle\":\"Chapter 1\",\"text\":\"Whatever have you been doing with yourself, Watson? he asked in undisguised wonder, as we walked through London You are as thin as a lath and as brown as a nut.\"}],\"characters\":[],\"image\":1,\"locations\":[],\"title\":\"$bookTitle\"}"
+        withTestApplication({ configureRouting(mockDBrepo, mockCoreNLPController) }) {
+            handleRequest(HttpMethod.Post, "/process-book/$bookTitle/$bookAuthor") {
+                setBody(
+                    body
+                )
+            }.apply {
+                assertEquals(HttpStatusCode.NotImplemented, response.status())
+                verifyNoInteractions(mockCoreNLPController)
+
+            }
+        }
+
+
+
+        bookTitle = "Title"
+        bookAuthor = "aaaaaaaaaabbbbbbbbbbccccccccccdddddddddde"// 41
+        withTestApplication({ configureRouting(mockDBrepo, mockCoreNLPController) }) {
+            handleRequest(HttpMethod.Post, "/process-book/$bookTitle/$bookAuthor") {
+                setBody(
+                    body
+                )
+            }.apply {
+                assertEquals(HttpStatusCode.NotImplemented, response.status())
+                verifyNoInteractions(mockCoreNLPController)
+
+            }
+        }
+    }
+
+    @Test
+    fun `test checkBook for parameter input size limit`() {
+        var bookTitle = "aaaaaaaaaabbbbbbbbbbccccccccccdddddddddde" // 41
+        var bookAuthor = "Author"
+
+        withTestApplication({ configureRouting(mockDBrepo, mockCoreNLPController) }) {
+            handleRequest(HttpMethod.Get, "/check-book/$bookTitle/$bookAuthor") {
+
+            }.apply {
+                assertEquals(HttpStatusCode.NotImplemented, response.status())
+                verifyNoInteractions(mockCoreNLPController)
+
+            }
+        }
+
+        bookTitle = "Title"
+        bookAuthor = "aaaaaaaaaabbbbbbbbbbccccccccccdddddddddde" // 41
+
+        withTestApplication({ configureRouting(mockDBrepo, mockCoreNLPController) }) {
+            handleRequest(HttpMethod.Get, "/check-book/$bookTitle/$bookAuthor") {
+
+            }.apply {
+                assertEquals(HttpStatusCode.NotImplemented, response.status())
+                verifyNoInteractions(mockCoreNLPController)
+
+            }
+        }
+    }
+
+    @Test
+    fun `test checkBook is sanitised`() {
+        var bookTitle = "Titl;e"
+        var bookAuthor = "Author"
+
+        withTestApplication({ configureRouting(mockDBrepo, mockCoreNLPController) }) {
+            handleRequest(HttpMethod.Get, "/check-book/$bookTitle/$bookAuthor") {
+
+            }.apply {
+                assertEquals(HttpStatusCode.NotImplemented, response.status())
+                verifyNoInteractions(mockCoreNLPController)
+
+            }
+        }
+
+        bookTitle = "Title"
+        bookAuthor = "Author$" // 41
+
+        withTestApplication({ configureRouting(mockDBrepo, mockCoreNLPController) }) {
+            handleRequest(HttpMethod.Get, "/check-book/$bookTitle/$bookAuthor") {
+
+            }.apply {
+                assertEquals(HttpStatusCode.NotImplemented, response.status())
+                verifyNoInteractions(mockCoreNLPController)
+
+            }
+        }
+    }
+
+    @Test
+    fun `test processBook is sanitised`() {
+        var bookTitle = "Titl;e"
+        var bookAuthor = "Author"
+
+        val body =
+            "{\"author\":\"$bookAuthor\",\"chapters\":[{\"chapterTitle\":\"Chapter 1\",\"text\":\"Whatever have you been doing with yourself, Watson? he asked in undisguised wonder, as we walked through London You are as thin as a lath and as brown as a nut.\"}],\"characters\":[],\"image\":1,\"locations\":[],\"title\":\"$bookTitle\"}"
+        withTestApplication({ configureRouting(mockDBrepo, mockCoreNLPController) }) {
+            handleRequest(HttpMethod.Post, "/process-book/$bookTitle/$bookAuthor") {
+                setBody(
+                    body
+                )
+            }.apply {
+                assertEquals(HttpStatusCode.NotImplemented, response.status())
+                verifyNoInteractions(mockCoreNLPController)
+
+            }
+        }
+
+        bookTitle = "Title"
+        bookAuthor = "Author$" // 41
+
+        withTestApplication({ configureRouting(mockDBrepo, mockCoreNLPController) }) {
+            handleRequest(HttpMethod.Post, "/process-book/$bookTitle/$bookAuthor") {
+                setBody(
+                    body
+                )
+            }.apply {
+                assertEquals(HttpStatusCode.NotImplemented, response.status())
+                verifyNoInteractions(mockCoreNLPController)
+
+            }
+        }
+    }
 }
