@@ -1,5 +1,6 @@
 package com.romanp.fyp.nlp
 
+import android.app.ActivityManager
 import android.content.Context
 import android.os.Handler
 import android.util.Log
@@ -8,8 +9,15 @@ import com.romanp.fyp.adapters.BookRecyclerViewAdapter
 
 class Runnables {
     companion object {
+        private const val pingDelay = 10000L
         private const val delay = 10000L //millis
+        fun isInBackground(): Boolean {
+            val runningAppProcessInfo = ActivityManager.RunningAppProcessInfo()
+            ActivityManager.getMyMemoryState(runningAppProcessInfo)
+            return runningAppProcessInfo.importance != ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND
+        }
     }
+
 
     internal class PingNLPAPIRunnable(
         private val context: Context,
@@ -24,8 +32,17 @@ class Runnables {
         override fun run() {
             CoreNlpAPI.pingServer(context, serviceStatus)
 
-            mainHandler.postDelayed(this, delay)
+            if (isInBackground()) {
+                Log.i(TAG, "App running in Background, stopping ping runnable")
+                //exitProcess(-1)
+                return
+
+            }
+
+            mainHandler.postDelayed(this, pingDelay)
         }
+
+
     }
 
     internal class CheckNLPAPIRunnable(
@@ -44,6 +61,11 @@ class Runnables {
                     Log.i(TAG, "Checking $it")
                     CoreNlpAPI.checkBook(context, it.title, it.author, it.id, books)
                 }
+
+            if (isInBackground()) {
+                Log.i(TAG, "App running in Background, stopping CheckNLPAPI runnable")
+                return
+            }
 
             mainHandler.postDelayed(this, delay)
         }
