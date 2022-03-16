@@ -22,9 +22,9 @@ class CoreNlpAPI {
             "k6qKl&YBBeflmieT47BBA5^&*nD&DueoZb0sjNRAR7XVNec!Oib5MpPJ43kxW5IYiF!Xvo3ZOEBegT8L7B*xq0sTlbfEo"
 
         //TODO: make properties file to change it there
-//        private const val url = "https://108.61.173.161:8443/" //online server
+        private const val url = "https://95.179.198.203:8443/" //online server
 //        private const val url = "https://192.168.129.26:8443/" //connected android device (find with ip addr)
-        private const val url = "https://10.0.2.2:8443/" //localhost from emulator
+//        private const val url = "https://10.0.2.2:8443/" //localhost from emulator
 
         private const val TAG = "CoreNLPAPI"
 
