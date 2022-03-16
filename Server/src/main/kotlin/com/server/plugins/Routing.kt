@@ -16,7 +16,7 @@ import org.litote.kmongo.eq
 import org.litote.kmongo.json
 import java.util.concurrent.TimeUnit
 
-
+const val apiSecrete = "k6qKl&YBBeflmieT47BBA5^&*nD&DueoZb0sjNRAR7XVNec!Oib5MpPJ43kxW5IYiF!Xvo3ZOEBegT8L7B*xq0sTlbfEo"
 fun Application.configureRouting(dbRepo: DataBaseRepository, coreNLPCont: CoreNLPController) {
     val gson = Gson()
 
@@ -25,7 +25,9 @@ fun Application.configureRouting(dbRepo: DataBaseRepository, coreNLPCont: CoreNL
         /**
         Root used to ping the server
          */
-        get("/") {
+        get("/{secret}") {
+            val secret = call.parameters["secret"]
+            if (!secret.equals(apiSecrete)) return@get
             log.debug("'/' ping from ${call.request.local.remoteHost}")
             call.respondText(RoutingResponses.PING.message)
         }
@@ -33,11 +35,12 @@ fun Application.configureRouting(dbRepo: DataBaseRepository, coreNLPCont: CoreNL
         /**
          * Checks if the book has already been processed
          */
-        get("/check-book/{bookName}/{bookAuthor}") {
+        get("/check-book/{bookName}/{bookAuthor}/{secret}") {
             val title = call.parameters["bookName"]
             val author = call.parameters["bookAuthor"]
+            val secret = call.parameters["secret"]
 
-            if (checkForValidInput(title, author)) return@get
+            if (!secret.equals(apiSecrete) || checkForValidInput(title, author)) return@get
 
             log.info("'/check-book' Check book called for book $title - $author\"")
             val failedList = getFailedBooks(dbRepo, title, author)
@@ -61,10 +64,12 @@ fun Application.configureRouting(dbRepo: DataBaseRepository, coreNLPCont: CoreNL
         /**
          * Processes the book
          */
-        post("/process-book/{bookName}/{bookAuthor}") {
+        post("/process-book/{bookName}/{bookAuthor}/{secret}") {
             val title = call.parameters["bookName"]
             val author = call.parameters["bookAuthor"]
-            if (checkForValidInput(title, author)) return@post
+            val secret = call.parameters["secret"]
+
+            if (!secret.equals(apiSecrete) || checkForValidInput(title, author)) return@post
 
             if (title.isNullOrEmpty() || author.isNullOrEmpty()) {
                 call.response.status(HttpStatusCode(400, "title or author not given"))

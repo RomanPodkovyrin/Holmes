@@ -33,6 +33,9 @@ class ApplicationTest {
 
     private val gson = Gson()
 
+    private val apiSecrete =
+        "k6qKl&YBBeflmieT47BBA5^&*nD&DueoZb0sjNRAR7XVNec!Oib5MpPJ43kxW5IYiF!Xvo3ZOEBegT8L7B*xq0sTlbfEo"
+
     @Mock
     private val mockDBrepo = Mockito.mock(DataBaseRepository::class.java)
 
@@ -107,9 +110,18 @@ class ApplicationTest {
     @Test
     fun testPing() {
         withTestApplication({ configureRouting(mockDBrepo, mockCoreNLPController) }) {
-            handleRequest(HttpMethod.Get, "/").apply {
+            handleRequest(HttpMethod.Get, "/$apiSecrete").apply {
                 assertEquals(HttpStatusCode.OK, response.status())
                 assertEquals(RoutingResponses.PING.message, response.content, "Should respond with a ping message")
+            }
+        }
+    }
+
+    @Test
+    fun `testPing without api secrete`() {
+        withTestApplication({ configureRouting(mockDBrepo, mockCoreNLPController) }) {
+            handleRequest(HttpMethod.Get, "/").apply {
+                assertEquals(HttpStatusCode.NotFound, response.status())
             }
         }
     }
@@ -119,7 +131,7 @@ class ApplicationTest {
         val bookTitle = "1984"
         val bookAuthor = "George Orwell"
         withTestApplication({ configureRouting(mockDBrepo, mockCoreNLPController) }) {
-            handleRequest(HttpMethod.Get, "/check-book/$bookTitle/$bookAuthor").apply {
+            handleRequest(HttpMethod.Get, "/check-book/$bookTitle/$bookAuthor/$apiSecrete").apply {
                 assertEquals(HttpStatusCode.OK, response.status())
 
                 val json = response.content
@@ -134,7 +146,7 @@ class ApplicationTest {
         val bookTitle = "Night Manager"
         val bookAuthor = "John le Carre"
         withTestApplication({ configureRouting(mockDBrepo, mockCoreNLPController) }) {
-            handleRequest(HttpMethod.Get, "/check-book/$bookTitle/$bookAuthor").apply {
+            handleRequest(HttpMethod.Get, "/check-book/$bookTitle/$bookAuthor/$apiSecrete").apply {
                 assertEquals(HttpStatusCode.OK, response.status())
 
                 assertEquals(
@@ -149,7 +161,7 @@ class ApplicationTest {
         val bookTitle = "Failed Title"
         val bookAuthor = "Failed Author"
         withTestApplication({ configureRouting(mockDBrepo, mockCoreNLPController) }) {
-            handleRequest(HttpMethod.Get, "/check-book/$bookTitle/$bookAuthor").apply {
+            handleRequest(HttpMethod.Get, "/check-book/$bookTitle/$bookAuthor/$apiSecrete").apply {
                 assertEquals(HttpStatusCode.OK, response.status())
 
                 assertEquals(
@@ -176,7 +188,7 @@ class ApplicationTest {
             "{\"author\":\"$bookAuthor\",\"chapters\":[{\"chapterTitle\":\"Chapter 1\",\"text\":\"Whatever have you been doing with yourself, Watson? he asked in undisguised wonder, as we walked through London You are as thin as a lath and as brown as a nut.\"}],\"characters\":[],\"image\":1,\"locations\":[],\"title\":\"$bookTitle\"}"
 
         withTestApplication({ configureRouting(mockDBrepo, mockCoreNLPController) }) {
-            handleRequest(HttpMethod.Post, "/process-book/$bookTitle/$bookAuthor") {
+            handleRequest(HttpMethod.Post, "/process-book/$bookTitle/$bookAuthor/$apiSecrete") {
                 setBody(
                     body
                 )
@@ -192,7 +204,7 @@ class ApplicationTest {
         val bookTitle = "1984"
         val bookAuthor = "George Orwell"
         withTestApplication({ configureRouting(mockDBrepo, mockCoreNLPController) }) {
-            handleRequest(HttpMethod.Post, "/process-book/$bookTitle/$bookAuthor") {
+            handleRequest(HttpMethod.Post, "/process-book/$bookTitle/$bookAuthor/$apiSecrete") {
                 setBody(
                     "Behind Winston's back the voice from the telescreen was still babbling away about pig-iron and the overfulfilment of the Ninth Three-Year Plan."
                 )
@@ -216,7 +228,7 @@ class ApplicationTest {
         val body =
             "{\"author\":\"$bookAuthor\",\"chapters\":[{\"chapterTitle\":\"Chapter 1\",\"text\":\"Whatever have you been doing with yourself, Watson? he asked in undisguised wonder, as we walked through London You are as thin as a lath and as brown as a nut.\"}],\"characters\":[],\"image\":1,\"locations\":[],\"title\":\"$bookTitle\"}"
         withTestApplication({ configureRouting(mockDBrepo, mockCoreNLPController) }) {
-            handleRequest(HttpMethod.Post, "/process-book/$bookTitle/$bookAuthor") {
+            handleRequest(HttpMethod.Post, "/process-book/$bookTitle/$bookAuthor/$apiSecrete") {
                 setBody(
                     body
                 )
@@ -241,7 +253,7 @@ class ApplicationTest {
         val body =
             "{\"author\":\"$bookAuthor\",\"chapters\":[{\"chapterTitle\":\"Chapter 1\",\"text\":\"Whatever have you been doing with yourself, Watson? he asked in undisguised wonder, as we walked through London You are as thin as a lath and as brown as a nut.\"}],\"characters\":[],\"image\":1,\"locations\":[],\"title\":\"$bookTitle\"}"
         withTestApplication({ configureRouting(mockDBrepo, mockCoreNLPController) }) {
-            handleRequest(HttpMethod.Post, "/process-book/$bookTitle/$bookAuthor") {
+            handleRequest(HttpMethod.Post, "/process-book/$bookTitle/$bookAuthor/$apiSecrete") {
                 setBody(
                     body
                 )
@@ -257,7 +269,7 @@ class ApplicationTest {
         bookTitle = "Title"
         bookAuthor = "aaaaaaaaaabbbbbbbbbbccccccccccdddddddddde"// 41
         withTestApplication({ configureRouting(mockDBrepo, mockCoreNLPController) }) {
-            handleRequest(HttpMethod.Post, "/process-book/$bookTitle/$bookAuthor") {
+            handleRequest(HttpMethod.Post, "/process-book/$bookTitle/$bookAuthor/$apiSecrete") {
                 setBody(
                     body
                 )
@@ -275,7 +287,7 @@ class ApplicationTest {
         var bookAuthor = "Author"
 
         withTestApplication({ configureRouting(mockDBrepo, mockCoreNLPController) }) {
-            handleRequest(HttpMethod.Get, "/check-book/$bookTitle/$bookAuthor") {
+            handleRequest(HttpMethod.Get, "/check-book/$bookTitle/$bookAuthor/$apiSecrete") {
 
             }.apply {
                 assertEquals(HttpStatusCode.NotImplemented, response.status())
@@ -288,7 +300,7 @@ class ApplicationTest {
         bookAuthor = "aaaaaaaaaabbbbbbbbbbccccccccccdddddddddde" // 41
 
         withTestApplication({ configureRouting(mockDBrepo, mockCoreNLPController) }) {
-            handleRequest(HttpMethod.Get, "/check-book/$bookTitle/$bookAuthor") {
+            handleRequest(HttpMethod.Get, "/check-book/$bookTitle/$bookAuthor/$apiSecrete") {
 
             }.apply {
                 assertEquals(HttpStatusCode.NotImplemented, response.status())
@@ -304,7 +316,7 @@ class ApplicationTest {
         var bookAuthor = "Author"
 
         withTestApplication({ configureRouting(mockDBrepo, mockCoreNLPController) }) {
-            handleRequest(HttpMethod.Get, "/check-book/$bookTitle/$bookAuthor") {
+            handleRequest(HttpMethod.Get, "/check-book/$bookTitle/$bookAuthor/$apiSecrete") {
 
             }.apply {
                 assertEquals(HttpStatusCode.NotImplemented, response.status())
@@ -317,7 +329,7 @@ class ApplicationTest {
         bookAuthor = "Author$" // 41
 
         withTestApplication({ configureRouting(mockDBrepo, mockCoreNLPController) }) {
-            handleRequest(HttpMethod.Get, "/check-book/$bookTitle/$bookAuthor") {
+            handleRequest(HttpMethod.Get, "/check-book/$bookTitle/$bookAuthor/$apiSecrete") {
 
             }.apply {
                 assertEquals(HttpStatusCode.NotImplemented, response.status())
@@ -335,7 +347,7 @@ class ApplicationTest {
         val body =
             "{\"author\":\"$bookAuthor\",\"chapters\":[{\"chapterTitle\":\"Chapter 1\",\"text\":\"Whatever have you been doing with yourself, Watson? he asked in undisguised wonder, as we walked through London You are as thin as a lath and as brown as a nut.\"}],\"characters\":[],\"image\":1,\"locations\":[],\"title\":\"$bookTitle\"}"
         withTestApplication({ configureRouting(mockDBrepo, mockCoreNLPController) }) {
-            handleRequest(HttpMethod.Post, "/process-book/$bookTitle/$bookAuthor") {
+            handleRequest(HttpMethod.Post, "/process-book/$bookTitle/$bookAuthor/$apiSecrete") {
                 setBody(
                     body
                 )
@@ -350,12 +362,89 @@ class ApplicationTest {
         bookAuthor = "Author$" // 41
 
         withTestApplication({ configureRouting(mockDBrepo, mockCoreNLPController) }) {
-            handleRequest(HttpMethod.Post, "/process-book/$bookTitle/$bookAuthor") {
+            handleRequest(HttpMethod.Post, "/process-book/$bookTitle/$bookAuthor/$apiSecrete") {
                 setBody(
                     body
                 )
             }.apply {
                 assertEquals(HttpStatusCode.NotImplemented, response.status())
+                verifyNoInteractions(mockCoreNLPController)
+
+            }
+        }
+    }
+
+
+    @Test
+    fun `test checkBook api key not present`() {
+        val bookTitle = "Title"
+        val bookAuthor = "Author"
+
+        withTestApplication({ configureRouting(mockDBrepo, mockCoreNLPController) }) {
+            handleRequest(HttpMethod.Get, "/check-book/$bookTitle/$bookAuthor") {
+
+            }.apply {
+                assertEquals(HttpStatusCode.NotFound, response.status())
+                verifyNoInteractions(mockCoreNLPController)
+
+            }
+        }
+
+    }
+
+    @Test
+    fun `test processBook api key not present`() {
+        val bookTitle = "Title"
+        val bookAuthor = "Author"
+
+        val body =
+            "{\"author\":\"$bookAuthor\",\"chapters\":[{\"chapterTitle\":\"Chapter 1\",\"text\":\"Whatever have you been doing with yourself, Watson? he asked in undisguised wonder, as we walked through London You are as thin as a lath and as brown as a nut.\"}],\"characters\":[],\"image\":1,\"locations\":[],\"title\":\"$bookTitle\"}"
+        withTestApplication({ configureRouting(mockDBrepo, mockCoreNLPController) }) {
+            handleRequest(HttpMethod.Post, "/process-book/$bookTitle/$bookAuthor") {
+                setBody(
+                    body
+                )
+            }.apply {
+                assertEquals(HttpStatusCode.NotFound, response.status())
+                verifyNoInteractions(mockCoreNLPController)
+
+            }
+        }
+    }
+
+    @Test
+    fun `test checkBook wrong api key`() {
+        val bookTitle = "Title"
+        val bookAuthor = "Author"
+        val wrongKey = "wrongKey"
+
+        withTestApplication({ configureRouting(mockDBrepo, mockCoreNLPController) }) {
+            handleRequest(HttpMethod.Get, "/check-book/$bookTitle/$bookAuthor/$wrongKey") {
+
+            }.apply {
+                assertEquals(HttpStatusCode.NotFound, response.status())
+                verifyNoInteractions(mockCoreNLPController)
+
+            }
+        }
+
+    }
+
+    @Test
+    fun `test processBook wrong api key`() {
+        val bookTitle = "Title"
+        val bookAuthor = "Author"
+        val wrongKey = "wrongKey"
+
+        val body =
+            "{\"author\":\"$bookAuthor\",\"chapters\":[{\"chapterTitle\":\"Chapter 1\",\"text\":\"Whatever have you been doing with yourself, Watson? he asked in undisguised wonder, as we walked through London You are as thin as a lath and as brown as a nut.\"}],\"characters\":[],\"image\":1,\"locations\":[],\"title\":\"$bookTitle\"}"
+        withTestApplication({ configureRouting(mockDBrepo, mockCoreNLPController) }) {
+            handleRequest(HttpMethod.Post, "/process-book/$bookTitle/$bookAuthor/$wrongKey") {
+                setBody(
+                    body
+                )
+            }.apply {
+                assertEquals(HttpStatusCode.NotFound, response.status())
                 verifyNoInteractions(mockCoreNLPController)
 
             }
