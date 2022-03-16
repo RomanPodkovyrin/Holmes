@@ -1,11 +1,14 @@
 package com.romanp.fyp.views
 
 import android.annotation.SuppressLint
+import android.content.res.Configuration
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.webkit.ConsoleMessage
 import android.webkit.WebChromeClient
+import android.webkit.WebSettings
 import android.webkit.WebView
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
@@ -249,7 +252,9 @@ class BookGraphActivity : AppCompatActivity() {
         val webView = findViewById<WebView>(R.id.WebViewGraph)
         val webSettings = webView.settings
         webSettings.blockNetworkLoads = true
-        //if (applicationContext.resources.configuration.uiMode.and(Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES) webSettings.forceDark = WebSettings.FORCE_DARK_ON
+        if (applicationContext.resources.configuration.uiMode.and(Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES && Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            webSettings.forceDark = WebSettings.FORCE_DARK_ON
+        }
         webSettings.javaScriptEnabled = true
         webSettings.builtInZoomControls = true
         webSettings.setSupportZoom(true)
