@@ -18,6 +18,9 @@ class CoreNlpAPI {
 
 
     companion object {
+        private const val secret =
+            "k6qKl&YBBeflmieT47BBA5^&*nD&DueoZb0sjNRAR7XVNec!Oib5MpPJ43kxW5IYiF!Xvo3ZOEBegT8L7B*xq0sTlbfEo"
+
         //TODO: make properties file to change it there
 //        private const val url = "https://108.61.173.161:8443/" //online server
 //        private const val url = "https://192.168.129.26:8443/" //connected android device (find with ip addr)
@@ -36,7 +39,7 @@ class CoreNlpAPI {
 
         fun pingServer(applicationContext: Context, serviceStatus: MutableLiveData<Boolean>) {
             val queue = getRequestQueue(applicationContext)
-
+            val url = "$url/$secret"
 
             // Request a string response from the provided URL.
             val stringRequest = StringRequest(
@@ -89,7 +92,7 @@ class CoreNlpAPI {
 
             // Instantiate the RequestQueue.
             val queue = getRequestQueue(applicationContext)
-            val url = "$url/process-book/$title/$author"
+            val url = "$url/process-book/$title/$author/$secret"
 
             val stringReq: StringRequest =
                 object : StringRequest(Method.POST, url,
@@ -159,7 +162,7 @@ class CoreNlpAPI {
             // Instantiate the RequestQueue.
             val queue = getRequestQueue(applicationContext)
             //TODO: calculate hashcode based on book info and use this to test similarity ?
-            val url = "$url/check-book/$title/$author"
+            val url = "$url/check-book/$title/$author/$secret"
 
             val stringReq: StringRequest =
                 object : StringRequest(Method.GET, url,
