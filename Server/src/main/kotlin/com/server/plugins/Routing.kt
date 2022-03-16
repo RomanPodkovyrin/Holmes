@@ -11,6 +11,7 @@ import io.ktor.http.*
 import io.ktor.request.*
 import io.ktor.response.*
 import io.ktor.routing.*
+import io.ktor.util.pipeline.*
 import org.litote.kmongo.eq
 import org.litote.kmongo.json
 import java.util.concurrent.TimeUnit
@@ -35,8 +36,10 @@ fun Application.configureRouting(dbRepo: DataBaseRepository, coreNLPCont: CoreNL
         get("/check-book/{bookName}/{bookAuthor}") {
             val title = call.parameters["bookName"]
             val author = call.parameters["bookAuthor"]
-            log.info("'/check-book' Check book called for book $title - $author\"")
 
+            if (checkForValidInput(title, author)) return@get
+
+            log.info("'/check-book' Check book called for book $title - $author\"")
             val failedList = getFailedBooks(dbRepo, title, author)
             if (failedList.isNotEmpty()) {
                 log.info("$title - $author Book has failed processing")
@@ -61,6 +64,7 @@ fun Application.configureRouting(dbRepo: DataBaseRepository, coreNLPCont: CoreNL
         post("/process-book/{bookName}/{bookAuthor}") {
             val title = call.parameters["bookName"]
             val author = call.parameters["bookAuthor"]
+            if (checkForValidInput(title, author)) return@post
 
             if (title.isNullOrEmpty() || author.isNullOrEmpty()) {
                 call.response.status(HttpStatusCode(400, "title or author not given"))
@@ -119,9 +123,29 @@ fun Application.configureRouting(dbRepo: DataBaseRepository, coreNLPCont: CoreNL
     }
 }
 
+private fun PipelineContext<Unit, ApplicationCall>.checkForValidInput(
+    title: String?,
+    author: String?
+): Boolean {
+    val specialCharsList = arrayListOf("`", "\"", "\\", ";", "{", "}", "$")
+    if (title == null || author == null || title.length > 40 || author.length > 40) {
+        call.response.status(HttpStatusCode(501, "Not Implemented"))
+        return true
+    }
+    specialCharsList.forEach { char ->
+        if (title.contains(char) || author.contains(char)) {
+            call.response.status(HttpStatusCode(501, "Not Implemented"))
+            return true
+        }
+    }
+    return false
+}
+
 private suspend fun getFailedBooks(
     dbRepo: DataBaseRepository,
     title: String?,
     author: String?
-) = dbRepo.findFailed(BookInfo::title eq title, BookInfo::author eq author)
+): List<BookInfo> {
+    return dbRepo.findFailed(BookInfo::title eq title, BookInfo::author eq author)
+}
 
