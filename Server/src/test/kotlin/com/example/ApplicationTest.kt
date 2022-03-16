@@ -312,7 +312,7 @@ class ApplicationTest {
 
     @Test
     fun `test checkBook is sanitised`() {
-        var bookTitle = "Titl;e"
+        var bookTitle = "Title$"
         var bookAuthor = "Author"
 
         withTestApplication({ configureRouting(mockDBrepo, mockCoreNLPController) }) {
@@ -341,7 +341,7 @@ class ApplicationTest {
 
     @Test
     fun `test processBook is sanitised`() {
-        var bookTitle = "Titl;e"
+        var bookTitle = "Title$"
         var bookAuthor = "Author"
 
         val body =

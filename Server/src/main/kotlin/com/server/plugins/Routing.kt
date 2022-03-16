@@ -132,18 +132,20 @@ private fun PipelineContext<Unit, ApplicationCall>.checkForValidInput(
     title: String?,
     author: String?
 ): Boolean {
-    val specialCharsList = arrayListOf("`", "\"", "\\", ";", "{", "}", "$")
     if (title == null || author == null || title.length > 40 || author.length > 40) {
         call.response.status(HttpStatusCode(501, "Not Implemented"))
         return true
     }
-    specialCharsList.forEach { char ->
-        if (title.contains(char) || author.contains(char)) {
-            call.response.status(HttpStatusCode(501, "Not Implemented"))
-            return true
-        }
+    if (!checkIfAcceptedCharacters(title) || !checkIfAcceptedCharacters(author)) {
+        println("Title: $title, author: $author")
+        call.response.status(HttpStatusCode(501, "Not Implemented"))
+        return true
     }
     return false
+}
+
+private fun checkIfAcceptedCharacters(string: String): Boolean {
+    return string.matches("^[a-zA-Z ;':,.0-9]*$".toRegex())
 }
 
 private suspend fun getFailedBooks(
