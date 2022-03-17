@@ -131,6 +131,10 @@ function getLinkData(distances, nodeData, linkData, distanceMethod) {
 
 
 function plotNetwork(chapter, distances, characters, topLinksPercentage, topCharactersByMentions, distanceMethod) {
+    minDistanceValue = Number.MAX_VALUE;
+    maxDistanceValue = 0;
+    minMentions = Number.MAX_VALUE;
+    maxMentions = 0
     console.log("Plotting network graph with parameters")
     console.log("Chapter: " + chapter + " topLinksPercentage: " + topLinksPercentage + " topCharactersByMentions: " + topCharactersByMentions + " DistanceMethod: " + distanceMethod)
     updateSvgSize()
