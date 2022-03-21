@@ -15,7 +15,7 @@ function updateSvgSize() {
     console.log("With margin, Width: " + width + " height: " + height)
 }
 
-const spreadForce = -1050;
+const spreadForce = -200;
 const spaceBetweenNodesMultiplier = 1;
 // Controls how spread out the values are
 const exponent = 2
@@ -225,8 +225,9 @@ function drawCharacterNetwork(acceptedDistanceMax, acceptedDistanceMin, svg, lin
             })
             .strength(function (d) {
                 return linkStrengthScale(d.value);
-            }))
-
+            })
+            .distance(500)
+        )
         // Spaces out nodes
         .force("charge", d3.forceManyBody().strength(spreadForce))
         // Collision detection
