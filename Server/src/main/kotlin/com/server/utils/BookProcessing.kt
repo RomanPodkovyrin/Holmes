@@ -152,7 +152,6 @@ fun getTextBetweenEntities(
 
 }
 
-//TODO: should it be stored as float?
 private fun getMeanAndMedianTokenLocations(iChapter: ArrayList<Pair<Int, Int>>): Pair<Int, Int> {
     val iChapterMeanLocation = iChapter.map { it.first }.toIntArray().sum() / iChapter.size
     val iChapterMedianLocation = (iChapter.map { it.first }.toIntArray().sortedArray()).let {
@@ -350,7 +349,6 @@ private fun removeCharacterAndLocationDuplicates(
             location.mentions.forEach { temp.add(it.nerConfidences.toString()) }
             //val lConfidence = temp.toString()
             //if (location.name == character.name) {
-            //TODO(What should it do if it finds a duplicate)
             //}
 
         }
