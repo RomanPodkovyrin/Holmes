@@ -64,7 +64,7 @@ class MainActivity : AppCompatActivity() {
         Log.i(TAG, "Initialising view model")
         val factory = InjectorUtils.provideMainActivityViewModelFactory(application)
         viewModel = ViewModelProvider(this, factory)[MainActivityViewModel::class.java]
-        viewModel.startThreads()//TODO: is this a good idea?
+        viewModel.startThreads()
         viewModel.getBooks().observe(this) {
             // Triggers when it's changed
             adapter.notifyDataSetChanged()
@@ -110,7 +110,6 @@ class MainActivity : AppCompatActivity() {
                 Log.i(TAG, "File selected $selectedFile")//The uri with the location of the file
                 Log.i(TAG, "Loading book")
 
-                // TODO: Run in a thread while the book is being processed
                 viewModel.addBook(selectedFile)
 
                 adapter.notifyDataSetChanged()

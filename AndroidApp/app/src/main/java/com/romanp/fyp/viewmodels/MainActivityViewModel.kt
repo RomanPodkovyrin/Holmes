@@ -52,7 +52,6 @@ class MainActivityViewModel
 
     init {
         Log.i(TAG, "View created")
-        //TODO: pass thread handler for easy testability
         setupThreads()
     }
 
@@ -94,7 +93,6 @@ class MainActivityViewModel
             }
 
             processedBook.value = book
-            //TODO: call check book first  CoreNlpAPI.checkBook(context, it.title, it.author, it.id, books)
             CoreNlpAPI.nerTagger(getApplication(), gson.toJson(book), book.title, book.author)
 
             val id = repository.addBookInfo(getApplication(), book)

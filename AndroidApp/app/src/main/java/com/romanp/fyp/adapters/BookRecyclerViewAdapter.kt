@@ -77,7 +77,7 @@ class BookRecyclerViewAdapter(
                 intent.putExtra(EXTRA_MESSAGE, itemsViewModel.id)
                 context.startActivity(intent)
             }
-            /* TODO: need to find a way to observe the change
+            /*
             might need to implement mvvm for adapter
             */
             when (itemsViewModel.processed) {
@@ -97,7 +97,6 @@ class BookRecyclerViewAdapter(
                 }
             }
 
-            // TODO: move to viewModel and repository
             deleteView.setOnClickListener {
                 ToastUtils.toast(context, "Delete ${itemsViewModel.title}")
                 val myDB = BookDatabaseHelper(context)
