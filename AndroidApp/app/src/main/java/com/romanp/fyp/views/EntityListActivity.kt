@@ -58,7 +58,10 @@ class EntityListActivity : AppCompatActivity() {
     private fun initialiseRecyclerViewAdapter() {
         // This will pass the ArrayList to our Adapter
         val data = viewModel.getCurrentList()
-        adapter = EntityRecyclerViewAdapter(this, data)
+
+        //Sort Alphabetically
+        val sortedList = data.sortedWith(compareBy { it.name }) as MutableList<EntityRecyclerViewAdapter.RecyclerEntityInfo>
+        adapter = EntityRecyclerViewAdapter(this, sortedList)
 
         // this creates a vertical layout Manager
         recyclerview.layoutManager = LinearLayoutManager(this)
