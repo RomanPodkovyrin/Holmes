@@ -65,13 +65,15 @@ class MainActivity : AppCompatActivity() {
         val factory = InjectorUtils.provideMainActivityViewModelFactory(application)
         viewModel = ViewModelProvider(this, factory)[MainActivityViewModel::class.java]
         viewModel.startThreads()
+
         viewModel.getBooks().observe(this) {
-            // Triggers when it's changed
-            adapter.notifyDataSetChanged()
             Log.i(
                 TAG,
                 "Book list got updated ${it as MutableList<BookRecyclerViewAdapter.RecyclerBookInfo>}"
             )
+
+            adapter.updateContent(it)
+
 
         }
         viewModel.getNLPServiceStatus().observe(this) {

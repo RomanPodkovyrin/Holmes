@@ -81,7 +81,7 @@ class MainActivityViewModel
      * @return id if successful or -1 if failed
      */
     fun addBook(selectedFile: Uri?) {
-
+        Log.i(TAG, "Adding new Book")
         viewModelScope.launch {
             val book: BookInfo = try {
                 loadSelectedBook(selectedFile)

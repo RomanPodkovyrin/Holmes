@@ -200,17 +200,23 @@ class CoreNlpAPI {
 
 
                         // Update live data
-                        books.postValue(books.value!!.filter { x -> x.id == id }
-                            .map { bookInfo ->
-                                BookRecyclerViewAdapter.RecyclerBookInfo(
-                                    bookInfo.image,
-                                    bookInfo.author,
-                                    bookInfo.title,
-                                    bookInfo.id,
-                                    processed
-                                )
-                            }.toMutableList())
+                        books.postValue(
+                            books.value!!
+                                .map { bookInfo ->
+                                    if (bookInfo.id == id) {
+                                        BookRecyclerViewAdapter.RecyclerBookInfo(
+                                            bookInfo.image,
+                                            bookInfo.author,
+                                            bookInfo.title,
+                                            bookInfo.id,
+                                            processed
+                                        )
+                                    } else {
+                                        bookInfo
+                                    }
 
+                                }.toMutableList()
+                        )
 
                         Log.d(TAG, "Book $id: $title processed ")
 

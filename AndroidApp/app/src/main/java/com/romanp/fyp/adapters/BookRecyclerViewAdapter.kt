@@ -18,7 +18,7 @@ import java.io.Serializable
 
 class BookRecyclerViewAdapter(
     private val context: Context,
-    private val mList: MutableList<RecyclerBookInfo>
+    private var mList: MutableList<RecyclerBookInfo>
 ) : RecyclerView.Adapter<BookRecyclerViewAdapter.ViewHolder>() {
     companion object {
         private const val TAG = "BookRecyclerViewAdapter"
@@ -43,6 +43,11 @@ class BookRecyclerViewAdapter(
     // return the number of the items in the list
     override fun getItemCount(): Int {
         return mList.size
+    }
+
+    fun updateContent(newList: MutableList<RecyclerBookInfo>) {
+        mList = newList
+        notifyDataSetChanged()
     }
 
     // Holds the views for adding it to image and text
