@@ -1,6 +1,5 @@
 package com.romanp.fyp.models.book
 
-//TODO: should probably be in corenlp folder
 data class BookData(
     val title: String,
     val author: String,

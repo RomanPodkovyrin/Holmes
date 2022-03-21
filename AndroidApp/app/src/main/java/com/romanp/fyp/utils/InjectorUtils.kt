@@ -13,7 +13,6 @@ import com.romanp.fyp.viewmodels.graph.BookGraphActivityViewModelFactory
 object InjectorUtils {
 
     fun provideMainActivityViewModelFactory(application: Application): MainViewModelFactory {
-        //TODO: try to remove the use application
         return MainViewModelFactory(application, BookRepository.getInstance())
     }
 

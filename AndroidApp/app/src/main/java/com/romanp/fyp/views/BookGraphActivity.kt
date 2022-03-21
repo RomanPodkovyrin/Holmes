@@ -54,7 +54,6 @@ class BookGraphActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_book_graph)
-        //TODO: pass type of graph as an enum to display right graph
         val bookId = intent.getLongExtra(
             BOOK_ID_GRAPH,
             -1

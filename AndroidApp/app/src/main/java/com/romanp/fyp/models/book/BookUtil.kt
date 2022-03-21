@@ -54,7 +54,6 @@ class BookUtil {
             book.metadata.firstTitle
             book.metadata.format
             book.metadata.identifiers
-            //TODO: should only be
             book.metadata.language
             book.metadata.publishers
             book.metadata.subjects

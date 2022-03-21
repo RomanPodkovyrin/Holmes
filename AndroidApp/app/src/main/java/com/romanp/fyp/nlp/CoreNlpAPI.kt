@@ -21,7 +21,6 @@ class CoreNlpAPI {
         private const val secret =
             "k6qKl&YBBeflmieT47BBA5^&*nD&DueoZb0sjNRAR7XVNec!Oib5MpPJ43kxW5IYiF!Xvo3ZOEBegT8L7B*xq0sTlbfEo"
 
-        //TODO: make properties file to change it there
 //        private const val url = "https://95.179.198.203:8443/" //online server
 //        private const val url = "https://192.168.129.26:8443/" //connected android device (find with ip addr)
         private const val url = "https://10.0.2.2:8443/" //localhost from emulator
@@ -161,7 +160,6 @@ class CoreNlpAPI {
 
             // Instantiate the RequestQueue.
             val queue = getRequestQueue(applicationContext)
-            //TODO: calculate hashcode based on book info and use this to test similarity ?
             val url = "$url/check-book/$title/$author/$secret"
 
             val stringReq: StringRequest =

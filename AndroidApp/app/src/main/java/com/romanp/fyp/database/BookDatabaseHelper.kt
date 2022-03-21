@@ -97,7 +97,6 @@ class BookDatabaseHelper(
         val db = writableDatabase
         var cursor: Cursor? = null
         if (db != null) {
-            //TODO: sanitise SQL
             cursor = db.rawQuery(query, null)
         }
         try {
@@ -113,7 +112,6 @@ class BookDatabaseHelper(
             }
 //        println(cursor)
         } catch (e: SQLiteBlobTooBigException) {
-            //TODO: This error sometimes happens when the app is left running for too long
             Log.e(TAG, e.toString())
         } catch (e: Exception) {
             Log.e(TAG, e.toString())

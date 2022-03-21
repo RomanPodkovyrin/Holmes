@@ -80,7 +80,6 @@ class MainViewActivityTest {
         return@runBlocking
     }
 
-//TODO: fix test
 //    @Test
 //    fun `addBooks should return updated live data`() = runBlocking {
 //        val image = 2

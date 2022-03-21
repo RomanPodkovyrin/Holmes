@@ -30,7 +30,6 @@ internal class BookUtilTest {
         return File(resource.file)
     }
 
-    //TODO: figure out how to do parameterized test
 //    @ParameterizedTest(name = "isPalindrome should return true for {0}")
 //    @ValueSource(strings = ["pg11", "pg84", "pg345", "pg1342", "pg2701", "pg64317", "pg66691"])
     @Test

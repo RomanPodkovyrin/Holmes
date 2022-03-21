@@ -114,7 +114,6 @@ class BookRepositoryTest {
         }
 
         bookRepository.addBookInfo(getApplication(), currentBookExpected)
-        //TODO: Throws "Problem getting a book from repository" error because book doesn't get saved for some reason
 //        val bookFromDB = bookRepository.getBookInfo(getApplication(),bookID)
 //        Assert.assertEquals("Book from DB matches the expected", currentBookExpected, bookFromDB)
         return@runBlocking

@@ -23,7 +23,6 @@
 //import org.robolectric.RobolectricTestRunner
 //import org.robolectric.android.controller.ActivityController
 //
-// TODO: finish it
 //@RunWith(RobolectricTestRunner::class)
 //class MainActivityUnitTest {
 //
