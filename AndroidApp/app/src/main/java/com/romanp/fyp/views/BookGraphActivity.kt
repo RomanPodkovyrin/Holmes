@@ -127,8 +127,8 @@ class BookGraphActivity : AppCompatActivity() {
         val distanceOptions = arrayListOf(
             "Token Average",       // 0
             "Punctuation Average", // 1
-            "Mean Token",          // 2
-            "Median Token"         // 3
+            "Token Mean",          // 2
+            "Token Median"         // 3
         ).toList()
 
         distanceMethodSpinner = findViewById(R.id.distanceMethodSpinner)

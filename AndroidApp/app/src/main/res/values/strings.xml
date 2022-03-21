@@ -17,8 +17,10 @@
     <!-- Other-->
     <string name="service_offline">Offline</string>
     <string name="service_online">Online</string>
-    <string name="pieChart">Pie Chart</string>
+    <string name="pieChart">Mention Pie Chart</string>
+    <string name="lollipop_chart">Mention Lollipop Chart (NEW)</string>
     <string name="network">Character Network</string>
+
 
     <!--    Descriptions -->
     <string name="delete_symbol">Delete Symbol</string>
@@ -32,11 +34,10 @@
     <!--    Symbols-->
     <string name="percentage">%</string>
     <string name="defaultPercentage">100 %</string>
-    <string name="top_links_percentage">Top Links Percentage:</string>
-    <string name="top_characters_by_mentions">Top Characters By Mentions:</string>
+    <string name="top_links_percentage">Top Links:</string>
+    <string name="top_characters_by_mentions">Top Characters:</string>
     <string name="distance_method">Distance Method</string>
     <string name="choose_distance_method">Choose Distance Method</string>
     <string name="choose_chapter">Choose chapter</string>
     <string name="item">Item</string>
-    <string name="lollipop_chart">Lollipop Chart</string>
 </resources>
