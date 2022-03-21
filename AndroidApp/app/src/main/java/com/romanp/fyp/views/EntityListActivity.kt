@@ -60,7 +60,8 @@ class EntityListActivity : AppCompatActivity() {
         val data = viewModel.getCurrentList()
 
         //Sort Alphabetically
-        val sortedList = data.sortedWith(compareBy { it.name }) as MutableList<EntityRecyclerViewAdapter.RecyclerEntityInfo>
+        val sortedList =
+            if (data.isNotEmpty()) data.sortedWith(compareBy { it.name }) as MutableList<EntityRecyclerViewAdapter.RecyclerEntityInfo> else data
         adapter = EntityRecyclerViewAdapter(this, sortedList)
 
         // this creates a vertical layout Manager
