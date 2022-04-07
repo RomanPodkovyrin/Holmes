@@ -29,7 +29,7 @@
     <string name="EntityNameTvLabel">Name:</string>
     <string name="entityName">Name</string>
     <string name="entityNer">NER</string>
-    <string name="entityNerLabel">NER:</string>
+    <string name="entityNerLabel">Type:</string>
 
     <!--    Symbols-->
     <string name="percentage">%</string>
