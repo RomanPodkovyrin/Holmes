@@ -74,6 +74,14 @@ function showPieChart(dataset) {
 
     pies
         .append("text")
+        .style("font-size", "1.8em")
+        .attr("font-weight", 700)
         .text((d) => d.data.name + "(" + d.data.mentions + ")")
-        .attr("transform", (d) => `translate(${label.centroid(d)})`);
+        .attr("transform", function (d) {
+
+            var _d = label.centroid(d);
+//        _d[0] *= 1.4;	//multiply by a constant factor
+//        _d[1] *= 1.4;	//multiply by a constant factor
+            return "translate(" + _d + ")";
+        });
 }
