@@ -326,7 +326,8 @@ function drawCharacterNetwork(acceptedDistanceMax, acceptedDistanceMin, svg, lin
             return d.name;
         })
         .style("stroke", "black")
-        .style("stroke-width", 0.4)
+        .style("stroke-width", 1.4)
+        .style("font-size", "34px")
         .style("fill", function (d) {
             // set text colour here
             return "#022e49";
