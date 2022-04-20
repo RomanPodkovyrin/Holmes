@@ -1,4 +1,4 @@
-width = 1000 - margin.left - margin.right;
+width = 1000 - margin.left - margin.right - 200;
 height = 1300 - margin.top - margin.bottom;
 
 
@@ -56,10 +56,11 @@ function plotLollipop(dataset) {
         return a.mentions - b.mentions;
     });
 
+    tempLeftMargin = margin.left + 220
     const svg = d3
         .select("svg")
         .append("g")
-        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+        .attr("transform", "translate(" + tempLeftMargin + "," + margin.top + ")");
 
     // X axis
     const x = d3.scaleLinear()
@@ -72,6 +73,8 @@ function plotLollipop(dataset) {
         .call(d3.axisBottom(x))
         .selectAll("text")
         .attr("transform", "translate(-10,0)rotate(-45)")
+        .style("font-size", "3.0em")
+        .attr("font-weight", 700)
         .style("text-anchor", "end")
 
     // Y axis
@@ -82,9 +85,15 @@ function plotLollipop(dataset) {
         }))
         .padding(1);
 
-    // Add Y axis to the left side
     svg.append("g")
+        .attr("transform", "translate(0," + 10 + ")")
         .call(d3.axisLeft(y))
+        .selectAll("text")
+        .attr("transform", "translate(0,-10)rotate(0)")
+        .style("font-size", "3.0em")
+        .attr("font-weight", 700)
+        .style("text-anchor", "end");
+
 
     // Mention Bars
     svg.selectAll("mentionBar")
@@ -117,6 +126,16 @@ function plotLollipop(dataset) {
         .attr("stroke-width", 5)
         .attr("stroke", "#19c4a0")
 
+    const label = svg.selectAll("endCircle")
+        .data(dataset)
+        .enter()
+        .append("text")
+        .style("font-size", "2.0em")
+        .attr("font-weight", 700)
+        .attr("dx", function(d){return 0})
+        .attr("dy", function(d) {return y(d.name)+10})
+        .text(function(d){return d.mentions})
+
 
     // Animation - moving lines and circle to their final location
     svg.selectAll("line")
@@ -131,5 +150,12 @@ function plotLollipop(dataset) {
         .duration(animationDuration)
         .attr("cx", function (d) {
             return x(d.mentions);
+        })
+
+   svg.selectAll("text")
+        .transition()
+        .duration(animationDuration)
+        .attr("dx", function (d) {
+            return x(d.mentions) + 10;
         })
 }
