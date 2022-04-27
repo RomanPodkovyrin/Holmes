@@ -1,4 +1,5 @@
-# Final Year Project repository
+# Android App Module
+This module can either be run from Android studio in an emulator or by generating APK
 
 # Testing 
 
