@@ -131,6 +131,9 @@ How to generate certificate Where
 - `<ip-address>` - ip address of the server
 - `<pem-name>` - file name of pem
 
+**pem** files should be places in `/AndroidApp/app/src/main/res/raw` modify file name in `/AndroidApp/app/src/main/res/xml/network_security_config.xml`
+and **jks** in `/Server/src/main/resources/certificate` modify file name in `Server/src/main/resources/server.properties`
+
 ```
 keytool -genkey -alias <name> -keyalg RSA -keystore <jks-name>.jks -keysize 2048 -ext SAN=IP:<ip-address>
 
