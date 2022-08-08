@@ -1,63 +1,63 @@
 # Holmes
 ## Your privet book detector
 
-<img src=".img/AliceChapter4Pie.jpg" style="zoom:17%;" />
+<img src=".img/AliceChapter4Pie.jpg" width="200"  />
 
-<img src=".img/AliceLogLollipopChapter4.jpg" style="zoom:17%;" />
+<img src=".img/AliceLogLollipopChapter4.jpg" width="200"  />
 
-<img src=".img/AliceLogLollipopWhole.jpg" style="zoom:17%;" />
+<img src=".img/AliceLogLollipopWhole.jpg" width="200"  />
 
-<img src=".img/AliceLollipopChapter4.jpg" style="zoom:17%;" />
+<img src=".img/AliceLollipopChapter4.jpg" width="200"  />
 
-<img src=".img/AliceLollipopWhole.jpg" style="zoom:17%;" />
+<img src=".img/AliceLollipopWhole.jpg" width="200"  />
 
-<img src=".img/AliceWholePie.jpg" style="zoom:17%;" />
+<img src=".img/AliceWholePie.jpg" width="200"  />
 
-<img src=".img/AndroidDB.png" style="zoom:17%;" />
+<img src=".img/AndroidDB.png" width="200"  />
 
-<img src=".img/CharacterNetworkDiagram.png" style="zoom:17%;" />
+<img src=".img/CharacterNetworkDiagram.png" width="200"  />
 
-<img src=".img/CIpipeline.png" style="zoom:17%;" />
-<img src=".img/CoreNLPPipeLines.png" style="zoom:17%;" />
+<img src=".img/CIpipeline.png" width="200"  />
+<img src=".img/CoreNLPPipeLines.png" width="200"  />
 
-<img src=".img/dockerisation.png" style="zoom:17%;" />
+<img src=".img/dockerisation.png" width="200"  />
 
-<img src=".img/entityList.jpg" style="zoom:17%;" />
+<img src=".img/entityList.jpg" width="200"  />
 
-<img src=".img/EntityProfile.jpg" style="zoom:17%;" />
+<img src=".img/EntityProfile.jpg" width="200"  />
 
-<img src=".img/future.png" style="zoom:17%;" />
+<img src=".img/future.png" width="200"  />
 
-<img src=".img/GatsbyNetworkAverageL29C21.jpg" style="zoom:17%;" />
+<img src=".img/GatsbyNetworkAverageL29C21.jpg" width="200"  />
 
-<img src=".img/GatsbyNetworkChapter2l100c100T.jpg" style="zoom:17%;" />
+<img src=".img/GatsbyNetworkChapter2l100c100T.jpg" width="200"  />
 
-<img src=".img/GatsbyNetworkChapter2L74C15T.jpg" style="zoom:17%;" />
+<img src=".img/GatsbyNetworkChapter2L74C15T.jpg" width="200"  />
 
-<img src=".img/GatsbyNetworkMeanL29C21.jpg" style="zoom:17%;" />
+<img src=".img/GatsbyNetworkMeanL29C21.jpg" width="200"  />
 
-<img src=".img/GatsbyNetworkMedianL29C21.jpg" style="zoom:17%;" />
+<img src=".img/GatsbyNetworkMedianL29C21.jpg" width="200"  />
 
-<img src=".img/HighlightedGatsbyNetworkChapter2L74C15T.jpg" style="zoom:17%;" />
+<img src=".img/HighlightedGatsbyNetworkChapter2L74C15T.jpg" width="200"  />
 
-<img src=".img/mainActivity.jpg" style="zoom:17%;" />
+<img src=".img/mainActivity.jpg" width="200"  />
 
 
-<img src=".img/mvvm.png" style="zoom:17%;" />
+<img src=".img/mvvm.png" width="200"  />
 
-<img src=".img/networkControls.jpg" style="zoom:17%;" />
+<img src=".img/networkControls.jpg" width="200"  />
 
-<img src=".img/NetworkSequence.png" style="zoom:17%;" />
+<img src=".img/NetworkSequence.png" width="200"  />
 
-<img src=".img/networkSteps.png" style="zoom:17%;" />
+<img src=".img/networkSteps.png" width="200"  />
 
-<img src=".img/processingSequence.png" style="zoom:17%;" />
+<img src=".img/processingSequence.png" width="200"  />
 
-<img src=".img/readerInterface.jpg" style="zoom:17%;" />
+<img src=".img/readerInterface.jpg" width="200"  />
 
-<img src=".img/tokenVSpunctuation.png" style="zoom:17%;" />
+<img src=".img/tokenVSpunctuation.png" width="200"  />
 
-<img src=".img/visualisationMenu.jpg" style="zoom:17%;" />
+<img src=".img/visualisationMenu.jpg" width="200"  />
 
 Final Year project
 This project contains 3 main modules:
