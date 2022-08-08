@@ -1,4 +1,65 @@
-# Final Year project
+# Holmes
+## Your privet book detector
+
+<img src=".img/AliceChapter4Pie.jpg" style="zoom:57%;" />
+
+<img src=".img/AliceLogLollipopChapter4.jpg" style="zoom:57%;" />
+
+<img src=".img/AliceLogLollipopWhole.jpg" style="zoom:47%;" />
+
+<img src=".img/AliceLollipopChapter4.jpg" style="zoom:47%;" />
+
+<img src=".img/AliceLollipopWhole.jpg" style="zoom:47%;" />
+
+<img src=".img/AliceWholePie.jpg" style="zoom:47%;" />
+
+<img src=".img/AndroidDB.png" style="zoom:47%;" />
+
+<img src=".img/CharacterNetworkDiagram.png" style="zoom:47%;" />
+
+<img src=".img/CIpipeline.png" style="zoom:47%;" />
+<img src=".img/CoreNLPPipeLines.png" style="zoom:47%;" />
+
+<img src=".img/dockerisation.png" style="zoom:47%;" />
+
+<img src=".img/entityList.jpg" style="zoom:47%;" />
+
+<img src=".img/EntityProfile.jpg" style="zoom:47%;" />
+
+<img src=".img/future.png" style="zoom:47%;" />
+
+<img src=".img/GatsbyNetworkAverageL29C21.jpg" style="zoom:47%;" />
+
+<img src=".img/GatsbyNetworkChapter2l100c100T.jpg" style="zoom:47%;" />
+
+<img src=".img/GatsbyNetworkChapter2L74C15T.jpg" style="zoom:47%;" />
+
+<img src=".img/GatsbyNetworkMeanL29C21.jpg" style="zoom:47%;" />
+
+<img src=".img/GatsbyNetworkMedianL29C21.jpg" style="zoom:47%;" />
+
+<img src=".img/HighlightedGatsbyNetworkChapter2L74C15T.jpg" style="zoom:47%;" />
+
+<img src=".img/mainActivity.jpg" style="zoom:47%;" />
+
+
+<img src=".img/mvvm.png" style="zoom:47%;" />
+
+<img src=".img/networkControls.jpg" style="zoom:47%;" />
+
+<img src=".img/NetworkSequence.png" style="zoom:47%;" />
+
+<img src=".img/networkSteps.png" style="zoom:47%;" />
+
+<img src=".img/processingSequence.png" style="zoom:47%;" />
+
+<img src=".img/readerInterface.jpg" style="zoom:47%;" />
+
+<img src=".img/tokenVSpunctuation.png" style="zoom:47%;" />
+
+<img src=".img/visualisationMenu.jpg" style="zoom:47%;" />
+
+Final Year project
 This project contains 3 main modules:
 1. `AndroidApp`
 2. `coreNLP`
