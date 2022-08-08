@@ -1,7 +1,32 @@
-# Holmes
-## Your privet book detector
+# Holmes - your privet book detector
 
+## Demo
+
+## Architecture
+
+
+<img src=".img/AndroidDB.png" width="200"  />
+
+
+<img src=".img/CIpipeline.png" width="200"  />
+<img src=".img/CoreNLPPipeLines.png" width="200"  />
+
+<img src=".img/dockerisation.png" width="200"  />
+
+
+<img src=".img/mvvm.png" width="200"  />
+
+<img src=".img/NetworkSequence.png" width="200"  />
+
+<img src=".img/networkSteps.png" width="200"  />
+
+<img src=".img/processingSequence.png" width="200"  />
+
+
+## Appearances
 <img src=".img/AliceChapter4Pie.jpg" width="200"  />
+
+
 
 <img src=".img/AliceLogLollipopChapter4.jpg" width="200"  />
 
@@ -13,20 +38,12 @@
 
 <img src=".img/AliceWholePie.jpg" width="200"  />
 
-<img src=".img/AndroidDB.png" width="200"  />
+## Character Network
 
 <img src=".img/CharacterNetworkDiagram.png" width="200"  />
 
-<img src=".img/CIpipeline.png" width="200"  />
-<img src=".img/CoreNLPPipeLines.png" width="200"  />
 
-<img src=".img/dockerisation.png" width="200"  />
-
-<img src=".img/entityList.jpg" width="200"  />
-
-<img src=".img/EntityProfile.jpg" width="200"  />
-
-<img src=".img/future.png" width="200"  />
+<img src=".img/networkControls.jpg" width="200"  />
 
 <img src=".img/GatsbyNetworkAverageL29C21.jpg" width="200"  />
 
@@ -40,24 +57,31 @@
 
 <img src=".img/HighlightedGatsbyNetworkChapter2L74C15T.jpg" width="200"  />
 
+## UI
+
+<img src=".img/entityList.jpg" width="200"  />
+
+<img src=".img/EntityProfile.jpg" width="200"  />
+
+
 <img src=".img/mainActivity.jpg" width="200"  />
 
 
-<img src=".img/mvvm.png" width="200"  />
-
-<img src=".img/networkControls.jpg" width="200"  />
-
-<img src=".img/NetworkSequence.png" width="200"  />
-
-<img src=".img/networkSteps.png" width="200"  />
-
-<img src=".img/processingSequence.png" width="200"  />
-
 <img src=".img/readerInterface.jpg" width="200"  />
+
+
+<img src=".img/visualisationMenu.jpg" width="200"  />
+
+
+text highlighting
+
+
+
+
+<img src=".img/future.png" width="200"  />
 
 <img src=".img/tokenVSpunctuation.png" width="200"  />
 
-<img src=".img/visualisationMenu.jpg" width="200"  />
 
 Final Year project
 This project contains 3 main modules:
