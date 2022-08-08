@@ -1,34 +1,49 @@
+- [Holmes - your privet book detector](#holmes---your-privet-book-detector)
+  - [Demo](#demo)
+  - [Architecture](#architecture)
+  - [Appearances](#appearances)
+  - [Character Network](#character-network)
+  - [UI](#ui)
+
 # Holmes - your privet book detector
+
+[Describe what the app does]
 
 ## Demo
 
 ## Architecture
+The application is made up of 4 modules which help process and present the book
+<img src=".img/processingSequence.png" width="500"  />
 
 
-<img src=".img/AndroidDB.png" width="200"  />
+The server part of the application is run in docker for development and deployment simplicity. 
+
+<img src=".img/dockerisation.png" width="500"  />
 
 
-<img src=".img/CIpipeline.png" width="200"  />
-<img src=".img/CoreNLPPipeLines.png" width="200"  />
-
-<img src=".img/dockerisation.png" width="200"  />
 
 
-<img src=".img/mvvm.png" width="200"  />
+.
+<img src=".img/CIpipeline.png" width="800"  />
 
-<img src=".img/NetworkSequence.png" width="200"  />
 
-<img src=".img/networkSteps.png" width="200"  />
 
-<img src=".img/processingSequence.png" width="200"  />
+
+
+
+
+<!-- <img src=".img/NetworkSequence.png" width="600"  /> -->
+
+<img src=".img/networkSteps.png" width="500"  />
+
+
+When developing Android application, to make the application maintainable and easy to read, the MVVM (Model View ViewModel) architecture was used. 
+<img src=".img/mvvm.png" width="400"  />
 
 
 ## Appearances
 <img src=".img/AliceChapter4Pie.jpg" width="200"  />
 
-
-
-<img src=".img/AliceLogLollipopChapter4.jpg" width="200"  />
 
 <img src=".img/AliceLogLollipopWhole.jpg" width="200"  />
 
@@ -36,11 +51,12 @@
 
 <img src=".img/AliceLollipopWhole.jpg" width="200"  />
 
-<img src=".img/AliceWholePie.jpg" width="200"  />
 
 ## Character Network
 
-<img src=".img/CharacterNetworkDiagram.png" width="200"  />
+
+The character network allows to visualise connection between characters in the book. 
+<img src=".img/CharacterNetworkDiagram.png" width="500"  />
 
 
 <img src=".img/networkControls.jpg" width="200"  />
@@ -81,7 +97,7 @@ text highlighting
 <img src=".img/future.png" width="200"  />
 
 <img src=".img/tokenVSpunctuation.png" width="200"  />
-
+<img src=".img/CoreNLPPipeLines.png" width="200"  />
 
 Final Year project
 This project contains 3 main modules:
