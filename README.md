@@ -14,7 +14,7 @@
 
 # Holmes - your private book detector
 
-Holmes is an app and platform that allows anyone to visualise their books with just their smartphone. By finding all characters and locations within an EPUB book using NLP named entity recognition. It can give visualisations of characters that can help readers remember the plot of chapters by looking at which characters appeared where and with whom they have interacted. 
+Holmes is an app and platform that allows anyone to visualise their books with just their smartphone. By finding all characters and locations within an EPUB book using NLP named entity recognition. It can give visualisations of character appearances that can help readers remember the plot of chapters by looking at which characters appeared where and with whom they have interacted. 
 
 ## Demo
 
