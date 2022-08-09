@@ -98,7 +98,8 @@ As a proposal for future visualisation, the following prototype was developed.
 <!-- <img src=".img/CoreNLPPipeLines.png" width="500"  /> -->
 
 
-{include pdf of the dissertation}
+For the full dissertation please click the image below. 
+<a href=".pdf/UoB_Roman_Podkovyrin_Final_Year_Project.pdf" class="image fit"><img src=".img/dissertationIcon.png" alt=""></a>
 ## Setup
 This project contains 3 main modules:
 1. `AndroidApp`
