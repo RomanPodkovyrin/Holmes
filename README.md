@@ -22,6 +22,7 @@ Holmes is an app and platform that allows anyone to visualise their books with j
 <img src=".img/pie.gif" style="zoom:47%;"  />
 <img src=".img/lollipop.gif" style="zoom:47%;"  />
 <img src=".img/network.gif" style="zoom:47%;"  />
+
 ## Architecture
 The application is made up of 4 modules which help process and present the book
 <img src=".img/processingSequence.png" width="500"  />
