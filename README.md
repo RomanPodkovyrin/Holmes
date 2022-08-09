@@ -104,8 +104,8 @@ For the full dissertation please click the image below.
 ## Setup
 This project contains 3 main modules:
 1. [`AndroidApp`](AndroidApp/)
-2. `coreNLP`
-3. `Server`
+2. [`coreNLP`](coreNLP/)
+3. [`Server`](Server/)
 
 Each module contains README which documents how they can be run
 
