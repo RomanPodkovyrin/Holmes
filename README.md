@@ -10,7 +10,7 @@
 <br>
 <br>
 <br>
-<img src=".img/holmes_icon.png" width="400"  />
+<img src=".img/holmes_icon.png" width="300"  />
 
 # Holmes - your private book detector
 
