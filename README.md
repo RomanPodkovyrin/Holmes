@@ -1,11 +1,13 @@
-- [Holmes - your privet book detector](#holmes---your-privet-book-detector)
+- [Holmes - your private book detector](#holmes---your-private-book-detector)
   - [Demo](#demo)
   - [Architecture](#architecture)
-  - [Appearances](#appearances)
+  - [Character Appearances](#character-appearances)
   - [Character Network](#character-network)
   - [UI](#ui)
+  - [Future](#future)
+  - [Setup](#setup)
 
-# Holmes - your privet book detector
+# Holmes - your private book detector
 
 [Describe what the app does]
 
@@ -21,34 +23,27 @@ The server part of the application is run in docker for development and deployme
 <img src=".img/dockerisation.png" width="500"  />
 
 
-
-
-.
-<img src=".img/CIpipeline.png" width="800"  />
-
-
-
-
-
-
+The project is using GitHub Actions as a CI pipeline
+<img src=".img/CIpipeline.png" width="500"  />
 
 <!-- <img src=".img/NetworkSequence.png" width="600"  /> -->
 
-<img src=".img/networkSteps.png" width="500"  />
+<!-- <img src=".img/networkSteps.png" width="500"  /> -->
 
 
 When developing Android application, to make the application maintainable and easy to read, the MVVM (Model View ViewModel) architecture was used. 
-<img src=".img/mvvm.png" width="400"  />
+<img src=".img/mvvm.png" width="300"  />
 
 
-## Appearances
+## Character Appearances
+To show a number of times character appeared in a book, two visualisations are used:
+- Pie Chart 
 <img src=".img/AliceChapter4Pie.jpg" width="200"  />
 
+<!-- <img src=".img/AliceLogLollipopWhole.jpg" width="200"  /> -->
 
-<img src=".img/AliceLogLollipopWhole.jpg" width="200"  />
-
-<img src=".img/AliceLollipopChapter4.jpg" width="200"  />
-
+<!-- <img src=".img/AliceLollipopChapter4.jpg" width="200"  /> -->
+- Lollipop Chart
 <img src=".img/AliceLollipopWhole.jpg" width="200"  />
 
 
@@ -56,50 +51,55 @@ When developing Android application, to make the application maintainable and ea
 
 
 The character network allows to visualise connection between characters in the book. 
-<img src=".img/CharacterNetworkDiagram.png" width="500"  />
+<img src=".img/CharacterNetworkDiagram.png" width="300"  />
 
-
+This is an interactive visualisation, which allows user to define it's parameters.
 <img src=".img/networkControls.jpg" width="200"  />
 
-<img src=".img/GatsbyNetworkAverageL29C21.jpg" width="200"  />
+When it comes to network itself, it can get a bit messy
+<img src=".img/GatsbyNetworkChapter2L74C15T.jpg" width="300"  />
 
-<img src=".img/GatsbyNetworkChapter2l100c100T.jpg" width="200"  />
+Therefore by clicking a character, all their links will be highlighted. 
+<img src=".img/HighlightedGatsbyNetworkChapter2L74C15T.jpg" width="300"  />
 
-<img src=".img/GatsbyNetworkChapter2L74C15T.jpg" width="200"  />
 
-<img src=".img/GatsbyNetworkMeanL29C21.jpg" width="200"  />
+<!-- <img src=".img/GatsbyNetworkAverageL29C21.jpg" width="200"  /> -->
 
-<img src=".img/GatsbyNetworkMedianL29C21.jpg" width="200"  />
+<!-- <img src=".img/GatsbyNetworkChapter2l100c100T.jpg" width="200"  /> -->
 
-<img src=".img/HighlightedGatsbyNetworkChapter2L74C15T.jpg" width="200"  />
+
+<!-- <img src=".img/GatsbyNetworkMeanL29C21.jpg" width="200"  /> -->
+
+<!-- <img src=".img/GatsbyNetworkMedianL29C21.jpg" width="200"  /> -->
+
 
 ## UI
 
-<img src=".img/entityList.jpg" width="200"  />
+<!-- <img src=".img/entityList.jpg" width="200"  /> -->
 
-<img src=".img/EntityProfile.jpg" width="200"  />
-
-
-<img src=".img/mainActivity.jpg" width="200"  />
+<!-- <img src=".img/EntityProfile.jpg" width="200"  /> -->
 
 
+<!-- <img src=".img/mainActivity.jpg" width="200"  /> -->
+
+When reading the book, location and characters will be highlighted in text, which can be clicked to view in which chapters they appear. 
 <img src=".img/readerInterface.jpg" width="200"  />
 
 
-<img src=".img/visualisationMenu.jpg" width="200"  />
-
-
-text highlighting
+<!-- <img src=".img/visualisationMenu.jpg" width="200"  /> -->
 
 
 
+## Future
+As a proposal for future visualisation, the following prototype was developed.
+<img src=".img/future.png" width="500"  />
 
-<img src=".img/future.png" width="200"  />
+<!-- <img src=".img/tokenVSpunctuation.png" width="200"  /> -->
+<!-- <img src=".img/CoreNLPPipeLines.png" width="500"  /> -->
 
-<img src=".img/tokenVSpunctuation.png" width="200"  />
-<img src=".img/CoreNLPPipeLines.png" width="200"  />
 
-Final Year project
+{include pdf of the dissertation}
+## Setup
 This project contains 3 main modules:
 1. `AndroidApp`
 2. `coreNLP`
