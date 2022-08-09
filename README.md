@@ -99,10 +99,11 @@ As a proposal for future visualisation, the following prototype was developed.
 
 
 For the full dissertation please click the image below. 
+
 <a href=".pdf/UoB_Roman_Podkovyrin_Final_Year_Project.pdf" class="image fit"><img src=".img/dissertationIcon.png" alt=""></a>
 ## Setup
 This project contains 3 main modules:
-1. `AndroidApp`
+1. [`AndroidApp`](AndroidApp/)
 2. `coreNLP`
 3. `Server`
 
