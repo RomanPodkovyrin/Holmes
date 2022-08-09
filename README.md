@@ -9,7 +9,7 @@
 
 # Holmes - your private book detector
 
-[Describe what the app does]
+Holmes is an app and platform that allows anyone to visualise their books with just their smartphone. By finding all characters and locations within an EPUB book using NLP named entity recognition. It can give visualisations of characters that can help readers remember the plot of chapters by looking at which characters appeared where and with whom they have interacted. 
 
 ## Demo
 
@@ -32,6 +32,7 @@ The project is using GitHub Actions as a CI pipeline
 
 
 When developing Android application, to make the application maintainable and easy to read, the MVVM (Model View ViewModel) architecture was used. 
+
 <img src=".img/mvvm.png" width="300"  />
 
 
@@ -54,12 +55,15 @@ The character network allows to visualise connection between characters in the b
 <img src=".img/CharacterNetworkDiagram.png" width="300"  />
 
 This is an interactive visualisation, which allows user to define it's parameters.
+
 <img src=".img/networkControls.jpg" width="200"  />
 
 When it comes to network itself, it can get a bit messy
+
 <img src=".img/GatsbyNetworkChapter2L74C15T.jpg" width="300"  />
 
 Therefore by clicking a character, all their links will be highlighted. 
+
 <img src=".img/HighlightedGatsbyNetworkChapter2L74C15T.jpg" width="300"  />
 
 
@@ -83,6 +87,7 @@ Therefore by clicking a character, all their links will be highlighted.
 <!-- <img src=".img/mainActivity.jpg" width="200"  /> -->
 
 When reading the book, location and characters will be highlighted in text, which can be clicked to view in which chapters they appear. 
+
 <img src=".img/readerInterface.jpg" width="200"  />
 
 
