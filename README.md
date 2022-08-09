@@ -18,6 +18,10 @@ Holmes is an app and platform that allows anyone to visualise their books with j
 
 ## Demo
 
+<img src=".img/ui.gif" style="zoom:47%;" />
+<img src=".img/pie.gif" style="zoom:47%;"  />
+<img src=".img/lollipop.gif" style="zoom:47%;"  />
+<img src=".img/network.gif" style="zoom:47%;"  />
 ## Architecture
 The application is made up of 4 modules which help process and present the book
 <img src=".img/processingSequence.png" width="500"  />
@@ -29,7 +33,7 @@ The server part of the application is run in docker for development and deployme
 
 
 The project is using GitHub Actions as a CI pipeline
-<img src=".img/CIpipeline.png" width="500"  />
+<img src=".img/CIpipeline.png" width="600"  />
 
 <!-- <img src=".img/NetworkSequence.png" width="600"  /> -->
 
