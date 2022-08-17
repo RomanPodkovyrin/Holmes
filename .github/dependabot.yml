@@ -3,17 +3,17 @@
 # Please see the documentation for all configuration options:
 # https://help.github.com/github/administering-a-repository/configuration-options-for-dependency-updates
 
-version: 2
-updates:
-  - package-ecosystem: "gradle" # See documentation for possible values
-    directory: "/AndroidApp/" # Location of package manifests
-    schedule:
-      interval: "weekly"
-      day: "sunday"
-    open-pull-requests-limit: 10
-  - package-ecosystem: "gradle" # See documentation for possible values
-    directory: "/Server/" # Location of package manifests
-    schedule:
-      interval: "weekly"
-      day: "sunday"
-    open-pull-requests-limit: 10
+# version: 2
+# updates:
+#   - package-ecosystem: "gradle" # See documentation for possible values
+#     directory: "/AndroidApp/" # Location of package manifests
+#     schedule:
+#       interval: "weekly"
+#       day: "sunday"
+#     open-pull-requests-limit: 10
+#   - package-ecosystem: "gradle" # See documentation for possible values
+#     directory: "/Server/" # Location of package manifests
+#     schedule:
+#       interval: "weekly"
+#       day: "sunday"
+#     open-pull-requests-limit: 10
