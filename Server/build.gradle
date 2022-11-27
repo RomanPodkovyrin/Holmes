@@ -36,7 +36,7 @@ dependencies {
     implementation("org.litote.kmongo:kmongo-coroutine:4.5.0")
 
     // Test
-    def mockitoVersion = '4.0.0'
+    def mockitoVersion = '4.1.0'
     testImplementation "org.mockito.kotlin:mockito-kotlin:$mockitoVersion"
     testImplementation "org.mockito:mockito-core:$mockitoVersion"
     testImplementation "org.mockito:mockito-inline:$mockitoVersion"
